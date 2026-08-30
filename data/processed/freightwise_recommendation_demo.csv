@@ -1,0 +1,2 @@
+status,origin,destination,cargo_tons,forecast_date,forecast_freight_usd_day,freight_score,historical_route_quantity_tons,historical_shipments,demand_score,predicted_turnaround_hours,vessel_suitability_score,final_decision_score,recommendation,port_constraint_status
+SUCCESS,AUSTRALIA,PARADIP SEA,60000,2024-12-01,11215.5,42.74,26059569.0,5,76.74,24.39,46.1,53.95,MEDIUM PRIORITY,NOT_AVAILABLE_IN_CURRENT_DATASET
