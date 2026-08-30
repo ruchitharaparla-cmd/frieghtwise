@@ -1,0 +1,2 @@
+forecast_date,latest_freight_usd_day,predicted_freight_usd_day,expected_change_pct,market_signal
+2025-01-01,8781,11070.685,26.075442094436852,FREIGHT EXPECTED TO RISE
