@@ -1,0 +1,401 @@
+{
+  "title": "FreightWise Round 2 \u2014 Stage 1 Data Quality Audit Report",
+  "timestamp": "2026-09-05T15:04:31.624794",
+  "total_datasets_audited": 10,
+  "datasets": {
+    "freight_rates": {
+      "dataset_name": "freight_rates",
+      "rows": 300,
+      "columns": 12,
+      "duplicate_rows": 0,
+      "missing_columns_count": 2,
+      "missing_details": {
+        "bdi_mom_change_pct": {
+          "count": 1,
+          "percentage": 0.33
+        },
+        "container_yoy_pct": {
+          "count": 12,
+          "percentage": 4.0
+        }
+      },
+      "date_info": {
+        "date": {
+          "min": "2000-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 300
+        },
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 25
+        },
+        "month": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 12
+        },
+        "bulk_carrier_handysize_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 290
+        },
+        "tanker_rate_aframax_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 291
+        },
+        "on_time_delivery_pct": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 1
+        },
+        "year_month": {
+          "min": "2000-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 300
+        },
+        "canonical_month_start": {
+          "min": "2000-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 300
+        }
+      },
+      "quality_status": "WARNINGS_FLAGGED"
+    },
+    "commodity_prices": {
+      "dataset_name": "commodity_prices",
+      "rows": 1176,
+      "columns": 10,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "date": {
+          "min": "2010-01-01",
+          "max": "2026-04-01",
+          "unique_dates": 196
+        },
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 17
+        },
+        "month": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 12
+        },
+        "year_month": {
+          "min": "2010-01-01",
+          "max": "2026-04-01",
+          "unique_dates": 196
+        },
+        "canonical_month_start": {
+          "min": "2010-01-01",
+          "max": "2026-04-01",
+          "unique_dates": 196
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "oil_geopolitics": {
+      "dataset_name": "oil_geopolitics",
+      "rows": 4047,
+      "columns": 27,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "date": {
+          "min": "2010-02-17",
+          "max": "2026-03-12",
+          "unique_dates": 4047
+        },
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 17
+        },
+        "month": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 12
+        },
+        "year_month": {
+          "min": "2010-02-01",
+          "max": "2026-03-01",
+          "unique_dates": 194
+        },
+        "canonical_month_start": {
+          "min": "2010-02-01",
+          "max": "2026-03-01",
+          "unique_dates": 194
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "port_congestion": {
+      "dataset_name": "port_congestion",
+      "rows": 6260,
+      "columns": 14,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 6
+        },
+        "month": {
+          "min": "2019-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 72
+        },
+        "avg_wait_days": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 254
+        },
+        "year_month": {
+          "min": "2019-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 72
+        },
+        "canonical_month_start": {
+          "min": "2019-01-01",
+          "max": "2024-12-01",
+          "unique_dates": 72
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "trade_flows": {
+      "dataset_name": "trade_flows",
+      "rows": 1250,
+      "columns": 14,
+      "duplicate_rows": 0,
+      "missing_columns_count": 1,
+      "missing_details": {
+        "yoy_growth_pct": {
+          "count": 50,
+          "percentage": 4.0
+        }
+      },
+      "date_info": {
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 25
+        },
+        "year_month": {
+          "min": "2000-01-01",
+          "max": "2024-01-01",
+          "unique_dates": 25
+        }
+      },
+      "quality_status": "WARNINGS_FLAGGED"
+    },
+    "vessel_performance": {
+      "dataset_name": "vessel_performance",
+      "rows": 2736,
+      "columns": 22,
+      "duplicate_rows": 0,
+      "missing_columns_count": 5,
+      "missing_details": {
+        "ship_type": {
+          "count": 136,
+          "percentage": 4.97
+        },
+        "route_type": {
+          "count": 136,
+          "percentage": 4.97
+        },
+        "engine_type": {
+          "count": 136,
+          "percentage": 4.97
+        },
+        "maintenance_status": {
+          "count": 136,
+          "percentage": 4.97
+        },
+        "weather_condition": {
+          "count": 136,
+          "percentage": 4.97
+        }
+      },
+      "date_info": {
+        "date": {
+          "min": "2023-06-04",
+          "max": "2024-06-30",
+          "unique_dates": 57
+        },
+        "year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 2
+        },
+        "month": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 12
+        },
+        "turnaround_time_hours": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 60
+        },
+        "year_month": {
+          "min": "2023-06-01",
+          "max": "2024-06-01",
+          "unique_dates": 13
+        },
+        "canonical_month_start": {
+          "min": "2023-06-01",
+          "max": "2024-06-01",
+          "unique_dates": 13
+        }
+      },
+      "quality_status": "WARNINGS_FLAGGED"
+    },
+    "india_bulk_imports": {
+      "dataset_name": "india_bulk_imports",
+      "rows": 11200,
+      "columns": 14,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "Year": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 5
+        },
+        "Period_Start": {
+          "min": "2022-01-01",
+          "max": "2026-01-01",
+          "unique_dates": 5
+        },
+        "year_month": {
+          "min": "2022-01-01",
+          "max": "2026-01-01",
+          "unique_dates": 5
+        },
+        "canonical_month_start": {
+          "min": "2022-01-01",
+          "max": "2026-01-01",
+          "unique_dates": 5
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "monthly_freight_ml": {
+      "dataset_name": "monthly_freight_ml",
+      "rows": 179,
+      "columns": 21,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "date": {
+          "min": "2010-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 179
+        },
+        "bulk_carrier_handysize_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 172
+        },
+        "tanker_rate_aframax_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 172
+        },
+        "on_time_delivery_pct": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 1
+        },
+        "year_month": {
+          "min": "2010-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 179
+        },
+        "canonical_month_start": {
+          "min": "2010-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 179
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "freight_model_features": {
+      "dataset_name": "freight_model_features",
+      "rows": 167,
+      "columns": 47,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {
+        "date": {
+          "min": "2011-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 167
+        },
+        "bulk_carrier_handysize_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 160
+        },
+        "tanker_rate_aframax_usd_day": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 160
+        },
+        "on_time_delivery_pct": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 1
+        },
+        "year_month": {
+          "min": "2011-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 167
+        },
+        "month_num": {
+          "min": "1970-01-01",
+          "max": "1970-01-01",
+          "unique_dates": 12
+        },
+        "month_sin": {
+          "min": "1969-12-31",
+          "max": "1970-01-01",
+          "unique_dates": 3
+        },
+        "month_cos": {
+          "min": "1969-12-31",
+          "max": "1970-01-01",
+          "unique_dates": 3
+        },
+        "canonical_month_start": {
+          "min": "2011-02-01",
+          "max": "2024-12-01",
+          "unique_dates": 167
+        }
+      },
+      "quality_status": "PASSED"
+    },
+    "route_demand_summary": {
+      "dataset_name": "route_demand_summary",
+      "rows": 40,
+      "columns": 7,
+      "duplicate_rows": 0,
+      "missing_columns_count": 0,
+      "missing_details": {},
+      "date_info": {},
+      "quality_status": "PASSED"
+    }
+  }
+}
