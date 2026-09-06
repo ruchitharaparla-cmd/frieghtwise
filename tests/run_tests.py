@@ -1,6 +1,6 @@
 """
-Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, Stage 2.2A, and Stage 2.2B Test Suites.
-Executes all 45 test functions natively without external test runner dependencies.
+Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, Stage 2.2A, Stage 2.2B, and Stage 2.2C Test Suites.
+Executes all 57 test functions natively without external test runner dependencies.
 """
 
 import sys
@@ -58,6 +58,20 @@ from tests.test_lightgbm_stage2_2b import (
     test_2b_round1_assets_unchanged,
     test_2b_lightgbm_artifact_and_csv_created,
 )
+from tests.test_model_selection_stage2_2c import (
+    test_2c_all_three_candidates_evaluated,
+    test_2c_common_target_dates,
+    test_2c_common_metrics_all_candidates,
+    test_2c_xgboost_feature_names_in_contract,
+    test_2c_lightgbm_exactly_43_features,
+    test_2c_test_set_not_used_for_selection,
+    test_2c_selection_uses_validation_mae,
+    test_2c_deterministic_selection,
+    test_2c_comparison_csv_schema,
+    test_2c_round1_xgboost_artifact_unchanged,
+    test_2c_round1_source_csvs_unchanged,
+    test_2c_comparison_csv_winner_row,
+)
 
 
 def run_all_tests():
@@ -111,10 +125,23 @@ def run_all_tests():
         ("Stage 2.2B - Test 43: best_iteration Recorded & Valid", test_2b_best_iteration_recorded),
         ("Stage 2.2B - Test 44: Round 1 XGBoost Model & CSVs Unchanged", test_2b_round1_assets_unchanged),
         ("Stage 2.2B - Test 45: LightGBM Artifact & Prediction CSV Created", test_2b_lightgbm_artifact_and_csv_created),
+        # Stage 2.2C: Model Evaluation & Selection Tests
+        ("Stage 2.2C - Test 46: All Three Candidates Evaluated", test_2c_all_three_candidates_evaluated),
+        ("Stage 2.2C - Test 47: Common Target Dates Across Candidates", test_2c_common_target_dates),
+        ("Stage 2.2C - Test 48: Common Metrics (MAE, RMSE, MAPE) for All Candidates", test_2c_common_metrics_all_candidates),
+        ("Stage 2.2C - Test 49: XGBoost feature_names_in_ Contract Enforced", test_2c_xgboost_feature_names_in_contract),
+        ("Stage 2.2C - Test 50: LightGBM Exactly 43 LIGHTGBM_FEATURES", test_2c_lightgbm_exactly_43_features),
+        ("Stage 2.2C - Test 51: Test Set Not Used for Selection", test_2c_test_set_not_used_for_selection),
+        ("Stage 2.2C - Test 52: Selection Uses Validation MAE", test_2c_selection_uses_validation_mae),
+        ("Stage 2.2C - Test 53: Deterministic Selection (Two Independent Calls)", test_2c_deterministic_selection),
+        ("Stage 2.2C - Test 54: Comparison CSV Schema Validation", test_2c_comparison_csv_schema),
+        ("Stage 2.2C - Test 55: Round 1 XGBoost Artifact Unchanged", test_2c_round1_xgboost_artifact_unchanged),
+        ("Stage 2.2C - Test 56: Round 1 Source CSVs Unchanged", test_2c_round1_source_csvs_unchanged),
+        ("Stage 2.2C - Test 57: Comparison CSV Winner Row Correct", test_2c_comparison_csv_winner_row),
     ]
 
     print("=" * 80)
-    print("RUNNING FREIGHTWISE TEST SUITE (STAGE 1, STAGE 2.1, STAGE 2.2A & STAGE 2.2B)")
+    print("RUNNING FREIGHTWISE TEST SUITE (STAGE 1, STAGE 2.1, STAGE 2.2A, STAGE 2.2B & STAGE 2.2C)")
     print("=" * 80)
 
     from src.data.loader import DataLoader

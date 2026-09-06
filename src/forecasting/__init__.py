@@ -1,7 +1,8 @@
 """
 FreightWise Stage 2 — Freight Forecasting Package.
 Exposes dataset contracts, chronological split utilities, metric evaluation routines,
-and LightGBM dataset preparation, configuration, and training modules.
+LightGBM dataset preparation, configuration, and training modules,
+and Stage 2.2C model evaluation and selection.
 """
 
 from .contracts import (
@@ -35,6 +36,17 @@ from .lightgbm_train import (
     DEFAULT_LIGHTGBM_MODEL_PATH,
     DEFAULT_PREDICTIONS_PATH,
 )
+from .model_selection import (
+    ModelSelectionResult,
+    CandidateEvaluation,
+    evaluate_all_candidates,
+    run_model_selection,
+    save_comparison_csv,
+    COMPARISON_CSV_PATH,
+    CANDIDATE_NAIVE,
+    CANDIDATE_XGBOOST,
+    CANDIDATE_LIGHTGBM,
+)
 
 __all__ = [
     "ForecastingDatasetContract",
@@ -56,4 +68,14 @@ __all__ = [
     "train_and_evaluate_lightgbm",
     "DEFAULT_LIGHTGBM_MODEL_PATH",
     "DEFAULT_PREDICTIONS_PATH",
+    # Stage 2.2C — Model Evaluation & Selection
+    "ModelSelectionResult",
+    "CandidateEvaluation",
+    "evaluate_all_candidates",
+    "run_model_selection",
+    "save_comparison_csv",
+    "COMPARISON_CSV_PATH",
+    "CANDIDATE_NAIVE",
+    "CANDIDATE_XGBOOST",
+    "CANDIDATE_LIGHTGBM",
 ]

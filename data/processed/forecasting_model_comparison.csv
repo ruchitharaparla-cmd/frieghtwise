@@ -1,0 +1,7 @@
+model,split,mae,rmse,mape,is_selected,selection_reason
+Naive Baseline,validation,5315.8333,6190.6265,59.4957,False,
+Naive Baseline,test,2802.6667,4153.064,42.4542,False,
+Round 1 XGBoost,validation,2386.1441,2924.3054,29.2295,True,"Lowest validation MAE: 2386.1441 (RMSE=2924.3054, MAPE=29.2295%)"
+Round 1 XGBoost,test,2117.8171,3111.1913,36.7506,False,
+Round 2 LightGBM,validation,3181.9521,4512.2592,36.8355,False,
+Round 2 LightGBM,test,2541.2152,3107.563,36.3565,False,
