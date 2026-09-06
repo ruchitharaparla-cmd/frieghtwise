@@ -115,6 +115,28 @@ from tests.test_inference_layer import (
     test_inference_deterministic,
     test_stage2_2c_comparison_file_unchanged,
 )
+from tests.test_stage3_delay_congestion import (
+    test_vessel_filtering_pipeline_reconciles_669_rows,
+    test_vessel_temporal_split_strict_inequality,
+    test_vessel_features_12_contract,
+    test_vessel_delay_risk_threshold_and_leakage_control,
+    test_port_congestion_audit_india_port_absence,
+    test_port_congestion_panel_lag_calculation_no_cross_port_leakage,
+    test_port_congestion_temporal_split,
+    test_port_congestion_lead1_target_definition,
+    test_vessel_model_training_and_artifacts,
+    test_port_model_training_and_artifacts,
+    test_port_model_comparison_includes_addition1_metrics,
+    test_vessel_service_single_predict_schema,
+    test_port_service_single_predict_schema,
+    test_port_service_india_port_guard_raises,
+    test_vessel_service_deterministic_inference,
+    test_port_service_deterministic_inference,
+    test_stage2_2c_selected_xgboost_model_unchanged,
+    test_stage2_2c_comparison_file_unchanged as test_stage2_2c_comparison_file_unchanged_stage3,
+    test_stage1_source_csvs_unchanged,
+)
+
 
 
 
@@ -219,11 +241,32 @@ def run_all_tests():
         ("Stage 2.4 - Test 89: Batch Prediction Schema & Date Alignment", test_predict_batch_schema_and_alignment),
         ("Stage 2.4 - Test 90: Inference Determinism", test_inference_deterministic),
         ("Stage 2.4 - Test 91: Stage 2.2C Model Selection Integrity", test_stage2_2c_comparison_file_unchanged),
+        # Stage 3: Delay & Congestion Prediction Tests
+        ("Stage 3 - Test 92: Vessel Row Reconciliation (2,736 -> 669 Bulk Carrier)", test_vessel_filtering_pipeline_reconciles_669_rows),
+        ("Stage 3 - Test 93: Vessel Temporal Split Strict Inequality", test_vessel_temporal_split_strict_inequality),
+        ("Stage 3 - Test 94: Vessel Pre-Voyage 12-Feature Contract", test_vessel_features_12_contract),
+        ("Stage 3 - Test 95: Vessel Delay-Risk Threshold (50h) & Zero Feature Leakage", test_vessel_delay_risk_threshold_and_leakage_control),
+        ("Stage 3 - Test 96: Port Congestion India Absence Audit (0 India Rows)", test_port_congestion_audit_india_port_absence),
+        ("Stage 3 - Test 97: Port Congestion Panel Lags (Zero Cross-Port Leakage)", test_port_congestion_panel_lag_calculation_no_cross_port_leakage),
+        ("Stage 3 - Test 98: Port Congestion Chronological Split (2019-22 / 2023 / 2024)", test_port_congestion_temporal_split),
+        ("Stage 3 - Test 99: Port Congestion 1-Week Lead Target Definition", test_port_congestion_lead1_target_definition),
+        ("Stage 3 - Test 100: Vessel Model Training & Joblib Artifact Creation", test_vessel_model_training_and_artifacts),
+        ("Stage 3 - Test 101: Port Model Training & Joblib Artifact Creation", test_port_model_training_and_artifacts),
+        ("Stage 3 - Test 102: Port Comparison CSV Metrics (Addition 1: F1, Prec, Rec, AUC, PR-AUC)", test_port_model_comparison_includes_addition1_metrics),
+        ("Stage 3 - Test 103: VesselTurnaroundService Single Predict Schema", test_vessel_service_single_predict_schema),
+        ("Stage 3 - Test 104: PortCongestionService Single Predict Schema", test_port_service_single_predict_schema),
+        ("Stage 3 - Test 105: PortCongestionService India Port Absence Error Guard", test_port_service_india_port_guard_raises),
+        ("Stage 3 - Test 106: VesselTurnaroundService Deterministic Inference", test_vessel_service_deterministic_inference),
+        ("Stage 3 - Test 107: PortCongestionService Deterministic Inference", test_port_service_deterministic_inference),
+        ("Stage 3 - Test 108: Stage 2.2C Selected XGBoost Freight Model Immutability", test_stage2_2c_selected_xgboost_model_unchanged),
+        ("Stage 3 - Test 109: Stage 2.2C Freight Comparison CSV Immutability", test_stage2_2c_comparison_file_unchanged_stage3),
+        ("Stage 3 - Test 110: Stage 1 Raw Source CSV Immutability", test_stage1_source_csvs_unchanged),
     ]
 
     print("=" * 80)
-    print("RUNNING FREIGHTWISE TEST SUITE (STAGES 1, 2.1, 2.2A, 2.2B, 2.2C, 2.3, 2.4)")
+    print("RUNNING FREIGHTWISE TEST SUITE (STAGES 1, 2.1, 2.2A, 2.2B, 2.2C, 2.3, 2.4, 3)")
     print("=" * 80)
+
 
 
     from src.data.loader import DataLoader

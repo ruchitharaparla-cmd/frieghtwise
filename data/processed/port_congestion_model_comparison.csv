@@ -1,0 +1,7 @@
+task_type,model_name,val_primary_metric,val_score,test_score,test_f1,val_f1,val_precision,val_recall,val_roc_auc,val_pr_auc,is_selected
+Regression,Persistence Naive Baseline,MAE: 0.3985,0.3985,0.4787,,,,,,,False
+Regression,Random Forest Regressor Baseline,MAE: 0.4347,0.4347,0.5188,,,,,,,False
+Regression,CatBoost Regressor,MAE: 0.3574,0.3574,0.4267,,,,,,,True
+Classification,Persistence Naive Baseline,F1: 0.0,0.0,0.1228,0.1228,0.0,0.0,0.0,0.5,0.0,True
+Classification,Random Forest Classifier Baseline,F1: 0.0,0.0,0.1322,0.1322,0.0,0.0,0.0,0.5697,0.0064,False
+Classification,CatBoost Classifier,F1: 0.0,0.0,0.1261,0.1261,0.0,0.0,0.0,0.5338,0.0055,False

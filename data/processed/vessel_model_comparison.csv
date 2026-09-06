@@ -1,0 +1,7 @@
+model_type,model_name,primary_val_metric,val_score,test_score,is_selected
+Regression,Random Forest Regressor (Round 1 Baseline),MAE: 14.5435,14.5435,16.2881,True
+Regression,XGBoost Regressor,MAE: 14.6317,14.6317,17.3278,False
+Regression,CatBoost Regressor,MAE: 14.7192,14.7192,16.7349,False
+Classification,Random Forest Classifier Baseline,F1: 0.0417,0.0417,0.0833,False
+Classification,XGBoost Classifier,F1: 0.2,0.2,0.2857,True
+Classification,CatBoost Classifier,F1: 0.08,0.08,0.1905,False
