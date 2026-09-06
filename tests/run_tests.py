@@ -96,6 +96,26 @@ from tests.test_forecasting_stage2_3 import (
     test_stage2_2c_comparison_remains_unchanged,
     test_round1_source_csvs_remains_unchanged,
 )
+from tests.test_inference_layer import (
+    test_xgboost_artifact_exists_and_matches_hardcoded_sha256,
+    test_load_xgboost_model_attributes,
+    test_load_xgboost_model_caching,
+    test_service_instantiation_no_retraining,
+    test_validation_extra_columns_allowed_and_ignored,
+    test_validation_shuffled_features_reordered,
+    test_validation_missing_feature_raises,
+    test_validation_null_value_raises,
+    test_validation_non_numeric_raises,
+    test_date_validation_missing_raises,
+    test_date_validation_null_date_raises,
+    test_predict_single_dict_schema_and_types,
+    test_predict_single_with_dataframe_and_series,
+    test_predict_single_multi_row_raises,
+    test_predict_batch_schema_and_alignment,
+    test_inference_deterministic,
+    test_stage2_2c_comparison_file_unchanged,
+)
+
 
 
 def run_all_tests():
@@ -181,10 +201,28 @@ def run_all_tests():
         ("Stage 2.3 - Test 72: LightGBM Artifact Immutability", test_lightgbm_artifact_remains_unchanged),
         ("Stage 2.3 - Test 73: Stage 2.2C Comparison Immutability", test_stage2_2c_comparison_remains_unchanged),
         ("Stage 2.3 - Test 74: Round 1 Source CSVs Immutability", test_round1_source_csvs_remains_unchanged),
+        # Stage 2.4: Production / Inference Layer Tests
+        ("Stage 2.4 - Test 75: XGBoost Artifact Hard-Coded SHA-256 Checksum", test_xgboost_artifact_exists_and_matches_hardcoded_sha256),
+        ("Stage 2.4 - Test 76: Model Attributes & 26 Feature Contract", test_load_xgboost_model_attributes),
+        ("Stage 2.4 - Test 77: Model Loading Singleton Caching", test_load_xgboost_model_caching),
+        ("Stage 2.4 - Test 78: Service Instantiation (Zero Retraining)", test_service_instantiation_no_retraining),
+        ("Stage 2.4 - Test 79: Extra Columns Allowed & Ignored", test_validation_extra_columns_allowed_and_ignored),
+        ("Stage 2.4 - Test 80: Shuffled Feature Order Reordered", test_validation_shuffled_features_reordered),
+        ("Stage 2.4 - Test 81: Missing Feature Clear Failure", test_validation_missing_feature_raises),
+        ("Stage 2.4 - Test 82: Null/Missing Feature Value Failure", test_validation_null_value_raises),
+        ("Stage 2.4 - Test 83: Non-Numeric Input Failure", test_validation_non_numeric_raises),
+        ("Stage 2.4 - Test 84: Missing Mandatory Date Column Failure", test_date_validation_missing_raises),
+        ("Stage 2.4 - Test 85: Null/Unparseable Date Value Failure", test_date_validation_null_date_raises),
+        ("Stage 2.4 - Test 86: Single Prediction Schema & Types", test_predict_single_dict_schema_and_types),
+        ("Stage 2.4 - Test 87: Single Prediction DataFrame & Series Support", test_predict_single_with_dataframe_and_series),
+        ("Stage 2.4 - Test 88: Multi-Row predict() Guard Failure", test_predict_single_multi_row_raises),
+        ("Stage 2.4 - Test 89: Batch Prediction Schema & Date Alignment", test_predict_batch_schema_and_alignment),
+        ("Stage 2.4 - Test 90: Inference Determinism", test_inference_deterministic),
+        ("Stage 2.4 - Test 91: Stage 2.2C Model Selection Integrity", test_stage2_2c_comparison_file_unchanged),
     ]
 
     print("=" * 80)
-    print("RUNNING FREIGHTWISE TEST SUITE (STAGES 1, 2.1, 2.2A, 2.2B, 2.2C, 2.3)")
+    print("RUNNING FREIGHTWISE TEST SUITE (STAGES 1, 2.1, 2.2A, 2.2B, 2.2C, 2.3, 2.4)")
     print("=" * 80)
 
 

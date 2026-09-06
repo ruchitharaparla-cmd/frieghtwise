@@ -67,6 +67,21 @@ from .benchmark_stage2_3 import (
     CANDIDATE_CHRONOS2,
     ALL_STAGE2_3_MODELS,
 )
+from .model_loader import (
+    DEFAULT_XGBOOST_MODEL_PATH,
+    EXPECTED_XGBOOST_SHA256,
+    compute_file_sha256,
+    load_xgboost_model,
+)
+from .validation import (
+    validate_date_column,
+    validate_features,
+)
+from .inference import (
+    FreightForecastService,
+    CANONICAL_MODEL_NAME,
+    DEFAULT_UNIT,
+)
 
 __all__ = [
     "ForecastingDatasetContract",
@@ -88,7 +103,7 @@ __all__ = [
     "train_and_evaluate_lightgbm",
     "DEFAULT_LIGHTGBM_MODEL_PATH",
     "DEFAULT_PREDICTIONS_PATH",
-    # Stage 2.2C â€” Model Evaluation & Selection
+    # Stage 2.2C — Model Evaluation & Selection
     "ModelSelectionResult",
     "CandidateEvaluation",
     "evaluate_all_candidates",
@@ -98,7 +113,7 @@ __all__ = [
     "CANDIDATE_NAIVE",
     "CANDIDATE_XGBOOST",
     "CANDIDATE_LIGHTGBM",
-    # Stage 2.3 â€” Chronos-2 and Prophet Benchmarks
+    # Stage 2.3 — Chronos-2 and Prophet Benchmarks
     "ChronosAdapter",
     "run_chronos_benchmark",
     "CHRONOS_AVAILABLE",
@@ -113,4 +128,14 @@ __all__ = [
     "CANDIDATE_PROPHET",
     "CANDIDATE_CHRONOS2",
     "ALL_STAGE2_3_MODELS",
+    # Stage 2.4 — Production / Inference Layer
+    "DEFAULT_XGBOOST_MODEL_PATH",
+    "EXPECTED_XGBOOST_SHA256",
+    "compute_file_sha256",
+    "load_xgboost_model",
+    "validate_date_column",
+    "validate_features",
+    "FreightForecastService",
+    "CANONICAL_MODEL_NAME",
+    "DEFAULT_UNIT",
 ]
