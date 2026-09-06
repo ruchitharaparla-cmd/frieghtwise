@@ -1,11 +1,16 @@
 """
-Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, Stage 2.2A, Stage 2.2B, and Stage 2.2C Test Suites.
-Executes all 57 test functions natively without external test runner dependencies.
+Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, Stage 2.2A, Stage 2.2B, Stage 2.2C, and Stage 2.3 Test Suites.
+Executes all 74 test functions natively without external test runner dependencies.
 """
 
+import os
 import sys
 import traceback
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from tests.test_data_foundation import (
+
     test_freight_loader_and_schema,
     test_vessel_loader_and_filtering,
     test_india_import_loader_units,
@@ -72,9 +77,29 @@ from tests.test_model_selection_stage2_2c import (
     test_2c_round1_source_csvs_unchanged,
     test_2c_comparison_csv_winner_row,
 )
+from tests.test_forecasting_stage2_3 import (
+    test_existing_split_preserved,
+    test_train_val_test_dates_correct,
+    test_chronos_target_column,
+    test_chronos_predictions_horizon,
+    test_chronos_predictions_dates,
+    test_chronos_no_future_target_leakage,
+    test_prophet_uses_ds_and_y_correctly,
+    test_prophet_predictions_horizon,
+    test_prophet_prediction_dates,
+    test_all_metrics_use_existing_implementation,
+    test_comparison_contains_all_five_models,
+    test_validation_and_test_target_dates_match_across_models,
+    test_test_data_not_used_for_tuning,
+    test_xgboost_artifact_remains_unchanged,
+    test_lightgbm_artifact_remains_unchanged,
+    test_stage2_2c_comparison_remains_unchanged,
+    test_round1_source_csvs_remains_unchanged,
+)
 
 
 def run_all_tests():
+
     tests = [
         # Stage 1: Data Foundation Tests
         ("Stage 1 - Test 1: Freight Loader & Schema", test_freight_loader_and_schema),
@@ -138,11 +163,30 @@ def run_all_tests():
         ("Stage 2.2C - Test 55: Round 1 XGBoost Artifact Unchanged", test_2c_round1_xgboost_artifact_unchanged),
         ("Stage 2.2C - Test 56: Round 1 Source CSVs Unchanged", test_2c_round1_source_csvs_unchanged),
         ("Stage 2.2C - Test 57: Comparison CSV Winner Row Correct", test_2c_comparison_csv_winner_row),
+        # Stage 2.3: Chronos-2 & Prophet Benchmarking Tests
+        ("Stage 2.3 - Test 58: Existing 143/12/12 Split Preserved", test_existing_split_preserved),
+        ("Stage 2.3 - Test 59: Train/Val/Test Date Alignment", test_train_val_test_dates_correct),
+        ("Stage 2.3 - Test 60: Chronos Target Column Contract", test_chronos_target_column),
+        ("Stage 2.3 - Test 61: Chronos Predictions Horizon (12)", test_chronos_predictions_horizon),
+        ("Stage 2.3 - Test 62: Chronos Predictions Dates", test_chronos_predictions_dates),
+        ("Stage 2.3 - Test 63: Chronos Zero Target Leakage", test_chronos_no_future_target_leakage),
+        ("Stage 2.3 - Test 64: Prophet ds/y Interface", test_prophet_uses_ds_and_y_correctly),
+        ("Stage 2.3 - Test 65: Prophet Predictions Horizon (12)", test_prophet_predictions_horizon),
+        ("Stage 2.3 - Test 66: Prophet Predictions Dates", test_prophet_prediction_dates),
+        ("Stage 2.3 - Test 67: All Metrics Use calculate_all_metrics", test_all_metrics_use_existing_implementation),
+        ("Stage 2.3 - Test 68: Comparison Table Contains All 5 Models", test_comparison_contains_all_five_models),
+        ("Stage 2.3 - Test 69: Common Target Dates & Actuals Across Models", test_validation_and_test_target_dates_match_across_models),
+        ("Stage 2.3 - Test 70: Zero 2024 Test Data Used for Tuning", test_test_data_not_used_for_tuning),
+        ("Stage 2.3 - Test 71: XGBoost Artifact Immutability", test_xgboost_artifact_remains_unchanged),
+        ("Stage 2.3 - Test 72: LightGBM Artifact Immutability", test_lightgbm_artifact_remains_unchanged),
+        ("Stage 2.3 - Test 73: Stage 2.2C Comparison Immutability", test_stage2_2c_comparison_remains_unchanged),
+        ("Stage 2.3 - Test 74: Round 1 Source CSVs Immutability", test_round1_source_csvs_remains_unchanged),
     ]
 
     print("=" * 80)
-    print("RUNNING FREIGHTWISE TEST SUITE (STAGE 1, STAGE 2.1, STAGE 2.2A, STAGE 2.2B & STAGE 2.2C)")
+    print("RUNNING FREIGHTWISE TEST SUITE (STAGES 1, 2.1, 2.2A, 2.2B, 2.2C, 2.3)")
     print("=" * 80)
+
 
     from src.data.loader import DataLoader
     ldr = DataLoader()

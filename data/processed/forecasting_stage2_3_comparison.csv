@@ -1,0 +1,11 @@
+model,split,mae,rmse,mape,selected_in_stage2_2c,notes
+Naive Baseline,validation,5315.8333,6190.6265,59.4957,False,Lag-1 persistence baseline
+Naive Baseline,test,2802.6667,4153.064,42.4542,False,Lag-1 persistence baseline
+Round 1 XGBoost,validation,2386.1441,2924.3054,29.2295,True,Stage 2.2C Selected Model (26 domain features)
+Round 1 XGBoost,test,2117.8171,3111.1913,36.7506,True,Stage 2.2C Selected Model (26 domain features)
+Round 2 LightGBM,validation,3181.9521,4512.2592,36.8355,False,Stage 2.2B Candidate (43 domain features)
+Round 2 LightGBM,test,2541.2152,3107.563,36.3565,False,Stage 2.2B Candidate (43 domain features)
+Prophet,validation,3790.8252,5113.8064,41.8569,False,Univariate additive model benchmark (no regressors)
+Prophet,test,2606.6052,3406.3212,35.3585,False,Univariate additive model benchmark (no regressors)
+Chronos-2,validation,3681.6388,4910.4106,39.6247,False,"Zero-shot foundation model benchmark (amazon/chronos-2, univariate)"
+Chronos-2,test,2232.92,3032.7598,35.4215,False,"Zero-shot foundation model benchmark (amazon/chronos-2, univariate)"

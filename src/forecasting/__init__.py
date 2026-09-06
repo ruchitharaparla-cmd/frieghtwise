@@ -1,5 +1,5 @@
 """
-FreightWise Stage 2 — Freight Forecasting Package.
+FreightWise Stage 2 â€” Freight Forecasting Package.
 Exposes dataset contracts, chronological split utilities, metric evaluation routines,
 LightGBM dataset preparation, configuration, and training modules,
 and Stage 2.2C model evaluation and selection.
@@ -47,6 +47,26 @@ from .model_selection import (
     CANDIDATE_XGBOOST,
     CANDIDATE_LIGHTGBM,
 )
+from .chronos_forecast import (
+    ChronosAdapter,
+    run_chronos_benchmark,
+    CHRONOS_AVAILABLE,
+    CHRONOS_PREDICTIONS_CSV_PATH,
+)
+from .prophet_forecast import (
+    ProphetForecaster,
+    run_prophet_benchmark,
+    PROPHET_AVAILABLE,
+    PROPHET_PREDICTIONS_CSV_PATH,
+)
+from .benchmark_stage2_3 import (
+    Stage2_3BenchmarkResult,
+    run_stage2_3_benchmark,
+    STAGE2_3_COMPARISON_CSV_PATH,
+    CANDIDATE_PROPHET,
+    CANDIDATE_CHRONOS2,
+    ALL_STAGE2_3_MODELS,
+)
 
 __all__ = [
     "ForecastingDatasetContract",
@@ -68,7 +88,7 @@ __all__ = [
     "train_and_evaluate_lightgbm",
     "DEFAULT_LIGHTGBM_MODEL_PATH",
     "DEFAULT_PREDICTIONS_PATH",
-    # Stage 2.2C — Model Evaluation & Selection
+    # Stage 2.2C â€” Model Evaluation & Selection
     "ModelSelectionResult",
     "CandidateEvaluation",
     "evaluate_all_candidates",
@@ -78,4 +98,19 @@ __all__ = [
     "CANDIDATE_NAIVE",
     "CANDIDATE_XGBOOST",
     "CANDIDATE_LIGHTGBM",
+    # Stage 2.3 â€” Chronos-2 and Prophet Benchmarks
+    "ChronosAdapter",
+    "run_chronos_benchmark",
+    "CHRONOS_AVAILABLE",
+    "CHRONOS_PREDICTIONS_CSV_PATH",
+    "ProphetForecaster",
+    "run_prophet_benchmark",
+    "PROPHET_AVAILABLE",
+    "PROPHET_PREDICTIONS_CSV_PATH",
+    "Stage2_3BenchmarkResult",
+    "run_stage2_3_benchmark",
+    "STAGE2_3_COMPARISON_CSV_PATH",
+    "CANDIDATE_PROPHET",
+    "CANDIDATE_CHRONOS2",
+    "ALL_STAGE2_3_MODELS",
 ]
