@@ -1,6 +1,6 @@
 # FreightWise Round 2 — Stage 2: Freight Forecasting Contract & Specification
 
-This document defines the dataset contract, evaluation protocol, chronological train/validation/test splitting specification, metrics framework, and LightGBM foundation contract for **FreightWise Stage 2: Freight Forecasting**.
+This document defines the dataset contract, evaluation protocol, chronological train/validation/test splitting specification, metrics framework, and LightGBM foundation & evaluation contract for **FreightWise Stage 2: Freight Forecasting**.
 
 ---
 
@@ -79,9 +79,6 @@ month_num, quarter, month_sin, month_cos
 ### 5.1 Role of LightGBM in FreightWise Round 2
 LightGBM is introduced in Round 2 to evaluate gradient boosted decision trees on the broader freight feature set (43 numeric features), serving as an advanced benchmark alongside the Round 1 XGBoost 26-feature model.
 
-> [!NOTE]
-> Stage 2.2A establishes the **data preparation and model configuration contract ONLY**. LightGBM model training, fitting, evaluation, hyperparameter tuning, and model comparison are intentionally excluded from Stage 2.2A and reserved for future stages.
-
 ### 5.2 Source Dataset & Feature Derivation
 LightGBM dataset preparation operates via `src.forecasting.lightgbm_data.LightGBMDatasetPreparer`.
 
@@ -113,22 +110,37 @@ Every candidate feature was audited for temporal leakage:
 - **Zero Future Lookahead**: No future-derived or future-shifted target variables exist.
 - **Preprocessing Leakage Protection**: Feature splitting occurs chronologically *before* any preprocessing. Scalers or imputers are never fit on validation or test partitions during training.
 
-### 5.4 Chronological Split Alignment
-Reuses the Stage 2.1 chronological split philosophy:
-- **Train (143 observations)**: `2011-02-01` to `2022-12-01` ($X_{\text{train}}: 143 \times 43$, $y_{\text{train}}: 143$)
-- **Validation (12 observations)**: `2023-01-01` to `2023-12-01` ($X_{\text{val}}: 12 \times 43$, $y_{\text{val}}: 12$)
-- **Test (12 observations)**: `2024-01-01` to `2024-12-01` ($X_{\text{test}}: 12 \times 43$, $y_{\text{test}}: 12$)
+---
 
-### 5.5 Model Configuration Contract (`LightGBMModelConfig`)
-LightGBM hyperparameter configuration is specified in `src/forecasting/lightgbm_config.py`:
-- `objective`: `"regression"`
-- `metric`: `"rmse"`
-- `learning_rate`: `0.05`
-- `n_estimators`: `100`
-- `num_leaves`: `31`
-- `max_depth`: `-1`
-- `min_child_samples`: `20`
-- `subsample`: `0.8`
-- `colsample_bytree`: `0.8`
-- `random_state`: `42`
-- `verbose`: `-1`
+## 6. LightGBM Model Training & Evaluation (Stage 2.2B)
+
+### 6.1 Training & Early Stopping Methodology
+Model training is executed via `src.forecasting.lightgbm_train.train_and_evaluate_lightgbm()`:
+- **Feature Contract**: Evaluates the 43 validated `LIGHTGBM_FEATURES`.
+- **Training Set (143 rows)**: Used for model fitting.
+- **Validation Set (12 rows)**: Used exclusively for early stopping monitoring (`lgb.early_stopping(stopping_rounds=15, verbose=False)`).
+- **Test Set (12 rows)**: Remains 100% untouched during fitting, hyperparameter configuration, and early stopping.
+- **Recorded Best Iteration**: `best_iteration_ = 1` (stopping early when validation loss plateaus).
+
+### 6.2 Benchmark Comparison on Identical 2024 Test Set
+All three models (Naive Baseline, Round 1 XGBoost, and Round 2 LightGBM) are evaluated against **identical 2024 test target observations (`y_test`) and dates**:
+
+| Model | MAE (USD/day) | RMSE (USD/day) | MAPE (%) |
+| :--- | :---: | :---: | :---: |
+| **Naive Baseline** | 2,802.67 | 4,153.06 | 42.45% |
+| **Round 1 XGBoost (26 features)** | **2,117.82** | 3,111.19 | 36.75% |
+| **Round 2 LightGBM (43 features)** | 2,541.22 | **3,107.56** | **36.36%** |
+
+### 6.3 Measured Improvement Analysis
+- **LightGBM vs Naive Baseline**:
+  - MAE Improvement: **+9.33%** (2,541.22 vs 2,802.67 USD/day)
+  - RMSE Improvement: **+25.17%** (3,107.56 vs 4,153.06 USD/day)
+  - MAPE Improvement: **+6.09%** (36.36% vs 42.45%)
+- **LightGBM vs Round 1 XGBoost**:
+  - RMSE Improvement: **+0.12%** (3,107.56 vs 3,111.19 USD/day)
+  - MAPE Improvement: **+0.39%** (36.36% vs 36.75%)
+  - MAE Comparison: XGBoost retains lower MAE (2,117.82 vs 2,541.22 USD/day).
+
+### 6.4 Saved Model Artifact & Prediction CSV
+- **Saved Model Binary**: `ml/forecasting/lightgbm_freight_model.joblib` (New artifact; `final_xgboost_model.joblib` remains 100% untouched).
+- **Exported Prediction CSV**: `data/processed/lightgbm_forecast_predictions.csv` (New file containing columns: `date`, `actual`, `predicted`, `model`, `split`).

@@ -1,6 +1,6 @@
 """
-Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, and Stage 2.2A Test Suites.
-Executes all 34 test functions natively without external test runner dependencies.
+Test runner script for FreightWise Round 2 — Stage 1, Stage 2.1, Stage 2.2A, and Stage 2.2B Test Suites.
+Executes all 45 test functions natively without external test runner dependencies.
 """
 
 import sys
@@ -45,6 +45,19 @@ from tests.test_lightgbm_stage2_2a import (
     test_xgboost_26_feature_contract_immutability,
     test_lightgbm_config_validity,
 )
+from tests.test_lightgbm_stage2_2b import (
+    test_2b_training_succeeds,
+    test_2b_feature_count_is_43,
+    test_2b_target_not_in_feature_input,
+    test_2b_split_sizes_143_12_12,
+    test_2b_zero_temporal_overlap,
+    test_2b_test_set_not_in_fit,
+    test_2b_prediction_df_columns_and_splits,
+    test_2b_identical_y_test_for_all_models,
+    test_2b_best_iteration_recorded,
+    test_2b_round1_assets_unchanged,
+    test_2b_lightgbm_artifact_and_csv_created,
+)
 
 
 def run_all_tests():
@@ -86,10 +99,22 @@ def run_all_tests():
         ("Stage 2.2A - Test 32: Round 1 XGBoost Model Immutability", test_round1_xgboost_model_immutability),
         ("Stage 2.2A - Test 33: XGBoost 26-Feature Contract Immutability", test_xgboost_26_feature_contract_immutability),
         ("Stage 2.2A - Test 34: LightGBMModelConfig Validation & Parameters", test_lightgbm_config_validity),
+        # Stage 2.2B: LightGBM Training & Evaluation Tests
+        ("Stage 2.2B - Test 35: LightGBM Training Succeeds End-to-End", test_2b_training_succeeds),
+        ("Stage 2.2B - Test 36: Feature Count is Exactly 43 (LIGHTGBM_FEATURES)", test_2b_feature_count_is_43),
+        ("Stage 2.2B - Test 37: Target Not in Training Feature Matrix", test_2b_target_not_in_feature_input),
+        ("Stage 2.2B - Test 38: Chronological Split is Exactly 143/12/12", test_2b_split_sizes_143_12_12),
+        ("Stage 2.2B - Test 39: Zero Temporal Overlap Across All Partitions", test_2b_zero_temporal_overlap),
+        ("Stage 2.2B - Test 40: Test Set Not Used in Fit/Early Stopping", test_2b_test_set_not_in_fit),
+        ("Stage 2.2B - Test 41: Prediction DF Has Required Columns & Split Tags", test_2b_prediction_df_columns_and_splits),
+        ("Stage 2.2B - Test 42: Naive/XGBoost/LightGBM Evaluated on Identical y_test", test_2b_identical_y_test_for_all_models),
+        ("Stage 2.2B - Test 43: best_iteration Recorded & Valid", test_2b_best_iteration_recorded),
+        ("Stage 2.2B - Test 44: Round 1 XGBoost Model & CSVs Unchanged", test_2b_round1_assets_unchanged),
+        ("Stage 2.2B - Test 45: LightGBM Artifact & Prediction CSV Created", test_2b_lightgbm_artifact_and_csv_created),
     ]
 
     print("=" * 80)
-    print("RUNNING FREIGHTWISE TEST SUITE (STAGE 1, STAGE 2.1 & STAGE 2.2A)")
+    print("RUNNING FREIGHTWISE TEST SUITE (STAGE 1, STAGE 2.1, STAGE 2.2A & STAGE 2.2B)")
     print("=" * 80)
 
     from src.data.loader import DataLoader
