@@ -1,3 +1,4 @@
+
 from logging.config import fileConfig
 
 from alembic import context
@@ -8,8 +9,11 @@ from app.core.database import Base
 
 # Import models so Alembic can detect them
 from app.models.user import User  # noqa: F401
-
-
+from app.models.vessel import Vessel  # noqa: F401
+from app.models.port import Port  # noqa: F401
+from app.models.freight import Freight  # noqa: F401
+from app.models.voyage import Voyage
+from app.models.prediction import Prediction
 # Alembic Config object
 config = context.config
 
