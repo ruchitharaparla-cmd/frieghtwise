@@ -1,7 +1,7 @@
 import React from "react";
-import Analysis from "./pages/Analysis/Analysis.jsx";
+import Simulation from "./pages/Simulation/Simulation.jsx";
 import "./App.css";
 
 export default function App() {
-  return <Analysis />;
+  return <Simulation />;
 }
