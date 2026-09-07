@@ -157,18 +157,64 @@ The exact formulas and data sources will be documented separately.
 
 ## 9. Candidate Ranking
 
-The system compares feasible candidates.
+Only feasible candidates enter the final ranking stage.
 
-Possible factors:
+Candidates are ranked using the following factors:
 
-- Total landed cost
-- Expected delay
-- Operational risk
-- Freight forecast
-- Port suitability
+| Factor | Weight |
+|---|---:|
+| Total Landed Cost | 40% |
+| Operational Risk | 20% |
+| Expected Delay | 15% |
+| Freight Forecast | 10% |
+| Port Suitability | 10% |
+| Arrival Feasibility | 5% |
+| **Total** | **100%** |
 
-The ranking method must be documented and reproducible.
+### Hard Constraints
 
+The following are hard constraints and are applied before ranking:
+
+- Cargo compatibility
+- Vessel capacity
+- LOA restriction
+- Beam restriction
+- Draft restriction
+- Required arrival feasibility
+
+A candidate failing a hard constraint is rejected and is not included
+in the final ranking.
+
+### Scoring Method
+
+Each ranking factor is converted to a comparable 0–100 score.
+
+For cost, delay and freight rate:
+
+- Lower value receives a better score.
+
+For operational risk:
+
+- Lower risk receives a better score.
+
+For port suitability and arrival feasibility:
+
+- Higher suitability receives a better score.
+
+The final weighted score is calculated as:
+
+Final Score =
+(Cost Score × 0.40) +
+(Risk Score × 0.20) +
+(Delay Score × 0.15) +
+(Freight Score × 0.10) +
+(Port Suitability Score × 0.10) +
+(Arrival Feasibility Score × 0.05)
+
+Lower final score represents the preferred candidate.
+
+The ranking must be reproducible using the same input data and
+weight configuration.
 ---
 
 ## 10. Recommendation

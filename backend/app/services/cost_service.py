@@ -13,19 +13,21 @@ def calculate_cost(
     expected_delay_cost = None
     expected_demurrage = None
 
+    # Freight cost
     if freight_rate is not None:
         freight_cost = quantity_tonnes * freight_rate
 
+    # Demurrage is calculated only when both delay
+    # and demurrage rate are available.
     if (
         expected_delay_hours is not None
         and demurrage_rate_per_day is not None
     ):
-        expected_delay_cost = (
+        expected_demurrage = (
             expected_delay_hours / 24
         ) * demurrage_rate_per_day
 
-        expected_demurrage = expected_delay_cost
-
+    # Total landed cost
     if (
         freight_cost is None
         or bunker_cost is None
@@ -37,7 +39,7 @@ def calculate_cost(
             freight_cost
             + bunker_cost
             + port_cost
-            + (expected_delay_cost or 0)
+            + (expected_demurrage or 0)
         )
 
     return {
