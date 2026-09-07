@@ -45,43 +45,51 @@ def check_port_vessel_compatibility(
     feasible = True
     reasons = []
 
-    if vessel_loa_m is not None and port.max_loa_m is not None:
-        if vessel_loa_m > port.max_loa_m:
-            feasible = False
-            reasons.append(
-                f"Vessel LOA {vessel_loa_m}m exceeds "
-                f"port limit {port.max_loa_m}m."
-            )
-
-    if vessel_beam_m is not None and port.max_beam_m is not None:
-        if vessel_beam_m > port.max_beam_m:
-            feasible = False
-            reasons.append(
-                f"Vessel beam {vessel_beam_m}m exceeds "
-                f"port limit {port.max_beam_m}m."
-            )
-
-    if vessel_draft_m is not None and port.max_draft_m is not None:
-        if vessel_draft_m > port.max_draft_m:
-            feasible = False
-            reasons.append(
-                f"Vessel draft {vessel_draft_m}m exceeds "
-                f"port limit {port.max_draft_m}m."
-            )
-
-    if (
-        vessel_loa_m is None
-        and vessel_beam_m is None
-        and vessel_draft_m is None
-    ):
+    # LOA check
+    if port.max_loa_m is None:
+        feasible = False
+        reasons.append("Port maximum LOA data is unavailable.")
+    elif vessel_loa_m is None:
+        feasible = False
+        reasons.append("Vessel LOA data is unavailable.")
+    elif vessel_loa_m > port.max_loa_m:
         feasible = False
         reasons.append(
-            "Vessel dimension data is unavailable."
+            f"Vessel LOA {vessel_loa_m}m exceeds "
+            f"port limit {port.max_loa_m}m."
+        )
+
+    # Beam check
+    if port.max_beam_m is None:
+        feasible = False
+        reasons.append("Port maximum beam data is unavailable.")
+    elif vessel_beam_m is None:
+        feasible = False
+        reasons.append("Vessel beam data is unavailable.")
+    elif vessel_beam_m > port.max_beam_m:
+        feasible = False
+        reasons.append(
+            f"Vessel beam {vessel_beam_m}m exceeds "
+            f"port limit {port.max_beam_m}m."
+        )
+
+    # Draft check
+    if port.max_draft_m is None:
+        feasible = False
+        reasons.append("Port maximum draft data is unavailable.")
+    elif vessel_draft_m is None:
+        feasible = False
+        reasons.append("Vessel draft data is unavailable.")
+    elif vessel_draft_m > port.max_draft_m:
+        feasible = False
+        reasons.append(
+            f"Vessel draft {vessel_draft_m}m exceeds "
+            f"port limit {port.max_draft_m}m."
         )
 
     if feasible:
         reasons.append(
-            "Vessel dimensions satisfy available port constraints."
+            "Vessel dimensions satisfy all available port constraints."
         )
 
     return {

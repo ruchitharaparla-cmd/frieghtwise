@@ -8,7 +8,10 @@ from app.api.routes import (
     ports,
     voyages,
     forecasts,
-    recommendations
+    recommendations,
+    costs,
+    risk,
+    simulation
 )
 
 
@@ -33,6 +36,12 @@ app.include_router(voyages.router)
 app.include_router(forecasts.router)
 
 app.include_router(recommendations.router)
+
+app.include_router(costs.router)
+
+app.include_router(risk.router)
+
+app.include_router(simulation.router)
 
 
 @app.get("/")

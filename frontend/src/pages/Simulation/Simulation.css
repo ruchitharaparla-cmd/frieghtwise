@@ -1,0 +1,1566 @@
+git status/* =========================================================
+   FREIGHTWISE SIMULATION
+   COMPLETE PAGE LAYOUT
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MAIN LAYOUT
+========================================================= */
+
+.freightwise-layout {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #f4f8fc;
+
+  color: #123b68;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.freight-sidebar {
+  position: fixed;
+
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 29px 15px 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #062b4b 0%,
+      #052744 100%
+    );
+
+  color: white;
+
+  z-index: 100;
+
+  transition: width 0.25s ease;
+}
+
+
+.sidebar-closed {
+  width: 0;
+
+  padding-left: 0;
+  padding-right: 0;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.sidebar-brand {
+  padding-left: 14px;
+
+  margin-bottom: 36px;
+}
+
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  color: white;
+}
+
+
+.brand-name {
+  color: white;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  letter-spacing: 0.4px;
+}
+
+
+.brand-tagline {
+  margin-top: 7px;
+
+  color: #d7e7f5;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+.sidebar-item {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+
+  padding: 0 15px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #d5e3ef;
+
+  font-family: inherit;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: white;
+}
+
+
+.sidebar-item.active {
+  color: white;
+
+  background: #087ce3;
+
+  box-shadow:
+    0 5px 13px rgba(0, 0, 0, 0.15);
+}
+
+
+.sidebar-item svg {
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   AI ENGINE
+========================================================= */
+
+.ai-engine-card {
+  margin-top: auto;
+
+  padding: 16px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+}
+
+
+.ai-status-title {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: white;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.online-dot {
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+
+  background: #12d58b;
+
+  box-shadow:
+    0 0 0 4px rgba(18, 213, 139, 0.08);
+}
+
+
+.ai-updated {
+  margin-top: 15px;
+
+  color: #a8c3d9;
+
+  font-size: 11px;
+}
+
+
+.ai-engine-card strong {
+  display: block;
+
+  margin-top: 6px;
+
+  color: white;
+
+  font-size: 11px;
+}
+
+
+.sidebar-quote {
+  margin-top: 22px;
+  padding-left: 10px;
+
+  color: #a9c5db;
+
+  font-size: 12px;
+
+  font-style: italic;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.freight-main {
+  width: calc(100% - 250px);
+
+  min-height: 100vh;
+
+  margin-left: 250px;
+
+  transition:
+    width 0.25s ease,
+    margin-left 0.25s ease;
+}
+
+
+.sidebar-closed + .freight-main {
+  width: 100%;
+  margin-left: 0;
+}
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.freight-topbar {
+  height: 76px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 27px;
+
+  background: white;
+
+  border-bottom: 1px solid #e4edf5;
+}
+
+
+.global-search {
+  width: 525px;
+  height: 45px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 14px;
+
+  color: #5790bf;
+
+  background: white;
+
+  border: 1px solid #ccdfef;
+
+  border-radius: 8px;
+}
+
+
+.global-search input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #123b68;
+
+  font-family: inherit;
+
+  font-size: 13px;
+}
+
+
+.global-search input::placeholder {
+  color: #86a8c4;
+}
+
+
+.topbar-right {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  height: 100%;
+
+  gap: 17px;
+}
+
+
+.notification-button {
+  position: relative;
+
+  width: 37px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: #163e68;
+
+  cursor: pointer;
+}
+
+
+.notification-count {
+  position: absolute;
+
+  top: 0;
+  right: -1px;
+
+  min-width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 5px;
+
+  color: white;
+
+  background: #ef3939;
+
+  border-radius: 50%;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.topbar-divider {
+  width: 1px;
+  height: 37px;
+
+  background: #e1e9f0;
+}
+
+
+.user-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #173e68;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.user-avatar {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  background: #0c2e52;
+
+  border-radius: 50%;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+
+.mobile-menu-button {
+  display: none;
+
+  border: none;
+
+  background: transparent;
+
+  color: #123b68;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.simulation-content {
+  width: 100%;
+
+  padding: 0 25px 40px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.simulation-hero {
+  position: relative;
+
+  width: 100%;
+  height: 190px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 30px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f5fbff 0%,
+      #eff9ff 35%,
+      #e6f6ff 100%
+    );
+}
+
+
+.simulation-hero::after {
+  content: "";
+
+  position: absolute;
+
+  width: 360px;
+  height: 360px;
+
+  right: 130px;
+  top: -180px;
+
+  border: 1px solid rgba(46, 130, 183, 0.12);
+
+  border-radius: 50%;
+}
+
+
+.simulation-hero-content {
+  position: relative;
+
+  z-index: 5;
+
+  width: 40%;
+}
+
+
+.hero-eyebrow {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #52799d;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+
+.simulation-hero-content h1 {
+  margin: 0;
+
+  color: #123e6e;
+
+  font-size: 38px;
+  font-weight: 850;
+
+  letter-spacing: -1px;
+
+  line-height: 1.05;
+}
+
+
+.simulation-hero-content p {
+  margin: 7px 0 0;
+
+  color: #163e67;
+
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   HERO IMAGE
+========================================================= */
+
+.simulation-hero-ship {
+  position: absolute;
+
+  right: 150px;
+  bottom: 0;
+
+  width: 55%;
+  max-width: 720px;
+
+  height: 190px;
+
+  object-fit: contain;
+  object-position: center bottom;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   SLOGAN
+========================================================= */
+
+.simulation-hero-slogan {
+  position: absolute;
+
+  right: 28px;
+  top: 61px;
+
+  z-index: 6;
+
+  width: 150px;
+
+  display: flex;
+  flex-direction: column;
+
+  color: #113b65;
+
+  font-size: 16px;
+
+  line-height: 1.17;
+}
+
+
+.simulation-hero-slogan strong {
+  font-weight: 850;
+}
+
+
+.simulation-hero-slogan span {
+  width: 100%;
+  height: 2px;
+
+  margin-top: 10px;
+
+  background: #0aa875;
+}
+
+
+/* =========================================================
+   PARAMETERS
+========================================================= */
+
+.parameters-card {
+  margin-top: 10px;
+
+  padding: 14px 16px 15px;
+
+  background: white;
+
+  border: 1px solid #dce8f2;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 2px 8px rgba(26, 76, 111, 0.03);
+}
+
+
+.parameters-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 13px;
+}
+
+
+.parameters-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #087bdd;
+
+  background: #eaf5ff;
+
+  border-radius: 10px;
+}
+
+
+.parameters-heading h2 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 20px;
+  font-weight: 850;
+}
+
+
+.parameters-heading p {
+  margin: 2px 0 0;
+
+  color: #7895af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   PARAMETER GRID
+========================================================= */
+
+.parameter-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1fr
+    1.05fr
+    1fr;
+
+  gap: 13px;
+
+  align-items: end;
+}
+
+
+.parameter-field {
+  min-width: 0;
+}
+
+
+.parameter-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #153d65;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+
+.input-wrapper,
+.select-wrapper {
+  position: relative;
+
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 13px;
+
+  color: #087bdd;
+
+  background: white;
+
+  border: 1px solid #ccdeed;
+
+  border-radius: 9px;
+}
+
+
+.input-wrapper input,
+.select-wrapper select {
+  width: 100%;
+
+  min-width: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #163f68;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.select-wrapper select {
+  appearance: none;
+
+  cursor: pointer;
+
+  padding-right: 20px;
+}
+
+
+.select-arrow {
+  position: absolute;
+
+  right: 11px;
+
+  color: #537b9d;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   RUN BUTTON
+========================================================= */
+
+.run-simulation-button {
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  color: white;
+
+  background: #087bdd;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 12px rgba(8, 123, 221, 0.2);
+
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+
+.run-simulation-button:hover {
+  background: #066dc7;
+
+  transform: translateY(-1px);
+}
+
+
+.run-simulation-button:disabled {
+  opacity: 0.7;
+
+  cursor: wait;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.simulation-status {
+  min-height: 37px;
+
+  margin-top: 10px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 13px;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+}
+
+
+.status-success {
+  color: #188460;
+
+  background: #ecfaf4;
+
+  border: 1px solid #cdeee0;
+}
+
+
+.status-running {
+  color: #1475b5;
+
+  background: #edf7ff;
+
+  border: 1px solid #cfe7f7;
+}
+
+
+/* =========================================================
+   SCENARIO SECTION
+========================================================= */
+
+.scenario-section {
+  margin-top: 14px;
+}
+
+
+.scenario-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  margin-bottom: 10px;
+}
+
+
+.scenario-title {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.scenario-title-icon {
+  color: #087bdd;
+}
+
+
+.scenario-title h2 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 20px;
+  font-weight: 850;
+}
+
+
+.scenario-title p {
+  margin: 3px 0 0;
+
+  color: #7895af;
+
+  font-size: 11px;
+}
+
+
+.scenario-info {
+  max-width: 420px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 9px 12px;
+
+  color: #4b7392;
+
+  background: #eff8ff;
+
+  border: 1px solid #d0e6f6;
+
+  border-radius: 8px;
+}
+
+
+.scenario-info svg {
+  flex-shrink: 0;
+
+  color: #087bdd;
+}
+
+
+.scenario-info p {
+  margin: 0;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   SCENARIO GRID
+========================================================= */
+
+.scenario-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 13px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.scenario-card {
+  min-width: 0;
+
+  padding: 17px 14px 14px;
+
+  background: white;
+
+  border: 1px solid #dce8f2;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+
+.recommended-card {
+  border-color: #98ddc3;
+
+  box-shadow:
+    0 3px 12px rgba(15, 155, 109, 0.05);
+}
+
+
+.scenario-high {
+  border-color: #f1c9c9;
+}
+
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.recommended-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 10px;
+
+  padding: 6px 11px;
+
+  color: white;
+
+  background: #10ad70;
+
+  border-radius: 7px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.scenario-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+
+.scenario-heading {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.scenario-main-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #087bdd;
+
+  background: #edf7ff;
+
+  border-radius: 10px;
+}
+
+
+.scenario-high .scenario-main-icon {
+  color: #ed4c4c;
+
+  background: #fff0f0;
+}
+
+
+.scenario-heading h3 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 18px;
+  font-weight: 850;
+}
+
+
+.scenario-heading p {
+  margin: 3px 0 0;
+
+  color: #7895af;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   CARD IMAGE
+========================================================= */
+
+.scenario-ship-image {
+  width: 165px;
+  height: 79px;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 8px;
+
+  background: #eaf5fb;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.card-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 10px 0;
+
+  background: #e3edf4;
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.scenario-metrics {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 13px;
+}
+
+
+.metric {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.metric-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #143e69;
+
+  background: #f1f6fa;
+
+  border-radius: 7px;
+}
+
+
+.dollar-icon {
+  font-size: 20px;
+  font-weight: 850;
+}
+
+
+.metric span {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #7592ab;
+
+  font-size: 10px;
+}
+
+
+.metric strong {
+  display: block;
+
+  color: #143e69;
+
+  font-size: 13px;
+  font-weight: 850;
+}
+
+
+/* =========================================================
+   RISK
+========================================================= */
+
+.risk-pill {
+  display: inline-block !important;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  font-size: 10px !important;
+
+  line-height: 1;
+
+  font-weight: 750 !important;
+}
+
+
+.risk-low {
+  color: #168f62 !important;
+
+  background: #def7eb;
+}
+
+
+.risk-moderate {
+  color: #b57c00 !important;
+
+  background: #fff0c8;
+}
+
+
+.risk-high {
+  color: #e44747 !important;
+
+  background: #ffe1e1;
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.scenario-message {
+  min-height: 63px;
+
+  margin-top: 13px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 11px 12px;
+
+  border-radius: 8px;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+.scenario-message svg {
+  flex-shrink: 0;
+}
+
+
+.scenario-message p {
+  margin: 0;
+}
+
+
+.scenario-low .scenario-message {
+  color: #2b7e65;
+
+  background: #effaf5;
+
+  border: 1px solid #d0eee1;
+}
+
+
+.scenario-low .scenario-message svg {
+  color: #10a66d;
+}
+
+
+.scenario-moderate .scenario-message {
+  color: #4a7595;
+
+  background: #edf7ff;
+
+  border: 1px solid #d5e8f7;
+}
+
+
+.scenario-moderate .scenario-message svg {
+  color: #477fa8;
+}
+
+
+.scenario-high .scenario-message {
+  color: #db5656;
+
+  background: #fff0f0;
+
+  border: 1px solid #f5cccc;
+}
+
+
+.scenario-high .scenario-message svg {
+  color: #ef4444;
+}
+
+
+/* =========================================================
+   DECISION INSIGHT
+========================================================= */
+
+.decision-insight {
+  margin-top: 14px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 15px 17px;
+
+  background: white;
+
+  border: 1px solid #dce8f2;
+
+  border-radius: 10px;
+}
+
+
+.decision-insight-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #087bdd;
+
+  background: #eaf5ff;
+
+  border-radius: 9px;
+}
+
+
+.decision-insight h3 {
+  margin: 0 0 3px;
+
+  color: #143e69;
+
+  font-size: 14px;
+  font-weight: 850;
+}
+
+
+.decision-insight p {
+  margin: 0;
+
+  color: #718fa9;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1250px) {
+
+  .parameter-grid {
+    grid-template-columns:
+      1fr
+      1fr
+      1fr;
+  }
+
+  .run-simulation-button {
+    width: 100%;
+  }
+
+  .simulation-hero-ship {
+    right: 130px;
+    width: 55%;
+  }
+
+}
+
+
+@media (max-width: 1050px) {
+
+  .freight-sidebar {
+    width: 220px;
+  }
+
+  .freight-main {
+    width: calc(100% - 220px);
+
+    margin-left: 220px;
+  }
+
+  .scenario-heading-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .scenario-info {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .scenario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .simulation-hero-ship {
+    right: 100px;
+
+    width: 60%;
+
+    opacity: 0.65;
+  }
+
+}
+
+
+@media (max-width: 800px) {
+
+  .freight-sidebar {
+    width: 235px;
+
+    transform: translateX(-100%);
+
+    transition:
+      transform 0.25s ease;
+  }
+
+  .freight-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .freight-main {
+    width: 100%;
+
+    margin-left: 0;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 12px;
+  }
+
+  .global-search {
+    width: 100%;
+  }
+
+  .user-profile span,
+  .user-profile svg {
+    display: none;
+  }
+
+  .simulation-content {
+    padding: 0 15px 30px;
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .freight-topbar {
+    padding: 0 14px;
+  }
+
+  .notification-button {
+    display: none;
+  }
+
+  .topbar-divider {
+    display: none;
+  }
+
+  .simulation-hero {
+    height: 220px;
+
+    padding: 25px;
+  }
+
+  .simulation-hero-content {
+    width: 100%;
+  }
+
+  .simulation-hero-content h1 {
+    font-size: 31px;
+  }
+
+  .simulation-hero-ship {
+    right: -40px;
+
+    width: 90%;
+
+    opacity: 0.28;
+  }
+
+  .simulation-hero-slogan {
+    display: none;
+  }
+
+  .parameter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-card-header {
+    align-items: flex-start;
+  }
+
+}
+
+
+@media (max-width: 450px) {
+
+  .scenario-card-header {
+    flex-direction: column;
+  }
+
+  .scenario-ship-image {
+    width: 100%;
+    height: 110px;
+  }
+
+  .scenario-metrics {
+    grid-template-columns: 1fr;
+  }
+
+}
