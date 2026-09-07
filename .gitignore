@@ -3,3 +3,5 @@ __pycache__/
 .pytest_cache/
 
 catboost_info/
+
+data/chroma_db/
