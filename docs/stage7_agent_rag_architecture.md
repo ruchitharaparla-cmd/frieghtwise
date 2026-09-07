@@ -1,4 +1,4 @@
-# FreightWise Stage 7 â€” AI Agents + RAG Architecture & Safety Boundaries
+# FreightWise Stage 7 - AI Agents + RAG Architecture & Safety Boundaries
 
 ## 1. System Overview
 
@@ -7,37 +7,37 @@ FreightWise Stage 7 introduces the contract, context, provenance, and safety fou
 The primary purpose of Stage 7 is to enable natural language interaction, decision synthesis, evidence retrieval, and plan explanations without compromising the mathematical integrity of FreightWise's core decision-making pipeline.
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                      AUTHORITATIVE NUMERICAL PIPELINE                       â”‚
-â”‚                                                                             â”‚
-â”‚  Stage 1: Data Foundation                                                   â”‚
-â”‚      â”‚                                                                      â”‚
-â”‚      â–¼                                                                      â”‚
-â”‚  Stage 2: Freight Forecasting (XGBoost / LightGBM)                          â”‚
-â”‚      â”‚                                                                      â”‚
-â”‚      â–¼                                                                      â”‚
-â”‚  Stage 3: Delay & Congestion Prediction (Turnaround ML + Port Proxy)        â”‚
-â”‚      â”‚                                                                      â”‚
-â”‚      â–¼                                                                      â”‚
-â”‚  Stage 4: Feasibility Rules (Vessel-Cargo, Maintenance, Draft)               â”‚
-â”‚      â”‚                                                                      â”‚
-â”‚      â–¼                                                                      â”‚
-â”‚  Stage 5: Cost & Risk Engine (Voyage Charter Costs + Risk Scoring)          â”‚
-â”‚      â”‚                                                                      â”‚
-â”‚      â–¼                                                                      â”‚
-â”‚  Stage 6: Optimization Engine (CP-SAT Hierarchical Lexicographic Solver)    â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                       â”‚
-                                       â–¼ Authoritative Numerical Outputs
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                     STAGE 7: AI AGENTS & RAG LAYER                          â”‚
-â”‚                                                                             â”‚
-â”‚  â€¢ AgentContext Builder (Preserves original Stage 2-6 numbers)              â”‚
-â”‚  â€¢ Evidence Retriever (RAG indexing of domain docs & pipeline metadata)     â”‚
-â”‚  â€¢ Provenance Tracker (Lineage, stage attribution, model versioning)        â”‚
-â”‚  â€¢ Safety Validation Engine (Strict immutability & boundary checks)         â”‚
-â”‚  â€¢ LLM Explanation & QA Agents (Summarize, explain, compare)                â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
++---------------------------------------------------------------------------+
+|                      AUTHORITATIVE NUMERICAL PIPELINE                     |
+|                                                                           |
+|  Stage 1: Data Foundation                                                 |
+|      |                                                                    |
+|      v                                                                    |
+|  Stage 2: Freight Forecasting (XGBoost / LightGBM)                        |
+|      |                                                                    |
+|      v                                                                    |
+|  Stage 3: Delay & Congestion Prediction (Turnaround ML + Port Proxy)      |
+|      |                                                                    |
+|      v                                                                    |
+|  Stage 4: Feasibility Rules (Vessel-Cargo, Maintenance, Draft)             |
+|      |                                                                    |
+|      v                                                                    |
+|  Stage 5: Cost & Risk Engine (Voyage Charter Costs + Risk Scoring)        |
+|      |                                                                    |
+|      v                                                                    |
+|  Stage 6: Optimization Engine (CP-SAT Hierarchical Lexicographic Solver)  |
++-----------------------------------+---------------------------------------+
+                                    |
+                                    v Authoritative Numerical Outputs
++---------------------------------------------------------------------------+
+|                     STAGE 7: AI AGENTS & RAG LAYER                        |
+|                                                                           |
+|  - AgentContext Builder (Preserves original Stage 2-6 numbers)            |
+|  - Evidence Retriever (RAG indexing of domain docs & pipeline metadata)   |
+|  - Provenance Tracker (Lineage, stage attribution, model versioning)      |
+|  - Safety Validation Engine (Strict immutability & boundary checks)       |
+|  - LLM Explanation & QA Agents (Summarize, explain, compare)              |
++---------------------------------------------------------------------------+
 ```
 
 ---
@@ -155,7 +155,7 @@ Safety validation helpers enforce hard boundaries before agent responses are pre
 
 ## 5. Context Builder (`src/agents/context.py`)
 
-`build_agent_context()` constructs an `AgentContext` from Stage 2â€“6 outputs:
+`build_agent_context()` constructs an `AgentContext` from Stage 2-6 outputs:
 * Preserves original numerical values without recalculation.
 * Preserves model names and model versions.
 * Preserves explicit data scopes (`GLOBAL_CONGESTION_PROXY`).
