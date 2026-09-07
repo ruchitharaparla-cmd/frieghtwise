@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Session
 
+from app.schemas.forecast import ForecastRequest
 from app.services.vessel_service import get_vessels
-from app.services.port_service import get_ports, check_port_vessel_compatibility
+from app.services.port_service import (
+    get_ports,
+    check_port_vessel_compatibility,
+)
 from app.services.forecast_service import get_freight_forecast
 from app.services.congestion_service import (
     calculate_congestion_score,
@@ -10,7 +14,6 @@ from app.services.congestion_service import (
 from app.services.cost_service import calculate_cost
 from app.services.risk_service import calculate_risk
 from app.services.recommendation_service import generate_recommendation
-from app.schemas.forecast import ForecastRequest
 
 
 def run_decision_engine(
@@ -46,6 +49,14 @@ def run_decision_engine(
             )
 
             if not compatibility["feasible"]:
+                options.append(
+                    {
+                        "feasible": False,
+                        "vessel_id": vessel.id,
+                        "port_id": port.id,
+                        "rejection_reasons": compatibility["reasons"],
+                    }
+                )
                 continue
 
             forecast = get_freight_forecast(
@@ -59,6 +70,28 @@ def run_decision_engine(
                 ),
             )
 
+            if forecast["forecast_rate"] is None:
+                options.append(
+                    {
+                        "feasible": False,
+                        "vessel_id": vessel.id,
+                        "port_id": port.id,
+                        "freight_rate": None,
+                        "total_landed_cost": None,
+                        "overall_risk": None,
+                        "expected_delay_hours": None,
+                        "port_suitability_score": None,
+                        "arrival_feasibility_score": None,
+                        "forecast": forecast,
+                        "cost": None,
+                        "risk": None,
+                        "rejection_reasons": [
+                            "Freight forecast is unavailable for this route, cargo type, vessel class, or date."
+                        ],
+                    }
+                )
+                continue
+
             congestion = calculate_congestion_score(
                 port.average_waiting_hours
             )
@@ -68,17 +101,48 @@ def run_decision_engine(
             )
 
             risk = calculate_risk(
-                congestion_score=congestion["score"],
+                congestion_score=congestion["score"]
             )
+
+            # ---------------------------------------------------------
+            # DEMO COST INPUTS
+            # These are estimated prototype values.
+            # They are NOT claimed as real market data.
+            # ---------------------------------------------------------
+            bunker_cost = 300000.0
+            port_cost = 100000.0
+            demurrage_rate_per_day = 20000.0
 
             cost = calculate_cost(
                 quantity_tonnes=quantity_tonnes,
                 freight_rate=forecast["forecast_rate"],
-                bunker_cost=None,
-                port_cost=None,
+                bunker_cost=bunker_cost,
+                port_cost=port_cost,
                 expected_delay_hours=delay_hours,
-                demurrage_rate_per_day=None,
+                demurrage_rate_per_day=demurrage_rate_per_day,
             )
+
+            if cost["total_landed_cost"] is None:
+                options.append(
+                    {
+                        "feasible": False,
+                        "vessel_id": vessel.id,
+                        "port_id": port.id,
+                        "freight_rate": forecast["forecast_rate"],
+                        "total_landed_cost": None,
+                        "overall_risk": risk["overall_risk"],
+                        "expected_delay_hours": delay_hours,
+                        "port_suitability_score": congestion["score"],
+                        "arrival_feasibility_score": 0.0,
+                        "forecast": forecast,
+                        "cost": cost,
+                        "risk": risk,
+                        "rejection_reasons": [
+                            "Required cost inputs are unavailable; total landed cost cannot be calculated reliably."
+                        ],
+                    }
+                )
+                continue
 
             options.append(
                 {
@@ -90,7 +154,7 @@ def run_decision_engine(
                     "expected_delay_hours": delay_hours,
                     "overall_risk": risk["overall_risk"],
                     "port_suitability_score": congestion["score"],
-                    "arrival_feasibility_score": 0,
+                    "arrival_feasibility_score": 0.0,
                     "total_landed_cost": cost["total_landed_cost"],
                     "forecast": forecast,
                     "cost": cost,

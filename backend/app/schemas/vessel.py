@@ -21,6 +21,7 @@ class VesselListResponse(BaseModel):
 
 class CompatibilityRequest(BaseModel):
     vessel_id: int
+    port_id: int
     cargo_type: str
     quantity_tonnes: float
 

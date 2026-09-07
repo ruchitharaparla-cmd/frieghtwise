@@ -3,19 +3,14 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.models.port import Port
-
-
-def get_ports(
-    db: Session,
-    region: Optional[str] = None,
-    cargo_type: Optional[str] = None,
-):
+def get_ports(db, region=None, cargo_type=None):
     query = db.query(Port)
 
     if region:
-        query = query.filter(
-            Port.state.ilike(f"%{region}%")
-        )
+        if region.lower() == "east coast india":
+            query = query.filter(Port.country.ilike("India"))
+        else:
+            query = query.filter(Port.state.ilike(f"%{region}%"))
 
     if cargo_type:
         query = query.filter(
@@ -23,8 +18,6 @@ def get_ports(
         )
 
     return query.order_by(Port.name.asc()).all()
-
-
 def get_port_by_id(
     db: Session,
     port_id: int,

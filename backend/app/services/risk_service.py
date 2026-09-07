@@ -1,11 +1,9 @@
-from typing import Optional
-
-
 def calculate_risk(
-    congestion_score: Optional[float],
-    weather_score: Optional[float] = None,
-    demurrage_score: Optional[float] = None,
-) -> dict:
+    congestion_score,
+    weather_score=None,
+    demurrage_score=None,
+    data_status="KNOWN",
+):
     scores = [
         score
         for score in (
@@ -46,14 +44,32 @@ def calculate_risk(
     else:
         risk_level = "HIGH"
 
-    def get_impact(score: Optional[float]) -> str:
-        if score is None:
-            return "UNKNOWN"
-        if score < 35:
-            return "LOW"
-        if score < 65:
-            return "MEDIUM"
-        return "HIGH"
+    if congestion_score is None:
+        congestion_impact = "UNKNOWN"
+    elif congestion_score < 35:
+        congestion_impact = "LOW"
+    elif congestion_score < 65:
+        congestion_impact = "MEDIUM"
+    else:
+        congestion_impact = "HIGH"
+
+    if weather_score is None:
+        weather_impact = "UNKNOWN"
+    elif weather_score < 35:
+        weather_impact = "LOW"
+    elif weather_score < 65:
+        weather_impact = "MEDIUM"
+    else:
+        weather_impact = "HIGH"
+
+    if demurrage_score is None:
+        demurrage_impact = "UNKNOWN"
+    elif demurrage_score < 35:
+        demurrage_impact = "LOW"
+    elif demurrage_score < 65:
+        demurrage_impact = "MEDIUM"
+    else:
+        demurrage_impact = "HIGH"
 
     return {
         "overall_risk": round(overall_risk, 2),
@@ -61,16 +77,16 @@ def calculate_risk(
         "factors": {
             "congestion": {
                 "score": congestion_score,
-                "impact": get_impact(congestion_score),
+                "impact": congestion_impact,
             },
             "weather": {
                 "score": weather_score,
-                "impact": get_impact(weather_score),
+                "impact": weather_impact,
             },
             "demurrage": {
                 "score": demurrage_score,
-                "impact": get_impact(demurrage_score),
+                "impact": demurrage_impact,
             },
         },
-        "data_status": "KNOWN",
+        "data_status": data_status,
     }

@@ -1,92 +1,104 @@
-from fastapi import APIRouter
-from pydantic import BaseModel, Field
-from typing import Optional
+from datetime import date
+from typing import Any, Optional
 
-from app.services.cost_service import calculate_cost
-from app.services.risk_service import calculate_risk
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+from app.services.decision_engine_service import run_decision_engine
+
 
 router = APIRouter(tags=["Simulation"])
 
 
 class Scenario(BaseModel):
+    cargo_type: str
     quantity_tonnes: float = Field(gt=0)
-    freight_rate: Optional[float] = Field(default=None, ge=0)
-    bunker_cost: Optional[float] = Field(default=None, ge=0)
-    port_cost: Optional[float] = Field(default=None, ge=0)
-    expected_delay_hours: Optional[float] = Field(default=None, ge=0)
-    demurrage_rate_per_day: Optional[float] = Field(default=None, ge=0)
-    congestion_score: Optional[float] = Field(default=None, ge=0, le=100)
-    weather_score: Optional[float] = Field(default=None, ge=0, le=100)
-    demurrage_score: Optional[float] = Field(default=None, ge=0, le=100)
+    origin_country: str
+    destination_region: str
+    arrival_date: date
 
 
 class SimulationRequest(BaseModel):
     base_scenario: Scenario
-    changes: dict = {}
+    changes: dict[str, Any] = {}
 
 
 @router.post("/simulation")
-def run_simulation(request: SimulationRequest):
-
+def run_simulation(
+    request: SimulationRequest,
+    db: Session = Depends(get_db),
+):
     base = request.base_scenario.model_dump()
 
     modified = base.copy()
     modified.update(request.changes)
 
-    base_cost = calculate_cost(
+    base_result = run_decision_engine(
+        db=db,
+        cargo_type=base["cargo_type"],
         quantity_tonnes=base["quantity_tonnes"],
-        freight_rate=base["freight_rate"],
-        bunker_cost=base["bunker_cost"],
-        port_cost=base["port_cost"],
-        expected_delay_hours=base["expected_delay_hours"],
-        demurrage_rate_per_day=base["demurrage_rate_per_day"],
+        origin_country=base["origin_country"],
+        destination_region=base["destination_region"],
+        arrival_date=base["arrival_date"],
     )
 
-    modified_cost = calculate_cost(
+    modified_result = run_decision_engine(
+        db=db,
+        cargo_type=modified["cargo_type"],
         quantity_tonnes=modified["quantity_tonnes"],
-        freight_rate=modified["freight_rate"],
-        bunker_cost=modified["bunker_cost"],
-        port_cost=modified["port_cost"],
-        expected_delay_hours=modified["expected_delay_hours"],
-        demurrage_rate_per_day=modified["demurrage_rate_per_day"],
+        origin_country=modified["origin_country"],
+        destination_region=modified["destination_region"],
+        arrival_date=modified["arrival_date"],
     )
 
-    base_risk = calculate_risk(
-        congestion_score=base["congestion_score"],
-        weather_score=base["weather_score"],
-        demurrage_score=base["demurrage_score"],
-    )
+    base_cost = (
+        base_result.get("cost") or {}
+    ).get("total_landed_cost")
 
-    modified_risk = calculate_risk(
-        congestion_score=modified["congestion_score"],
-        weather_score=modified["weather_score"],
-        demurrage_score=modified["demurrage_score"],
-    )
-
-    base_total = base_cost["total_landed_cost"]
-    modified_total = modified_cost["total_landed_cost"]
+    modified_cost = (
+        modified_result.get("cost") or {}
+    ).get("total_landed_cost")
 
     cost_difference = None
-    if base_total is not None and modified_total is not None:
-        cost_difference = modified_total - base_total
+
+    if base_cost is not None and modified_cost is not None:
+        cost_difference = round(
+            modified_cost - base_cost,
+            2,
+        )
+
+    base_recommendation = {
+        "strategy": base_result.get("strategy"),
+        "vessel_id": base_result.get("vessel_id"),
+        "port_id": base_result.get("port_id"),
+    }
+
+    modified_recommendation = {
+        "strategy": modified_result.get("strategy"),
+        "vessel_id": modified_result.get("vessel_id"),
+        "port_id": modified_result.get("port_id"),
+    }
+
+    recommendation_changed = (
+        base_recommendation != modified_recommendation
+    )
 
     return {
         "base_scenario": {
-            "total_landed_cost": base_total,
-            "risk_level": base_risk["risk_level"],
+            "recommendation": base_recommendation,
+            "total_landed_cost": base_cost,
+            "risk": base_result.get("risk"),
         },
         "modified_scenario": {
-            "total_landed_cost": modified_total,
-            "risk_level": modified_risk["risk_level"],
+            "recommendation": modified_recommendation,
+            "total_landed_cost": modified_cost,
+            "risk": modified_result.get("risk"),
         },
         "differences": {
             "cost_difference": cost_difference,
-            "risk_changed": (
-                base_risk["risk_level"] != modified_risk["risk_level"]
-            ),
+            "recommendation_changed": recommendation_changed,
         },
-        "recommendation_changed": (
-            base_risk["risk_level"] != modified_risk["risk_level"]
-            or cost_difference is not None and cost_difference > 0
-        ),
+        "recommendation_changed": recommendation_changed,
     }

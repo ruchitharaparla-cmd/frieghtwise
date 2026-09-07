@@ -8,13 +8,17 @@ from app.schemas.vessel import (
     CompatibilityRequest,
     CompatibilityResponse,
     VesselListResponse,
-    VesselResponse,
 )
 from app.services.vessel_service import (
     check_cargo_compatibility,
     get_vessel_by_id,
     get_vessels,
 )
+from app.services.port_service import (
+    get_port_by_id,
+    check_port_vessel_compatibility,
+)
+
 
 router = APIRouter(tags=["Vessels"])
 
@@ -23,7 +27,10 @@ router = APIRouter(tags=["Vessels"])
 def list_vessels(
     vessel_class: Optional[str] = Query(default=None),
     cargo_type: Optional[str] = Query(default=None),
-    quantity_tonnes: Optional[float] = Query(default=None, gt=0),
+    quantity_tonnes: Optional[float] = Query(
+        default=None,
+        gt=0,
+    ),
     db: Session = Depends(get_db),
 ):
     vessels = get_vessels(
@@ -57,8 +64,51 @@ def check_compatibility(
             ],
         }
 
-    return check_cargo_compatibility(
+    port = get_port_by_id(
+        db=db,
+        port_id=request.port_id,
+    )
+
+    if port is None:
+        return {
+            "feasible": False,
+            "reasons": [
+                f"Port with id {request.port_id} was not found."
+            ],
+        }
+
+    reasons = []
+    feasible = True
+
+    cargo_check = check_cargo_compatibility(
         vessel=vessel,
         cargo_type=request.cargo_type,
         quantity_tonnes=request.quantity_tonnes,
     )
+
+    if not cargo_check["feasible"]:
+        feasible = False
+
+    reasons.extend(cargo_check["reasons"])
+
+    port_check = check_port_vessel_compatibility(
+        port=port,
+        vessel_loa_m=vessel.loa_m,
+        vessel_beam_m=vessel.beam_m,
+        vessel_draft_m=vessel.draft_m,
+    )
+
+    if not port_check["feasible"]:
+        feasible = False
+
+    reasons.extend(port_check["reasons"])
+
+    if feasible:
+        reasons = [
+            "Cargo compatibility, vessel capacity, and port physical constraints passed."
+        ]
+
+    return {
+        "feasible": feasible,
+        "reasons": reasons,
+    }
