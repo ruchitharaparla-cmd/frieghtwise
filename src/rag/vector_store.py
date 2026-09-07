@@ -122,17 +122,26 @@ class ChromaVectorStore:
                 })
         return sorted(results, key=lambda x: x["metadata"].get("chunk_index", 0))
 
-    def query(self, query_text: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """Perform semantic similarity search against indexed chunks."""
+    def query(
+        self,
+        query_text: str,
+        top_k: int = 5,
+        where: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        """Perform semantic similarity search against indexed chunks with optional metadata filtering."""
         if not query_text or self.get_chunk_count() == 0:
             return []
 
         query_vector = self.embedding_model.embed_query(query_text)
-        res = self.collection.query(
-            query_embeddings=[query_vector],
-            n_results=min(top_k, self.get_chunk_count()),
-            include=["documents", "metadatas", "distances"]
-        )
+        query_kwargs: Dict[str, Any] = {
+            "query_embeddings": [query_vector],
+            "n_results": min(top_k, self.get_chunk_count()),
+            "include": ["documents", "metadatas", "distances"]
+        }
+        if where:
+            query_kwargs["where"] = where
+
+        res = self.collection.query(**query_kwargs)
 
         results: List[Dict[str, Any]] = []
         if res and res.get("ids") and len(res["ids"]) > 0:

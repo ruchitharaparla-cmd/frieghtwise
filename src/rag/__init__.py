@@ -1,4 +1,4 @@
-"""FreightWise Stage 7.2 RAG Ingestion & Knowledge Base Package."""
+"""FreightWise Stage 7.2 & 7.3 RAG Ingestion, Vector Store & Retrieval Package."""
 
 from src.rag.contracts import (
     DocumentRecord,
@@ -22,6 +22,13 @@ from src.rag.embeddings import (
 )
 from src.rag.vector_store import ChromaVectorStore
 from src.rag.ingestion import ingest_documents
+from src.rag.query import RetrievalQuery
+from src.rag.retriever import (
+    RetrievedChunk,
+    RetrievalResult,
+    RAGRetriever,
+    calculate_relevance,
+)
 
 __all__ = [
     "DocumentRecord",
@@ -42,4 +49,9 @@ __all__ = [
     "get_default_embedding_model",
     "ChromaVectorStore",
     "ingest_documents",
+    "RetrievalQuery",
+    "RetrievedChunk",
+    "RetrievalResult",
+    "RAGRetriever",
+    "calculate_relevance",
 ]
