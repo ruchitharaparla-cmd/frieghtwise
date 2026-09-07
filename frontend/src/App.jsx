@@ -1,10 +1,10 @@
 import React from "react";
-import NewVoyage from "./pages/NewVoyage/NewVoyage";
+import Ports from "./pages/Ports/Ports";
 
 function App() {
   return(
     <React.StrictMode>
-      <NewVoyage/>
+      <Ports/>
       </React.StrictMode>);
 }
 
