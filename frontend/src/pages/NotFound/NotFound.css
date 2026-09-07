@@ -1,0 +1,1258 @@
+/* =========================================================
+   FREIGHTWISE — PAGE NOT FOUND
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+.not-found-page {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+
+  overflow: hidden;
+
+  background: #eef7fd;
+
+  color: #102f52;
+
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.not-found-sidebar {
+  width: 202px;
+  height: 100vh;
+
+  flex-shrink: 0;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 16px 10px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #06294b 0%,
+      #04345a 55%,
+      #052947 100%
+    );
+
+  color: white;
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.not-found-brand {
+  text-align: center;
+
+  padding-bottom: 22px;
+}
+
+.not-found-brand-mark {
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+}
+
+.not-found-brand h1 {
+  margin: 4px 0 5px;
+
+  color: white;
+
+  font-size: 20px;
+
+  line-height: 1.2;
+
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+}
+
+.not-found-brand p {
+  margin: 0;
+
+  color: #d2dfeb;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.not-found-navigation {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.not-found-nav-item {
+  width: 100%;
+  height: 49px;
+
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  border-radius: 8px;
+
+  color: #d2dfeb;
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.not-found-nav-item:hover {
+  color: white;
+
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  transform:
+    translateX(2px);
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.not-found-sidebar-bottom {
+  margin-top: auto;
+
+  position: relative;
+}
+
+.not-found-ai-card {
+  margin: 0 5px 15px;
+
+  padding: 11px;
+
+  border:
+    1px solid
+    rgba(133, 193, 238, 0.2);
+
+  border-radius: 8px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.not-found-ai-title {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: white;
+
+  font-size: 11px;
+}
+
+.not-found-online-dot {
+  width: 8px;
+  height: 8px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #20d98b;
+
+  box-shadow:
+    0 0 9px
+    rgba(32, 217, 139, 0.7);
+}
+
+.not-found-ai-update {
+  margin-top: 8px;
+
+  color: #a2b9cf;
+
+  font-size: 10px;
+
+  line-height: 1.55;
+}
+
+.not-found-wave {
+  position: absolute;
+
+  width: 270px;
+  height: 80px;
+
+  left: -35px;
+  bottom: 45px;
+
+  border-top:
+    1px solid
+    rgba(0, 143, 255, 0.45);
+
+  border-radius: 50%;
+
+  transform:
+    rotate(-8deg);
+
+  opacity: 0.65;
+}
+
+.not-found-sidebar-quote {
+  padding: 72px 13px 3px;
+
+  color: #b9cad9;
+
+  font-size: 10px;
+
+  line-height: 1.7;
+
+  font-style: italic;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.not-found-main {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background:
+    #eef7fd;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.not-found-topbar {
+  width: 100%;
+  height: 59px;
+
+  flex-shrink: 0;
+
+  padding: 0 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: white;
+
+  border-bottom:
+    1px solid #dce7ef;
+}
+
+.not-found-search {
+  width: 450px;
+  height: 39px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 11px;
+
+  border:
+    1px solid #ccd9e5;
+
+  border-radius: 6px;
+
+  background: #fbfdff;
+
+  color: #71859b;
+}
+
+.not-found-search input {
+  flex: 1;
+
+  min-width: 0;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #304b67;
+
+  font-size: 12px;
+}
+
+.not-found-search input::placeholder {
+  color: #7d91a6;
+}
+
+.not-found-topbar-actions {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+}
+
+.not-found-notification {
+  width: 35px;
+  height: 35px;
+
+  position: relative;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background: transparent;
+
+  color: #163653;
+
+  cursor: pointer;
+}
+
+.not-found-notification span {
+  position: absolute;
+
+  top: -1px;
+  right: -1px;
+
+  min-width: 16px;
+  height: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 20px;
+
+  background: #e72f3d;
+
+  color: white;
+
+  font-size: 8px;
+
+  font-weight: 700;
+}
+
+.not-found-topbar-divider {
+  width: 1px;
+  height: 31px;
+
+  background: #d9e3eb;
+}
+
+.not-found-user {
+  height: 100%;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #183653;
+
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+.not-found-user-avatar {
+  width: 37px;
+  height: 37px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #102f52;
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.not-found-content {
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #eaf6fc 0%,
+      #f2faff 100%
+    );
+
+  scrollbar-width: thin;
+}
+
+.not-found-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.not-found-content::-webkit-scrollbar-thumb {
+  background: #bfd4e3;
+
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   FULL-WIDTH MARITIME HERO
+========================================================= */
+
+.not-found-hero {
+  width: 100%;
+  height: 390px;
+
+  flex-shrink: 0;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #dff2fc 0%,
+      #eaf7fd 48%,
+      #d9eef9 100%
+    );
+}
+
+
+/* =========================================================
+   FULL BACKGROUND SHIP IMAGE
+
+   THIS IS NOT A SEPARATE IMAGE BOX.
+
+   It covers the complete hero from left to right.
+========================================================= */
+
+.not-found-ship-background {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 2;
+
+  background-image:
+    url("../../assets/images/hero-ship.png");
+
+  background-repeat: no-repeat;
+
+  background-size: cover;
+
+  /*
+    Center the ship while allowing the image
+    to extend completely across the section.
+  */
+  background-position: center center;
+
+  opacity: 0.40;
+
+  /*
+    Softly fade the image into the surrounding
+    light-blue background.
+  */
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 8%,
+      black 72%,
+      rgba(0, 0, 0, 0.85) 84%,
+      transparent 100%
+    );
+
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 8%,
+      black 72%,
+      rgba(0, 0, 0, 0.85) 84%,
+      transparent 100%
+    );
+}
+
+
+/* =========================================================
+   HERO OVERLAY
+========================================================= */
+
+.not-found-hero-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 4;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(236, 248, 253, 0.22) 0%,
+      rgba(236, 248, 253, 0.03) 42%,
+      rgba(238, 248, 253, 0.24) 78%,
+      rgba(238, 248, 253, 0.92) 100%
+    );
+}
+
+
+/* =========================================================
+   404 NUMBER
+
+   It is deliberately above the ship background.
+========================================================= */
+
+.not-found-background-number {
+  position: absolute;
+
+  left: 50%;
+  top: 34px;
+
+  transform:
+    translateX(-50%);
+
+  z-index: 8;
+
+  color:
+    rgba(77, 158, 225, 0.34);
+
+  font-size: 190px;
+
+  line-height: 0.9;
+
+  font-weight: 800;
+
+  letter-spacing: -14px;
+
+  user-select: none;
+
+  pointer-events: none;
+
+  white-space: nowrap;
+
+  text-shadow:
+    0 3px 14px
+    rgba(255, 255, 255, 0.55);
+}
+
+
+/* =========================================================
+   CLOUDS
+========================================================= */
+
+.not-found-cloud {
+  position: absolute;
+
+  z-index: 5;
+
+  height: 25px;
+
+  border-radius: 50px;
+
+  background:
+    rgba(181, 216, 238, 0.26);
+}
+
+.cloud-one {
+  width: 230px;
+
+  left: 8%;
+
+  bottom: 104px;
+}
+
+.cloud-two {
+  width: 165px;
+
+  right: 11%;
+
+  bottom: 110px;
+}
+
+
+/* =========================================================
+   BIRDS
+========================================================= */
+
+.not-found-bird {
+  position: absolute;
+
+  z-index: 9;
+
+  color:
+    rgba(57, 137, 197, 0.55);
+
+  font-size: 28px;
+
+  font-weight: 400;
+}
+
+.bird-one {
+  right: 24%;
+
+  top: 147px;
+}
+
+.bird-two {
+  right: 18%;
+
+  top: 181px;
+
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   LIGHTHOUSE
+========================================================= */
+
+.not-found-lighthouse {
+  position: absolute;
+
+  right: 7%;
+
+  bottom: 67px;
+
+  width: 13px;
+  height: 76px;
+
+  z-index: 5;
+
+  opacity: 0.30;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7faac6,
+      #c2dce9,
+      #78a5c2
+    );
+}
+
+.not-found-lighthouse::before {
+  content: "";
+
+  position: absolute;
+
+  left: -5px;
+  top: -9px;
+
+  width: 23px;
+  height: 13px;
+
+  border-radius: 3px;
+
+  background: #7ba6c1;
+}
+
+.not-found-lighthouse span {
+  position: absolute;
+
+  left: 50%;
+  top: -16px;
+
+  width: 45px;
+  height: 2px;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    rgba(88, 168, 224, 0.42);
+}
+
+
+/* =========================================================
+   WATER LINES
+========================================================= */
+
+.not-found-water {
+  position: absolute;
+
+  z-index: 10;
+
+  height: 12px;
+
+  border-top:
+    2px solid
+    rgba(77, 161, 216, 0.27);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.water-one {
+  width: 55%;
+
+  left: 50%;
+  bottom: 28px;
+
+  transform:
+    translateX(-50%);
+}
+
+.water-two {
+  width: 72%;
+
+  left: 50%;
+  bottom: 14px;
+
+  transform:
+    translateX(-50%);
+}
+
+.water-three {
+  width: 43%;
+
+  left: 50%;
+  bottom: 2px;
+
+  transform:
+    translateX(-50%);
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.not-found-message {
+  width: 100%;
+
+  position: relative;
+
+  z-index: 20;
+
+  text-align: center;
+
+  padding:
+    2px 20px 0;
+}
+
+.not-found-message h2 {
+  margin: 0;
+
+  color: #082f5d;
+
+  font-size: 44px;
+
+  line-height: 1.1;
+
+  font-weight: 750;
+
+  letter-spacing: -1.5px;
+}
+
+.not-found-message p {
+  margin: 9px 0 0;
+
+  color: #345579;
+
+  font-size: 17px;
+
+  line-height: 1.4;
+}
+
+.not-found-message span {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #5c7592;
+
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   QUICK LINKS
+========================================================= */
+
+.not-found-quick-links {
+  width:
+    min(
+      1170px,
+      calc(100% - 70px)
+    );
+
+  margin-top: 21px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+.not-found-quick-card {
+  min-height: 113px;
+
+  padding: 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  border:
+    1px solid #d6e5ef;
+
+  border-radius: 8px;
+
+  background:
+    rgba(255, 255, 255, 0.92);
+
+  text-decoration: none;
+
+  box-shadow:
+    0 3px 10px
+    rgba(35, 84, 120, 0.035);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.not-found-quick-card:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    #a9cce7;
+
+  box-shadow:
+    0 8px 18px
+    rgba(32, 104, 153, 0.09);
+}
+
+.quick-card-icon {
+  width: 47px;
+  height: 47px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #edf7fe;
+
+  color: #087bdd;
+}
+
+.quick-card-content {
+  min-width: 0;
+}
+
+.quick-card-content strong {
+  display: block;
+
+  color: #0b2f59;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.quick-card-content span {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #6c829a;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+.quick-card-arrow {
+  margin-top: 8px;
+
+  color: #0c82df;
+}
+
+
+/* =========================================================
+   OR
+========================================================= */
+
+.not-found-or {
+  width: 500px;
+
+  max-width:
+    calc(100% - 80px);
+
+  margin-top: 24px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.not-found-or span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #c9dce9;
+}
+
+.not-found-or strong {
+  color: #536d87;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   GO BACK
+========================================================= */
+
+.not-found-go-back {
+  min-width: 203px;
+  height: 55px;
+
+  margin-top: 14px;
+  margin-bottom: 25px;
+
+  padding: 0 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0789ef,
+      #0876db
+    );
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 17px
+    rgba(4, 119, 218, 0.22);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.not-found-go-back:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 10px 22px
+    rgba(4, 119, 218, 0.28);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.not-found-footer {
+  width: 100%;
+
+  min-height: 58px;
+
+  flex-shrink: 0;
+
+  padding: 0 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top:
+    1px solid #d6e3ec;
+
+  background: #f8fcff;
+
+  color: #526c86;
+
+  font-size: 10px;
+}
+
+.not-found-footer div {
+  display: flex;
+
+  gap: 27px;
+}
+
+.not-found-footer a {
+  color: #405a74;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.not-found-footer a:hover {
+  color: #087bdd;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .not-found-sidebar {
+    width: 190px;
+  }
+
+  .not-found-quick-links {
+    width:
+      calc(100% - 45px);
+
+    gap: 12px;
+  }
+
+}
+
+
+@media (max-width: 950px) {
+
+  .not-found-hero {
+    height: 350px;
+  }
+
+  .not-found-background-number {
+    top: 42px;
+
+    font-size: 165px;
+
+    letter-spacing: -11px;
+  }
+
+  .not-found-quick-links {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .not-found-page {
+    height: auto;
+
+    min-height: 100vh;
+
+    overflow: visible;
+  }
+
+  .not-found-sidebar {
+    display: none;
+  }
+
+  .not-found-main {
+    height: auto;
+
+    min-height: 100vh;
+
+    overflow: visible;
+  }
+
+  .not-found-topbar {
+    padding: 0 15px;
+  }
+
+  .not-found-search {
+    width: 100%;
+
+    max-width: 330px;
+  }
+
+  .not-found-user span,
+  .not-found-user svg,
+  .not-found-topbar-divider {
+    display: none;
+  }
+
+  .not-found-content {
+    overflow: visible;
+  }
+
+  .not-found-hero {
+    height: 285px;
+  }
+
+  .not-found-ship-background {
+    background-position:
+      center center;
+
+    opacity: 0.34;
+  }
+
+  .not-found-background-number {
+    top: 37px;
+
+    font-size: 120px;
+
+    letter-spacing: -8px;
+  }
+
+  .not-found-lighthouse,
+  .not-found-bird {
+    display: none;
+  }
+
+  .not-found-message {
+    padding:
+      0 18px;
+  }
+
+  .not-found-message h2 {
+    font-size: 32px;
+  }
+
+  .not-found-message p {
+    font-size: 14px;
+  }
+
+  .not-found-message span {
+    font-size: 13px;
+  }
+
+  .not-found-quick-links {
+    width:
+      calc(100% - 30px);
+
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+  }
+
+  .not-found-quick-card {
+    min-height: 95px;
+  }
+
+  .not-found-or {
+    width:
+      calc(100% - 60px);
+  }
+
+  .not-found-go-back {
+    width: 190px;
+  }
+
+  .not-found-footer {
+    min-height: auto;
+
+    padding: 15px;
+
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+}
