@@ -8,28 +8,28 @@ Stage 7.2 does **NOT** answer user questions, run LLM inference, or implement ag
 
 ```
 FreightWise Approved Documents (.md, .txt)
-                    â”‚
-                    â–¼
+                    |
+                    v
            Document Loader
       (Security & Checksum SHA-256)
-                    â”‚
-                    â–¼
+                    |
+                    v
               Text Cleaner
   (Line Ending & Whitespace Normalization)
-                    â”‚
-                    â–¼
+                    |
+                    v
           Deterministic Chunker
    (Paragraph & Section Boundary Aware)
-                    â”‚
-                    â–¼
+                    |
+                    v
           Metadata & Provenance
    (Stage, Source, Checksum, Model Info)
-                    â”‚
-                    â–¼
+                    |
+                    v
          Local Embedding Engine
     (SentenceTransformers / Test Model)
-                    â”‚
-                    â–¼
+                    |
+                    v
         ChromaDB Vector Store
  (Persistent Storage, Idempotent Upsert)
 ```
