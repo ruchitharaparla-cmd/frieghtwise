@@ -6,6 +6,8 @@ import Login from "./pages/Login/Login";
 import Settings from "./pages/Settings/Settings";
 import NotFound from "./pages/NotFound/NotFound";
 
+import Register from "./pages/Register/Register";
+
 import "./App.css";
 
 
@@ -27,6 +29,10 @@ function App() {
 
   if (path === "/login") {
     return <Login />;
+  }
+
+  if (path === "/register") {
+    return <Register />;
   }
 
 

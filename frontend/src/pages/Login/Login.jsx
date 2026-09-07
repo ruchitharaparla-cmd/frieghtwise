@@ -32,7 +32,7 @@ function Login() {
   };
 
   const handleCreateAccount = () => {
-    console.log("Create account selected");
+    window.location.href = "/register";
   };
 
   return (
