@@ -1,7 +1,7 @@
 import React from "react";
-import Simulation from "./pages/Simulation/Simulation.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import "./App.css";
 
 export default function App() {
-  return <Simulation />;
+  return <Dashboard />;
 }
