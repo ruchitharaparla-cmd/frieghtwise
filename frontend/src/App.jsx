@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Vessels from "./pages/Vessels/Vessels";
+import Login from "./pages/Login/Login";
+
 import "./App.css";
 
 function App() {
@@ -18,6 +20,10 @@ function App() {
       window.removeEventListener("popstate", handleNavigation);
     };
   }, []);
+
+  if (path === "/login") {
+    return <Login />;
+  }
 
   if (path === "/vessels") {
     return <Vessels />;
