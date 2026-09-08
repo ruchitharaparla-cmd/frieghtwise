@@ -1,0 +1,120 @@
+.recent-voyages-panel {
+  min-width: 0;
+}
+
+.recent-voyages-panel .panel-header {
+  margin-bottom: 4px;
+}
+
+.voyage-table {
+  width: 100%;
+}
+
+.voyage-table-header,
+.voyage-table-row {
+  display: grid;
+
+  grid-template-columns:
+    0.8fr
+    0.8fr
+    1.7fr
+    1fr
+    0.8fr;
+
+  align-items: center;
+}
+
+.voyage-table-header {
+  padding: 7px 0;
+
+  color: #71879b;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  border-bottom: 1px solid #e5edf3;
+}
+
+.voyage-table-row {
+  min-height: 27px;
+
+  border-bottom: 1px solid #edf2f6;
+
+  color: #3f607c;
+
+  font-size: 9px;
+}
+
+.voyage-table-row:last-child {
+  border-bottom: none;
+}
+
+.voyage-id {
+  color: #244e72;
+
+  font-weight: 700;
+}
+
+.voyage-route {
+  color: #52718d;
+}
+
+.voyage-cost {
+  color: #244e72;
+
+  font-weight: 700;
+}
+
+.voyage-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    3px
+    7px;
+
+  border-radius: 10px;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.voyage-status .status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+}
+
+.voyage-status.completed {
+  background: #e3f7ed;
+
+  color: #159866;
+}
+
+.voyage-status.completed .status-dot {
+  background: #159866;
+}
+
+.voyage-status.transit {
+  background: #e4f1ff;
+
+  color: #0876df;
+}
+
+.voyage-status.transit .status-dot {
+  background: #0876df;
+}
+
+.voyage-status.loading {
+  background: #fff2d9;
+
+  color: #d38a12;
+}
+
+.voyage-status.loading .status-dot {
+  background: #e99b39;
+}
