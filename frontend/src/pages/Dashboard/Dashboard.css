@@ -1,40 +1,65 @@
-/* =========================================================
-   FREIGHTWISE DASHBOARD
-   ========================================================= */
-
 * {
   box-sizing: border-box;
 }
 
-.dashboard-shell {
-  min-height: 100vh;
+html,
+body,
+#root {
+  margin: 0;
   width: 100%;
-  display: flex;
+  min-height: 100%;
+}
 
-  background: #f3f8fc;
-  color: #17385f;
-
+body {
   font-family:
     Inter,
     "Segoe UI",
     Arial,
     sans-serif;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #f3f8fc;
 }
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.dashboard-shell {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #f3f8fc;
+  color: #17385f;
+}
+
 
 /* =========================================================
    SIDEBAR
-   ========================================================= */
+========================================================= */
 
 .dashboard-sidebar {
   position: fixed;
-  inset: 0 auto 0 0;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
   z-index: 50;
 
   width: 188px;
   min-width: 188px;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 
   background:
     linear-gradient(
@@ -48,88 +73,81 @@
 }
 
 .brand {
-  padding: 14px 10px 13px;
+  padding: 12px 8px;
+
   text-align: center;
 }
 
 .brand-mark {
-  height: 42px;
+  height: 45px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-
-  margin-bottom: 3px;
 }
 
 .brand-name {
   font-size: 17px;
   font-weight: 800;
-  letter-spacing: .2px;
 }
 
 .brand-tagline {
-  margin-top: 3px;
+  margin-top: 4px;
 
-  color: rgba(255,255,255,.78);
+  color: rgba(255, 255, 255, 0.78);
 
   font-size: 10px;
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 .sidebar-navigation {
-  padding: 3px 10px;
-
   display: flex;
   flex-direction: column;
+
   gap: 4px;
+
+  padding: 6px 9px;
 }
 
 .sidebar-item {
   width: 100%;
   height: 40px;
 
-  border: 0;
-  border-radius: 7px;
-
   display: flex;
   align-items: center;
+
   gap: 13px;
 
   padding: 0 14px;
 
-  background: transparent;
-  color: rgba(255,255,255,.88);
+  border-radius: 7px;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  text-decoration: none;
 
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
 
-  cursor: pointer;
-
-  transition:
-    background .18s ease,
-    transform .18s ease;
+  transition: 0.18s ease;
 }
 
 .sidebar-item:hover {
-  background: rgba(255,255,255,.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-item.active {
   background: #0878df;
-
-  box-shadow:
-    0 4px 13px rgba(0,105,215,.25);
 }
 
 .sidebar-bottom {
   position: relative;
 
-  margin-top: auto;
-
   min-height: 225px;
 
-  padding: 0 15px 15px;
+  margin-top: auto;
+
+  padding: 0 14px 14px;
 
   overflow: hidden;
 }
@@ -138,20 +156,20 @@
   position: relative;
   z-index: 3;
 
-  padding: 12px;
+  padding: 11px;
 
   border:
-    1px solid rgba(104,186,244,.2);
+    1px solid rgba(104, 186, 244, 0.22);
 
   border-radius: 8px;
 
-  background:
-    rgba(0,35,72,.45);
+  background: rgba(0, 35, 72, 0.45);
 }
 
 .engine-status-header {
   display: flex;
   align-items: center;
+
   gap: 7px;
 
   font-size: 11px;
@@ -165,22 +183,18 @@
   border-radius: 50%;
 
   background: #16d27c;
-
-  box-shadow:
-    0 0 0 3px rgba(22,210,124,.12);
 }
 
 .engine-status p {
-  margin: 10px 0 2px;
+  margin: 9px 0 2px;
 
-  color: rgba(255,255,255,.66);
+  color: rgba(255, 255, 255, 0.66);
 
   font-size: 10px;
 }
 
 .engine-status strong {
   font-size: 11px;
-  font-weight: 500;
 }
 
 .sidebar-wave {
@@ -192,7 +206,7 @@
 
   height: 90px;
 
-  opacity: .45;
+  opacity: 0.45;
 }
 
 .wave {
@@ -202,7 +216,7 @@
   height: 35px;
 
   border-top:
-    2px solid rgba(46,157,241,.38);
+    2px solid rgba(46, 157, 241, 0.38);
 
   border-radius: 50%;
 }
@@ -225,23 +239,27 @@
 
   text-align: center;
 
-  color: rgba(255,255,255,.75);
+  color: rgba(255, 255, 255, 0.75);
 
   font-size: 10px;
   line-height: 1.45;
+
   font-style: italic;
 }
 
+
 /* =========================================================
    MAIN
-   ========================================================= */
+========================================================= */
 
 .dashboard-main {
   width: calc(100% - 188px);
 
+  min-height: 100vh;
+
   margin-left: 188px;
 
-  min-height: 100vh;
+  overflow: visible;
 }
 
 .dashboard-content {
@@ -253,14 +271,20 @@
   padding:
     0
     20px
-    22px;
+    35px;
 }
 
+
 /* =========================================================
-   TOPBAR
-   ========================================================= */
+   TOP BAR
+========================================================= */
 
 .topbar {
+  position: sticky;
+  top: 0;
+
+  z-index: 40;
+
   height: 45px;
 
   display: flex;
@@ -281,6 +305,7 @@
 
   display: flex;
   align-items: center;
+
   gap: 8px;
 
   padding: 0 10px;
@@ -297,19 +322,18 @@
 
 .search-box input {
   width: 100%;
+  height: 100%;
 
-  border: 0;
-  outline: 0;
+  border: 0 !important;
+  outline: 0 !important;
 
-  background: transparent;
+  background: transparent !important;
+
+  box-shadow: none !important;
 
   color: #244a70;
 
   font-size: 11px;
-}
-
-.search-box input::placeholder {
-  color: #7b94aa;
 }
 
 .topbar-right {
@@ -317,19 +341,23 @@
 
   display: flex;
   align-items: center;
+
   gap: 13px;
 }
 
 .notification-button {
   position: relative;
 
-  border: 0;
+  width: 24px;
+  height: 28px;
 
-  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   color: #173d68;
 
-  cursor: pointer;
+  text-decoration: none;
 }
 
 .notification-button span {
@@ -362,6 +390,17 @@
   background: #d5e0e9;
 }
 
+.user-profile-link {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  color: inherit;
+
+  text-decoration: none;
+}
+
 .avatar {
   width: 30px;
   height: 30px;
@@ -383,6 +422,7 @@
 .user-profile {
   display: flex;
   align-items: center;
+
   gap: 5px;
 
   color: #294a6c;
@@ -391,9 +431,10 @@
   font-weight: 600;
 }
 
+
 /* =========================================================
-   PAGE HEADING
-   ========================================================= */
+   HEADING
+========================================================= */
 
 .page-heading {
   min-height: 69px;
@@ -415,9 +456,8 @@
 
   font-size: 25px;
   line-height: 1.1;
-  font-weight: 800;
 
-  letter-spacing: -.6px;
+  font-weight: 800;
 }
 
 .page-heading p {
@@ -439,9 +479,10 @@
   line-height: 1.35;
 }
 
+
 /* =========================================================
    HERO
-   ========================================================= */
+========================================================= */
 
 .hero-card {
   position: relative;
@@ -453,10 +494,10 @@
   border-radius: 10px;
 
   background-size: cover;
-  background-position: center center;
+  background-position: center;
 
   box-shadow:
-    0 4px 14px rgba(26,76,117,.14);
+    0 4px 14px rgba(26, 76, 117, 0.14);
 }
 
 .hero-overlay {
@@ -466,13 +507,11 @@
   background:
     linear-gradient(
       90deg,
-      rgba(3,43,80,.67) 0%,
-      rgba(5,58,96,.38) 38%,
-      rgba(5,58,96,.04) 70%,
-      rgba(5,58,96,.12) 100%
+      rgba(3, 43, 80, 0.67),
+      rgba(5, 58, 96, 0.38) 38%,
+      rgba(5, 58, 96, 0.04) 70%,
+      rgba(5, 58, 96, 0.12)
     );
-
-  pointer-events: none;
 }
 
 .hero-content {
@@ -491,23 +530,17 @@
 
   font-size: 31px;
   line-height: 1.06;
+
   font-weight: 800;
-
-  letter-spacing: -.7px;
-
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.16);
 }
 
 .hero-content p {
   margin: 8px 0 0;
 
-  color: rgba(255,255,255,.92);
+  color: rgba(255, 255, 255, 0.92);
 
   font-size: 15px;
 }
-
-/* Hero bottom features */
 
 .hero-features {
   position: absolute;
@@ -520,18 +553,20 @@
   height: 58px;
 
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
   align-items: center;
 
   border-top:
-    1px solid rgba(255,255,255,.2);
+    1px solid rgba(255, 255, 255, 0.2);
 }
 
 .hero-features > div {
-  min-width: 0;
-
   display: flex;
   align-items: center;
+
   gap: 8px;
 
   color: white;
@@ -541,7 +576,7 @@
   padding-left: 17px;
 
   border-left:
-    1px solid rgba(255,255,255,.19);
+    1px solid rgba(255, 255, 255, 0.19);
 }
 
 .hero-features span {
@@ -555,7 +590,7 @@
 .hero-features small {
   margin-top: 2px;
 
-  color: rgba(255,255,255,.8);
+  color: rgba(255, 255, 255, 0.8);
 
   font-size: 9px;
   font-weight: 400;
@@ -581,7 +616,7 @@
   border-radius: 6px;
 
   background:
-    rgba(0,36,70,.68);
+    rgba(0, 36, 70, 0.68);
 
   color: white;
 }
@@ -593,14 +628,15 @@
 .hero-badge span {
   margin-top: 3px;
 
-  color: rgba(255,255,255,.8);
+  color: rgba(255, 255, 255, 0.8);
 
   font-size: 9px;
 }
 
+
 /* =========================================================
    CHARTER PANEL
-   ========================================================= */
+========================================================= */
 
 .charter-panel {
   margin-top: 8px;
@@ -618,7 +654,7 @@
   background: white;
 
   box-shadow:
-    0 2px 8px rgba(30,75,115,.05);
+    0 2px 8px rgba(30, 75, 115, 0.05);
 }
 
 .section-heading h2 {
@@ -644,9 +680,9 @@
   grid-template-columns:
     1fr
     1fr
-    .8fr
-    .85fr
-    1fr
+    0.8fr
+    0.85fr
+    1.35fr
     1.05fr;
 
   gap: 12px;
@@ -654,11 +690,13 @@
   align-items: end;
 }
 
-.charter-form label {
+.form-field,
+.arrival-window-field {
   min-width: 0;
 }
 
-.charter-form label > span {
+.form-field > span,
+.arrival-window-field > span {
   display: block;
 
   margin-bottom: 4px;
@@ -669,11 +707,19 @@
   font-weight: 700;
 }
 
-.select-control,
-.input-control,
-.native-select {
+
+/* =========================================================
+   ⭐ FIXED SELECT WRAPPER
+========================================================= */
+
+.select-wrapper {
+  position: relative;
+
   width: 100%;
   height: 32px;
+
+  display: flex;
+  align-items: center;
 
   border:
     1px solid #cedeea;
@@ -684,74 +730,250 @@
 
   color: #607d99;
 
+  overflow: hidden;
+}
+
+
+/*
+  IMPORTANT:
+  These rules remove the SECOND BOX
+  caused by global input/select CSS.
+*/
+
+.select-wrapper select,
+.select-wrapper .port-select,
+.select-wrapper .cargo-select {
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+
+  margin: 0;
+  padding: 0 30px 0 32px;
+
+  border: none !important;
+  outline: none !important;
+
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  color: #294b70;
+
   font-family: inherit;
 
   font-size: 10px;
+
+  cursor: pointer;
 }
 
-.select-control {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-
-  padding: 0 9px;
+.select-wrapper .cargo-select {
+  padding-left: 10px;
 }
 
-.select-control span {
-  overflow: hidden;
+.field-icon {
+  position: absolute;
+  left: 9px;
 
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  z-index: 2;
+
+  color: #557e9f;
+
+  pointer-events: none;
 }
 
-.select-control svg:last-child {
-  margin-left: auto;
+.select-arrow {
+  position: absolute;
+  right: 9px;
+
+  z-index: 2;
+
+  color: #557e9f;
+
+  pointer-events: none;
 }
+
+.port-select option,
+.cargo-select option {
+  background: white;
+
+  color: #244a70;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   ⭐ FIXED QUANTITY
+========================================================= */
 
 .input-control {
+  width: 100%;
+  height: 32px;
+
   display: flex;
   align-items: center;
+
   gap: 7px;
 
   padding: 0 9px;
+
+  border:
+    1px solid #cedeea;
+
+  border-radius: 5px;
+
+  background: #f8fbfe;
+
+  color: #557e9f;
+
+  overflow: hidden;
 }
 
 .input-control input {
+
   width: 100%;
+  height: 100%;
 
-  border: 0;
-  outline: 0;
+  min-width: 0;
 
-  background: transparent;
+  margin: 0;
+
+  padding: 0;
+
+  border: none !important;
+  outline: none !important;
+
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
 
   color: #294b70;
+
+  font-family: inherit;
 
   font-size: 11px;
   font-weight: 600;
 }
 
-.native-select {
-  padding: 0 9px;
 
-  outline: 0;
+/* =========================================================
+   ⭐ FIXED ARRIVAL WINDOW
+========================================================= */
+
+.date-range-control {
+
+  width: 100%;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 0 8px;
+
+  border:
+    1px solid #cedeea;
+
+  border-radius: 5px;
+
+  background: #f8fbfe;
+
+  overflow: hidden;
+}
+
+.calendar-icon {
+  flex-shrink: 0;
+
+  color: #557e9f;
+}
+
+.date-range-control input[type="date"] {
+
+  min-width: 0;
+
+  width: 100%;
+  height: 28px;
+
+  margin: 0;
+  padding: 0;
+
+  border: none !important;
+  outline: none !important;
+
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+
+  color: #4f6e8b;
+
+  font-family: inherit;
+
+  font-size: 9px;
 
   cursor: pointer;
 }
 
+.date-range-control input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+
+  opacity: 0.7;
+}
+
+.date-range-control input[type="date"]:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.4;
+}
+
+.date-separator {
+  flex-shrink: 0;
+
+  color: #8299ad;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   ANALYZE
+========================================================= */
+
 .analyze-button {
+
   height: 32px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 8px;
 
-  border: 0;
+  margin: 0;
+  padding: 0 15px;
+
+  border: none !important;
+  outline: none !important;
+
   border-radius: 5px;
 
   background: #0876df;
 
   color: white;
+
+  font-family: inherit;
 
   font-size: 10px;
   font-weight: 700;
@@ -759,21 +981,23 @@
   cursor: pointer;
 
   box-shadow:
-    0 3px 8px rgba(0,104,211,.18);
+    0 3px 8px rgba(0, 104, 211, 0.18);
 
   transition:
-    background .18s ease,
-    transform .18s ease;
+    background 0.18s ease,
+    transform 0.18s ease;
 }
 
 .analyze-button:hover {
   background: #056bcf;
+
   transform: translateY(-1px);
 }
 
+
 /* =========================================================
-   KPI CARDS
-   ========================================================= */
+   METRICS
+========================================================= */
 
 .metrics-grid {
   margin-top: 8px;
@@ -787,15 +1011,19 @@
 }
 
 .metric-card {
+
   position: relative;
 
   min-height: 92px;
 
   display: flex;
   align-items: center;
+
   gap: 12px;
 
-  padding: 12px 14px;
+  padding:
+    12px
+    14px;
 
   overflow: hidden;
 
@@ -805,14 +1033,12 @@
   border-radius: 8px;
 
   background: white;
-
-  box-shadow:
-    0 2px 8px rgba(31,76,114,.05);
 }
 
 .metric-icon {
   width: 50px;
   height: 50px;
+
   min-width: 50px;
 
   display: flex;
@@ -864,9 +1090,6 @@
   color: #12365f;
 
   font-size: 20px;
-  line-height: 1;
-
-  letter-spacing: -.4px;
 }
 
 .metric-subtitle {
@@ -881,6 +1104,7 @@
 
 .metric-subtitle.positive {
   color: #12986a;
+
   font-weight: 600;
 }
 
@@ -891,31 +1115,35 @@
   bottom: 7px;
 
   color: #c7eaf8;
-
-  opacity: .95;
 }
 
+
 /* =========================================================
-   ANALYTICS GRID
-   ========================================================= */
+   ANALYTICS
+========================================================= */
 
 .analytics-grid {
+
   margin-top: 9px;
 
   display: grid;
 
   grid-template-columns:
     1.05fr
-    .95fr;
+    0.95fr;
 
   grid-template-rows:
     200px
-    145px;
+    145px
+    auto;
 
   gap: 9px;
+
+  align-items: stretch;
 }
 
 .panel {
+
   min-width: 0;
 
   overflow: hidden;
@@ -926,12 +1154,10 @@
   border-radius: 8px;
 
   background: white;
-
-  box-shadow:
-    0 2px 8px rgba(31,76,114,.04);
 }
 
 .panel-header {
+
   min-height: 42px;
 
   display: flex;
@@ -945,10 +1171,12 @@
 }
 
 .panel-header h3 {
+
   margin: 0;
 
   display: flex;
   align-items: center;
+
   gap: 7px;
 
   color: #183b63;
@@ -961,21 +1189,13 @@
   color: #0875d4;
 }
 
-.panel-header > div > span {
-  display: block;
-
-  margin-top: 2px;
-
-  color: #718ba2;
-
-  font-size: 8px;
-}
 
 /* =========================================================
-   RANGE BUTTONS
-   ========================================================= */
+   RANGE NAVIGATION
+========================================================= */
 
 .range-buttons {
+
   display: flex;
 
   overflow: hidden;
@@ -987,19 +1207,25 @@
 }
 
 .range-buttons button {
+
   height: 27px;
 
   padding:
     0
     12px;
 
-  border: 0;
-  border-right:
-    1px solid #d1e0eb;
+  border: 0 !important;
 
-  background: white;
+  border-right:
+    1px solid #d1e0eb !important;
+
+  outline: 0 !important;
+
+  background: white !important;
 
   color: #52718f;
+
+  font-family: inherit;
 
   font-size: 9px;
 
@@ -1007,27 +1233,26 @@
 }
 
 .range-buttons button:last-child {
-  border-right: 0;
+  border-right: 0 !important;
 }
 
 .range-buttons button.selected {
-  background: #0876df;
+
+  background: #0876df !important;
 
   color: white;
 
   font-weight: 700;
 }
 
+
 /* =========================================================
    FREIGHT CHART
-   ========================================================= */
-
-.freight-panel {
-  position: relative;
-}
+========================================================= */
 
 .chart-container {
-  height: 150px;
+
+  height: 153px;
 
   padding:
     0
@@ -1035,62 +1260,79 @@
 }
 
 .freight-chart {
+
   width: 100%;
   height: 100%;
+
+  position: relative;
 }
 
 .chart-svg {
+
   width: 100%;
-  height: 119px;
+  height: 124px;
 
   display: block;
 }
 
 .grid-line {
+
   stroke: #e7eef4;
+
   stroke-width: 1;
 }
 
+.grid-line.vertical {
+  opacity: 0.7;
+}
+
 .confidence-area {
-  fill: rgba(236,164,69,.11);
+
+  fill: rgba(236, 164, 69, 0.11);
 }
 
 .historical-line {
+
   fill: none;
 
   stroke: #0876df;
-  stroke-width: 2.2;
 
-  stroke-linejoin: round;
-  stroke-linecap: round;
+  stroke-width: 2.2;
 }
 
 .forecast-line {
+
   fill: none;
 
   stroke: #e99b39;
+
   stroke-width: 2.2;
 
   stroke-dasharray: 7 5;
-
-  stroke-linejoin: round;
-  stroke-linecap: round;
 }
 
 .historical-point {
+
   fill: white;
+
   stroke: #0876df;
+
   stroke-width: 1.7;
 }
 
 .forecast-point {
+
   fill: white;
+
   stroke: #e99b39;
+
   stroke-width: 1.5;
 }
 
 .today-line {
+
   stroke: #0876df;
+
   stroke-width: 1;
 
   stroke-dasharray: 4 3;
@@ -1101,6 +1343,7 @@
 }
 
 .today-text {
+
   fill: white;
 
   font-size: 8px;
@@ -1108,31 +1351,90 @@
 }
 
 .axis-label {
+
   fill: #6b8399;
 
   font-size: 7px;
 }
 
-.chart-x-labels {
+
+/* =========================================================
+   ⭐ GRAPH NAVIGATION
+========================================================= */
+
+.chart-navigation {
+
+  height: 20px;
+
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
 
-  padding:
-    0
-    26px
-    0
-    29px;
+  gap: 8px;
+}
 
-  color: #71879b;
+.chart-nav-button {
+
+  width: 21px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border:
+    1px solid #d5e2eb;
+
+  border-radius: 4px;
+
+  background: white;
+
+  color: #43708f;
+
+  cursor: pointer;
+}
+
+.chart-nav-button:hover:not(:disabled) {
+
+  background: #eef7fd;
+
+  border-color: #a8c9df;
+
+  color: #0876df;
+}
+
+.chart-nav-button:disabled {
+
+  opacity: 0.35;
+
+  cursor: not-allowed;
+}
+
+.chart-position {
+
+  min-width: 55px;
+
+  text-align: center;
+
+  color: #71889f;
 
   font-size: 7px;
 }
 
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
 .chart-legend {
-  margin-top: 5px;
+
+  margin-top: 2px;
 
   display: flex;
   justify-content: center;
+
   gap: 17px;
 
   color: #617b94;
@@ -1141,12 +1443,15 @@
 }
 
 .chart-legend span {
+
   display: flex;
   align-items: center;
+
   gap: 5px;
 }
 
 .legend-line {
+
   width: 20px;
   height: 2px;
 
@@ -1162,32 +1467,36 @@
 }
 
 .legend-area {
+
   width: 20px;
   height: 7px;
 
   display: inline-block;
 
-  background: rgba(236,164,69,.14);
+  background:
+    rgba(236, 164, 69, 0.14);
 }
+
 
 /* =========================================================
    PORT TABLE
-   ========================================================= */
+========================================================= */
 
 .port-table {
   padding: 0 11px;
 }
 
 .port-row {
+
   min-height: 21px;
 
   display: grid;
 
   grid-template-columns:
     1.05fr
-    .8fr
-    .95fr
-    .85fr;
+    0.8fr
+    0.95fr
+    0.85fr;
 
   align-items: center;
 
@@ -1200,6 +1509,7 @@
 }
 
 .port-row.table-heading {
+
   min-height: 23px;
 
   border-top: 0;
@@ -1211,8 +1521,10 @@
 }
 
 .port-name {
+
   display: flex;
   align-items: center;
+
   gap: 6px;
 
   color: #294c71;
@@ -1225,16 +1537,17 @@
 }
 
 .port-status {
+
   display: flex;
   align-items: center;
+
   gap: 5px;
 }
 
 .port-status i {
+
   width: 7px;
   height: 7px;
-
-  display: inline-block;
 
   border-radius: 50%;
 }
@@ -1264,14 +1577,17 @@
 }
 
 .port-trend {
+
   height: 16px;
 
   display: flex;
   align-items: flex-end;
+
   gap: 2px;
 }
 
 .port-trend span {
+
   width: 3px;
 
   border-radius: 2px;
@@ -1283,25 +1599,27 @@
   background: #ee9a3d;
 }
 
+
 /* =========================================================
-   RECENT VOYAGES
-   ========================================================= */
+   VOYAGES
+========================================================= */
 
 .voyage-table {
   padding: 0 10px;
 }
 
 .voyage-row {
+
   min-height: 25px;
 
   display: grid;
 
   grid-template-columns:
-    .85fr
-    .7fr
+    0.85fr
+    0.7fr
     1.45fr
-    .95fr
-    .65fr;
+    0.95fr
+    0.65fr;
 
   align-items: center;
 
@@ -1314,6 +1632,7 @@
 }
 
 .voyage-row.table-heading {
+
   min-height: 23px;
 
   border-top: 0;
@@ -1325,8 +1644,10 @@
 }
 
 .voyage-id {
+
   display: flex;
   align-items: center;
+
   gap: 6px;
 
   color: #294c70;
@@ -1335,6 +1656,7 @@
 }
 
 .ship-thumbnail {
+
   width: 28px;
   height: 18px;
 
@@ -1349,17 +1671,13 @@
   color: #0874cf;
 }
 
-.voyage-row > strong {
-  color: #27486b;
-
-  font-size: 9px;
-}
-
 .voyage-status {
+
   width: max-content;
 
   display: flex;
   align-items: center;
+
   gap: 4px;
 
   padding:
@@ -1373,6 +1691,7 @@
 }
 
 .voyage-status i {
+
   width: 6px;
   height: 6px;
 
@@ -1380,7 +1699,9 @@
 }
 
 .voyage-status.completed {
+
   background: #dcf6e9;
+
   color: #198358;
 }
 
@@ -1389,7 +1710,9 @@
 }
 
 .voyage-status.transit {
+
   background: #e0f0ff;
+
   color: #1872bb;
 }
 
@@ -1398,7 +1721,9 @@
 }
 
 .voyage-status.loading {
+
   background: #fff0d9;
+
   color: #bb7618;
 }
 
@@ -1406,11 +1731,37 @@
   background: #f1a02d;
 }
 
+
+/* =========================================================
+   VIEW ALL
+========================================================= */
+
+.view-link {
+
+  display: flex;
+  align-items: center;
+
+  gap: 3px;
+
+  color: #0873cf;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+.view-link:hover {
+  color: #0059a8;
+}
+
+
 /* =========================================================
    AI INSIGHT
-   ========================================================= */
+========================================================= */
 
 .insight-panel {
+
   position: relative;
 
   display: flex;
@@ -1429,8 +1780,10 @@
 }
 
 .insight-icon {
+
   width: 47px;
   height: 47px;
+
   min-width: 47px;
 
   display: flex;
@@ -1447,20 +1800,20 @@
 }
 
 .insight-content {
-  position: relative;
-  z-index: 2;
-
   min-width: 0;
 }
 
 .insight-header {
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 15px;
 }
 
 .insight-header h3 {
+
   margin: 0;
 
   color: #183b63;
@@ -1470,12 +1823,14 @@
 }
 
 .insight-header span {
+
   color: #7890a6;
 
   font-size: 8px;
 }
 
 .insight-content p {
+
   max-width: 510px;
 
   margin:
@@ -1490,19 +1845,23 @@
 }
 
 .insight-content ul {
+
   margin: 0;
   padding: 0;
 
   display: flex;
   flex-direction: column;
+
   gap: 3px;
 
   list-style: none;
 }
 
 .insight-content li {
+
   display: flex;
   align-items: center;
+
   gap: 5px;
 
   color: #3d607d;
@@ -1511,6 +1870,7 @@
 }
 
 .insight-content li::before {
+
   content: "✓";
 
   width: 13px;
@@ -1531,6 +1891,7 @@
 }
 
 .insight-graph {
+
   position: absolute;
 
   right: 12px;
@@ -1538,52 +1899,39 @@
 
   color: #83c8ec;
 
-  opacity: .4;
+  opacity: 0.4;
 }
 
-/* =========================================================
-   VIEW LINKS
-   ========================================================= */
-
-.view-link {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #0873cf;
-
-  font-size: 9px;
-  font-weight: 600;
-
-  cursor: pointer;
-}
 
 /* =========================================================
    RESPONSIVE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 1200px) {
 
   .dashboard-sidebar {
+
     width: 175px;
     min-width: 175px;
   }
 
   .dashboard-main {
+
     width: calc(100% - 175px);
+
     margin-left: 175px;
   }
 
   .charter-form {
-    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-columns:
+      repeat(3, 1fr);
   }
 
   .analytics-grid {
+
     grid-template-columns: 1fr;
+
     grid-template-rows: auto;
   }
 
@@ -1591,19 +1939,24 @@
   .port-panel,
   .voyages-panel,
   .insight-panel {
+
     min-height: 200px;
   }
 }
 
+
 @media (max-width: 850px) {
 
   .dashboard-sidebar {
+
     width: 68px;
     min-width: 68px;
   }
 
   .dashboard-main {
+
     width: calc(100% - 68px);
+
     margin-left: 68px;
   }
 
@@ -1612,83 +1965,117 @@
   .sidebar-item span,
   .engine-status,
   .sidebar-quote {
+
     display: none;
   }
 
-  .brand {
-    padding: 14px 4px;
-  }
-
   .sidebar-item {
+
     justify-content: center;
+
     padding: 0;
   }
 
   .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .hero-features {
+
     right: 20px;
   }
 
   .hero-badge {
+
     display: none;
   }
 }
 
+
 @media (max-width: 600px) {
 
   .dashboard-content {
+
     padding:
       0
       10px
-      15px;
+      25px;
   }
 
   .topbar {
-    padding: 0 10px;
+
+    padding:
+      0
+      10px;
   }
 
   .search-box {
+
     width: 190px;
   }
 
   .heading-quote {
+
     display: none;
   }
 
   .page-heading h1 {
+
     font-size: 21px;
   }
 
   .hero-content {
+
     padding:
       20px
       22px;
   }
 
   .hero-content h2 {
+
     font-size: 24px;
   }
 
   .hero-features {
+
     left: 20px;
     right: 20px;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .hero-features > div:nth-child(3),
   .hero-features > div:nth-child(4) {
+
     display: none;
   }
 
   .charter-form {
+
     grid-template-columns: 1fr;
   }
 
   .metrics-grid {
+
     grid-template-columns: 1fr;
+  }
+
+  .voyage-table,
+  .port-table {
+
+    overflow-x: auto;
+  }
+
+  .voyage-row {
+
+    min-width: 620px;
+  }
+
+  .port-row {
+
+    min-width: 480px;
   }
 }

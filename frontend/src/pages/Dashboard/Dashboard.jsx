@@ -1,164 +1,49 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Search,
+  Bell,
+  ChevronDown,
+  LayoutDashboard,
+  ArrowRight,
+  ArrowLeft,
+  BarChart3,
+  Ship,
+  Anchor,
+  RotateCcw,
+  Settings,
+  MapPin,
+  CalendarDays,
+  Database,
+  ShieldCheck,
+  CircleDollarSign,
+  Package,
+  Lightbulb,
+} from "lucide-react";
+
 import "./Dashboard.css";
-import heroShip from "../../assets/images/hero-ship.png";
+import heroImage from "../../assets/images/hero-ship.png";
+
 
 /* =========================================================
-   SIMPLE ICON SYSTEM
-   No extra package required.
-   This keeps the Dashboard independent of dependencies.
-   ========================================================= */
+   PORTS
+========================================================= */
 
-const Icon = ({ type, size = 20, stroke = 2 }) => {
-  const common = {
-    width: size,
-    height: size,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: stroke,
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  };
+const ports = [
+  "Kolkata",
+  "Paradip",
+  "Visakhapatnam",
+  "Kakinada",
+  "Chennai",
+  "Krishnapatnam",
+];
 
-  const paths = {
-    search: (
-      <>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-4-4" />
-      </>
-    ),
-
-    bell: (
-      <>
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
-        <path d="M10 21h4" />
-      </>
-    ),
-
-    chevron: <path d="m7 10 5 5 5-5" />,
-
-    arrow: (
-      <>
-        <path d="M5 12h14" />
-        <path d="m13 6 6 6-6 6" />
-      </>
-    ),
-
-    home: (
-      <>
-        <path d="m3 10 9-7 9 7" />
-        <path d="M5 9v11h14V9" />
-        <path d="M9 20v-6h6v6" />
-      </>
-    ),
-
-    ship: (
-      <>
-        <path d="M3 18h18" />
-        <path d="M5 18 8 6h8l3 12" />
-        <path d="M10 6V3h4v3" />
-        <path d="M8 10h8" />
-        <path d="M4 21c1.5 0 1.5-1 3-1s1.5 1 3 1 1.5-1 3-1 1.5 1 3 1 1.5-1 3-1" />
-      </>
-    ),
-
-    chart: (
-      <>
-        <path d="M4 19V5" />
-        <path d="M4 19h17" />
-        <path d="m7 15 4-4 3 2 6-7" />
-        <path d="M17 6h3v3" />
-      </>
-    ),
-
-    anchor: (
-      <>
-        <circle cx="12" cy="5" r="2.5" />
-        <path d="M12 7.5v12" />
-        <path d="M6 13h12" />
-        <path d="M5 17a7 7 0 0 0 14 0" />
-      </>
-    ),
-
-    location: (
-      <>
-        <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
-        <circle cx="12" cy="10" r="2.5" />
-      </>
-    ),
-
-    refresh: (
-      <>
-        <path d="M20 11a8 8 0 0 0-14-5L3 9" />
-        <path d="M3 4v5h5" />
-        <path d="M4 13a8 8 0 0 0 14 5l3-3" />
-        <path d="M21 20v-5h-5" />
-      </>
-    ),
-
-    settings: (
-      <>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L8 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H6.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L8 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z" />
-      </>
-    ),
-
-    calendar: (
-      <>
-        <rect x="3" y="5" width="18" height="16" rx="2" />
-        <path d="M16 3v4M8 3v4M3 10h18" />
-      </>
-    ),
-
-    database: (
-      <>
-        <ellipse cx="12" cy="5" rx="7" ry="3" />
-        <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5" />
-        <path d="M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" />
-      </>
-    ),
-
-    shield: (
-      <>
-        <path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-3Z" />
-        <path d="m8.5 12 2.2 2.2 4.8-5" />
-      </>
-    ),
-
-    money: (
-      <>
-        <circle cx="12" cy="12" r="8" />
-        <path d="M12 7v10M15 9.5c-.7-.8-1.7-1.2-3-1.2-1.7 0-2.8.8-2.8 2 0 3.2 5.8 1.1 5.8 4 0 1.2-1.1 2-2.9 2-1.3 0-2.4-.4-3.1-1.2" />
-      </>
-    ),
-
-    box: (
-      <>
-        <path d="m4 7 8-4 8 4-8 4-8-4Z" />
-        <path d="M4 7v10l8 4 8-4V7" />
-        <path d="M12 11v10" />
-      </>
-    ),
-
-    lightbulb: (
-      <>
-        <path d="M9 18h6" />
-        <path d="M10 22h4" />
-        <path d="M8.5 15.5C7.5 14.5 7 13.2 7 12a5 5 0 0 1 10 0c0 1.2-.5 2.5-1.5 3.5-.8.8-1.2 1.5-1.3 2.5h-4.4c-.1-1-.5-1.7-1.3-2.5Z" />
-      </>
-    ),
-  };
-
-  return <svg {...common}>{paths[type]}</svg>;
-};
 
 /* =========================================================
-   DATA
-   Temporary UI data.
-   Later these values come from the backend.
-   ========================================================= */
+   PORT STATUS
+========================================================= */
 
-const initialPorts = [
+const portData = [
   {
     name: "Kolkata",
     status: "Low",
@@ -203,6 +88,11 @@ const initialPorts = [
   },
 ];
 
+
+/* =========================================================
+   RECENT VOYAGES
+========================================================= */
+
 const recentVoyages = [
   {
     id: "FW-0268",
@@ -238,148 +128,376 @@ const recentVoyages = [
   },
 ];
 
+
+/* =========================================================
+   FREIGHT DATA
+========================================================= */
+
+const freightData = {
+  "7 Days": {
+    labels: [
+      "Sep 1",
+      "Sep 2",
+      "Sep 3",
+      "Sep 4",
+      "Sep 5",
+      "Sep 6",
+      "Sep 7",
+    ],
+    historical: [36, 38, 35, 34, 32, 31, 30],
+    forecast: [30, 29, 28, 27, 26, 25, 24],
+  },
+
+  "14 Days": {
+    labels: [
+      "Aug 25",
+      "Aug 27",
+      "Aug 29",
+      "Aug 31",
+      "Sep 2",
+      "Sep 4",
+      "Sep 6",
+      "Sep 7",
+    ],
+    historical: [40, 36, 39, 35, 38, 34, 37, 33],
+    forecast: [33, 31, 29, 28, 27, 26, 25, 24],
+  },
+
+  "30 Days": {
+    labels: [
+      "Aug 9",
+      "Aug 13",
+      "Aug 17",
+      "Aug 21",
+      "Aug 25",
+      "Aug 29",
+      "Sep 2",
+      "Sep 7",
+    ],
+    historical: [49, 45, 44, 40, 36, 38, 34, 33],
+    forecast: [33, 31, 29, 27, 25, 24, 23, 22],
+  },
+};
+
+
 /* =========================================================
    FREIGHT CHART
-   ========================================================= */
+========================================================= */
 
-const FreightChart = () => {
-  const historical = [
-    [0, 51],
-    [7, 45],
-    [14, 50],
-    [21, 42],
-    [28, 47],
-    [35, 35],
-    [42, 36],
-    [49, 32],
-    [56, 27],
-    [63, 31],
-    [70, 28],
-    [77, 31],
-    [84, 25],
-    [91, 34],
-  ];
+function FreightChart({ selectedRange, navigationIndex }) {
 
-  const forecast = [
-    [91, 34],
-    [98, 30],
-    [105, 27],
-    [112, 25],
-    [119, 22],
-    [126, 20],
-    [133, 18],
-    [140, 16],
-  ];
+  const dataset = freightData[selectedRange];
 
-  const points = (data) =>
-    data.map(([x, y]) => `${x * 4.45 + 35},${105 - y * 1.55}`).join(" ");
+  const maxValue = 55;
+  const minValue = 15;
+
+  const width = 690;
+  const height = 145;
+
+  const left = 40;
+  const right = 15;
+  const top = 15;
+  const bottom = 30;
+
+  const chartWidth = width - left - right;
+  const chartHeight = height - top - bottom;
+
+
+  const points = dataset.historical.map((value, index) => {
+
+    const x =
+      left +
+      (index /
+        Math.max(dataset.historical.length - 1, 1)) *
+        chartWidth;
+
+    const y =
+      top +
+      ((maxValue - value) /
+        (maxValue - minValue)) *
+        chartHeight;
+
+    return {
+      x,
+      y,
+      value,
+    };
+  });
+
+
+  const forecastPoints = dataset.forecast.map(
+    (value, index) => {
+
+      const x =
+        left +
+        (index /
+          Math.max(dataset.forecast.length - 1, 1)) *
+          chartWidth;
+
+      const y =
+        top +
+        ((maxValue - value) /
+          (maxValue - minValue)) *
+          chartHeight;
+
+      return {
+        x,
+        y,
+        value,
+      };
+    }
+  );
+
+
+  const historicalPath = points
+    .map((point, index) =>
+      `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+    )
+    .join(" ");
+
+
+  const forecastPath = forecastPoints
+    .map((point, index) =>
+      `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`
+    )
+    .join(" ");
+
+
+  const todayIndex =
+    Math.max(
+      0,
+      points.length - 1
+    );
+
+
+  const todayPoint = points[todayIndex];
+
 
   return (
     <div className="freight-chart">
+
       <svg
-        viewBox="0 0 690 135"
-        preserveAspectRatio="none"
+        viewBox={`0 0 ${width} ${height}`}
         className="chart-svg"
+        preserveAspectRatio="none"
       >
-        {/* horizontal grid */}
-        {[20, 40, 60, 80, 100].map((y) => (
-          <line
-            key={y}
-            x1="35"
-            x2="660"
-            y1={y}
-            y2={y}
-            className="grid-line"
-          />
-        ))}
 
-        {/* vertical grid */}
-        {[35, 125, 215, 305, 395, 485, 575, 660].map((x) => (
-          <line
-            key={x}
-            x1={x}
-            x2={x}
-            y1="15"
-            y2="105"
-            className="grid-line"
-          />
-        ))}
+        {/* GRID */}
 
-        {/* forecast confidence area */}
+        {[20, 30, 40, 50].map((value) => {
+
+          const y =
+            top +
+            ((maxValue - value) /
+              (maxValue - minValue)) *
+              chartHeight;
+
+          return (
+            <g key={value}>
+
+              <line
+                x1={left}
+                x2={width - right}
+                y1={y}
+                y2={y}
+                className="grid-line"
+              />
+
+              <text
+                x="7"
+                y={y + 3}
+                className="axis-label"
+              >
+                {value}
+              </text>
+
+            </g>
+          );
+        })}
+
+
+        {/* VERTICAL GRID */}
+
+        {dataset.labels.map((_, index) => {
+
+          const x =
+            left +
+            (index /
+              Math.max(dataset.labels.length - 1, 1)) *
+              chartWidth;
+
+          return (
+            <line
+              key={index}
+              x1={x}
+              x2={x}
+              y1={top}
+              y2={height - bottom}
+              className="grid-line vertical"
+            />
+          );
+        })}
+
+
+        {/* CONFIDENCE AREA */}
+
         <path
-          d="M440 50 C500 48 550 56 660 64 L660 105 C570 96 500 92 440 70 Z"
+          d={`
+            M ${forecastPoints[0].x} ${forecastPoints[0].y - 8}
+            ${forecastPoints
+              .map(
+                (point) =>
+                  `L ${point.x} ${point.y - 8}`
+              )
+              .join(" ")}
+            ${forecastPoints
+              .slice()
+              .reverse()
+              .map(
+                (point) =>
+                  `L ${point.x} ${point.y + 12}`
+              )
+              .join(" ")}
+            Z
+          `}
           className="confidence-area"
         />
 
-        {/* historical */}
-        <polyline
-          points={points(historical)}
+
+        {/* HISTORICAL */}
+
+        <path
+          d={historicalPath}
           className="historical-line"
         />
 
-        {/* forecast */}
-        <polyline
-          points={points(forecast)}
+
+        {/* FORECAST */}
+
+        <path
+          d={forecastPath}
           className="forecast-line"
         />
 
-        {/* historical points */}
-        {historical.map(([x, y], index) => (
+
+        {/* HISTORICAL POINTS */}
+
+        {points.map((point, index) => (
+
           <circle
-            key={`h-${index}`}
-            cx={x * 4.45 + 35}
-            cy={105 - y * 1.55}
-            r="2.7"
+            key={`history-${index}`}
+            cx={point.x}
+            cy={point.y}
+            r="3"
             className="historical-point"
           />
+
         ))}
 
-        {/* forecast points */}
-        {forecast.map(([x, y], index) => (
+
+        {/* FORECAST POINTS */}
+
+        {forecastPoints.map((point, index) => (
+
           <circle
-            key={`f-${index}`}
-            cx={x * 4.45 + 35}
-            cy={105 - y * 1.55}
-            r="2.4"
+            key={`forecast-${index}`}
+            cx={point.x}
+            cy={point.y}
+            r="2.6"
             className="forecast-point"
           />
+
         ))}
 
-        {/* today marker */}
+
+        {/* TODAY LINE */}
+
         <line
-          x1="440"
-          x2="440"
+          x1={todayPoint.x}
+          x2={todayPoint.x}
           y1="7"
-          y2="108"
+          y2={height - bottom + 2}
           className="today-line"
         />
 
-        <rect x="416" y="0" width="48" height="17" rx="4" className="today-label" />
-        <text x="440" y="12" textAnchor="middle" className="today-text">
+
+        <rect
+          x={todayPoint.x - 24}
+          y="0"
+          width="48"
+          height="17"
+          rx="4"
+          className="today-label"
+        />
+
+
+        <text
+          x={todayPoint.x}
+          y="12"
+          textAnchor="middle"
+          className="today-text"
+        >
           Today
         </text>
 
-        {/* Y labels */}
-        <text x="7" y="24" className="axis-label">50</text>
-        <text x="7" y="55" className="axis-label">40</text>
-        <text x="7" y="86" className="axis-label">30</text>
-        <text x="7" y="106" className="axis-label">20</text>
+
+        {/* X AXIS */}
+
+        {dataset.labels.map((label, index) => {
+
+          const x =
+            left +
+            (index /
+              Math.max(dataset.labels.length - 1, 1)) *
+              chartWidth;
+
+          return (
+            <text
+              key={label}
+              x={x}
+              y={height - 7}
+              textAnchor="middle"
+              className="axis-label"
+            >
+              {label}
+            </text>
+          );
+        })}
+
       </svg>
 
-      <div className="chart-x-labels">
-        <span>Aug 11</span>
-        <span>Aug 14</span>
-        <span>Aug 17</span>
-        <span>Aug 20</span>
-        <span>Aug 23</span>
-        <span>Aug 26</span>
-        <span>Aug 29</span>
-        <span>Sep 1</span>
-        <span>Sep 4</span>
-        <span>Sep 7</span>
+
+      <div className="chart-navigation">
+
+        <button
+          type="button"
+          className="chart-nav-button"
+          disabled={navigationIndex === 0}
+          title="Previous period"
+        >
+          <ArrowLeft size={12} />
+        </button>
+
+
+        <div className="chart-position">
+          Period {navigationIndex + 1}
+        </div>
+
+
+        <button
+          type="button"
+          className="chart-nav-button"
+          disabled
+          title="Next period"
+        >
+          <ArrowRight size={12} />
+        </button>
+
       </div>
 
+
       <div className="chart-legend">
+
         <span>
           <i className="legend-line historical-legend" />
           Historical
@@ -394,67 +512,239 @@ const FreightChart = () => {
           <i className="legend-area" />
           Confidence Range
         </span>
+
       </div>
+
     </div>
   );
-};
+}
+
 
 /* =========================================================
-   SMALL PORT TREND
-   ========================================================= */
+   PORT TREND
+========================================================= */
 
-const PortTrend = ({ direction }) => {
+function PortTrend({ direction }) {
+
   const heights =
     direction === "down"
       ? [5, 8, 6, 11, 8, 13, 10]
       : [7, 4, 8, 6, 11, 8, 13];
 
+
   return (
     <div className={`port-trend ${direction}`}>
+
       {heights.map((height, index) => (
+
         <span
           key={index}
-          style={{ height: `${height}px` }}
+          style={{
+            height: `${height}px`,
+          }}
         />
+
       ))}
+
     </div>
   );
-};
+}
+
 
 /* =========================================================
    DASHBOARD
-   ========================================================= */
+========================================================= */
 
 export default function Dashboard() {
-  const [range, setRange] = useState("14 Days");
-  const [cargo, setCargo] = useState("Coal");
 
-  const handleAnalyze = () => {
+  const navigate = useNavigate();
+
+
+  /* FORM */
+
+  const [originPort, setOriginPort] =
+    useState("");
+
+  const [destinationPort, setDestinationPort] =
+    useState("");
+
+  const [cargoType, setCargoType] =
+    useState("Coal");
+
+  const [quantity, setQuantity] =
+    useState("75000");
+
+  const [arrivalFrom, setArrivalFrom] =
+    useState("");
+
+  const [arrivalTo, setArrivalTo] =
+    useState("");
+
+
+  /* CHART */
+
+  const [range, setRange] =
+    useState("14 Days");
+
+  const [navigationIndex, setNavigationIndex] =
+    useState(0);
+
+
+  /* =======================================================
+     ORIGIN
+  ======================================================= */
+
+  const handleOriginChange = (event) => {
+
+    const value = event.target.value;
+
+    setOriginPort(value);
+
+    if (value === destinationPort) {
+      setDestinationPort("");
+    }
+  };
+
+
+  /* =======================================================
+     DESTINATION
+  ======================================================= */
+
+  const handleDestinationChange = (event) => {
+
+    const value = event.target.value;
+
+    if (value === originPort) {
+      return;
+    }
+
+    setDestinationPort(value);
+  };
+
+
+  /* =======================================================
+     ARRIVAL FROM
+  ======================================================= */
+
+  const handleArrivalFromChange = (event) => {
+
+    const value = event.target.value;
+
+    setArrivalFrom(value);
+
+    if (arrivalTo && value > arrivalTo) {
+      setArrivalTo("");
+    }
+  };
+
+
+  /* =======================================================
+     ARRIVAL TO
+  ======================================================= */
+
+  const handleArrivalToChange = (event) => {
+
+    const value = event.target.value;
+
+    if (
+      arrivalFrom &&
+      value < arrivalFrom
+    ) {
+      return;
+    }
+
+    setArrivalTo(value);
+  };
+
+
+  /* =======================================================
+     ANALYZE
+  ======================================================= */
+
+  const handleAnalyzeVoyage = () => {
+
+    if (!originPort) {
+      alert("Please select an origin port.");
+      return;
+    }
+
+    if (!destinationPort) {
+      alert("Please select a destination port.");
+      return;
+    }
+
+    if (originPort === destinationPort) {
+      alert(
+        "Origin and destination ports must be different."
+      );
+      return;
+    }
+
+    if (!arrivalFrom || !arrivalTo) {
+      alert(
+        "Please select the complete arrival window."
+      );
+      return;
+    }
+
+
+    const params = new URLSearchParams({
+
+      origin: originPort,
+
+      destination: destinationPort,
+
+      cargo: cargoType,
+
+      quantity,
+
+      arrivalFrom,
+
+      arrivalTo,
+
+    });
+
+
+    navigate(
+      `/new-voyage?${params.toString()}`
+    );
+  };
+
+
+  /* =======================================================
+     RANGE CHANGE
+  ======================================================= */
+
+  const handleRangeChange = (newRange) => {
+
+    setRange(newRange);
+
     /*
-      Later:
-      createVoyage(...)
-      -> /voyages
-      -> /recommend
-      -> /forecast
-
-      We intentionally don't put backend logic here yet.
+      Reset chart navigation whenever
+      the time range changes.
     */
 
-    console.log("Analyze voyage requested");
+    setNavigationIndex(0);
   };
+
 
   return (
     <div className="dashboard-shell">
 
-      {/* ===================================================
+
+      {/* =================================================
           SIDEBAR
-          =================================================== */}
+      ================================================= */}
 
       <aside className="dashboard-sidebar">
 
         <div className="brand">
+
           <div className="brand-mark">
-            <Icon type="ship" size={38} stroke={1.7} />
+            <Ship
+              size={38}
+              strokeWidth={1.7}
+            />
           </div>
 
           <div className="brand-name">
@@ -462,153 +752,238 @@ export default function Dashboard() {
           </div>
 
           <div className="brand-tagline">
-            Navigate Smarter.<br />
+            Navigate Smarter.
+            <br />
             Charter Better.
           </div>
+
         </div>
+
 
         <nav className="sidebar-navigation">
 
-          <button className="sidebar-item active">
-            <Icon type="home" size={21} />
+          <Link
+            to="/"
+            className="sidebar-item active"
+          >
+            <LayoutDashboard size={21} />
             <span>Dashboard</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="arrow" size={21} />
+
+          <Link
+            to="/new-voyage"
+            className="sidebar-item"
+          >
+            <ArrowRight size={21} />
             <span>New Voyage</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="chart" size={21} />
+
+          <Link
+            to="/analysis"
+            className="sidebar-item"
+          >
+            <BarChart3 size={21} />
             <span>Analysis</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="ship" size={21} />
+
+          <Link
+            to="/vessels"
+            className="sidebar-item"
+          >
+            <Ship size={21} />
             <span>Vessels</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="location" size={21} />
+
+          <Link
+            to="/ports"
+            className="sidebar-item"
+          >
+            <MapPin size={21} />
             <span>Ports</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="refresh" size={21} />
+
+          <Link
+            to="/simulation"
+            className="sidebar-item"
+          >
+            <RotateCcw size={21} />
             <span>Simulation</span>
-          </button>
+          </Link>
 
-          <button className="sidebar-item">
-            <Icon type="settings" size={21} />
+
+          <Link
+            to="/settings"
+            className="sidebar-item"
+          >
+            <Settings size={21} />
             <span>Settings</span>
-          </button>
+          </Link>
 
         </nav>
+
 
         <div className="sidebar-bottom">
 
           <div className="engine-status">
+
             <div className="engine-status-header">
+
               <span className="online-dot" />
+
               AI Engine Online
+
             </div>
 
-            <p>Data updated</p>
-            <strong>2 min ago</strong>
+            <p>
+              Data updated
+            </p>
+
+            <strong>
+              2 min ago
+            </strong>
+
           </div>
+
 
           <div className="sidebar-wave">
+
             <span className="wave wave-one" />
+
             <span className="wave wave-two" />
+
           </div>
 
+
           <div className="sidebar-quote">
-            "Smarter Oceans<br />
+
+            "Smarter Oceans
+            <br />
             for a Stronger India."
+
           </div>
 
         </div>
 
       </aside>
 
-      {/* ===================================================
+
+      {/* =================================================
           MAIN
-          =================================================== */}
+      ================================================= */}
 
       <main className="dashboard-main">
+
 
         {/* TOP BAR */}
 
         <header className="topbar">
 
           <div className="search-box">
-            <Icon type="search" size={17} stroke={2} />
+
+            <Search size={17} />
 
             <input
               type="text"
               placeholder="Search ports, vessels, routes..."
             />
+
           </div>
+
 
           <div className="topbar-right">
 
-            <button className="notification-button">
-              <Icon type="bell" size={20} />
+            <Link
+              to="/notifications"
+              className="notification-button"
+            >
+
+              <Bell size={20} />
+
               <span>3</span>
-            </button>
+
+            </Link>
+
 
             <div className="topbar-divider" />
 
-            <div className="avatar">
-              K
-            </div>
 
-            <div className="user-profile">
-              <span>User</span>
-              <Icon type="chevron" size={15} />
-            </div>
+            <Link
+              to="/profile"
+              className="user-profile-link"
+            >
+
+              <div className="avatar">
+                K
+              </div>
+
+              <div className="user-profile">
+
+                <span>
+                  User
+                </span>
+
+                <ChevronDown size={15} />
+
+              </div>
+
+            </Link>
 
           </div>
 
         </header>
 
+
         <div className="dashboard-content">
+
 
           {/* PAGE HEADING */}
 
           <section className="page-heading">
 
             <div>
-              <h1>Welcome to FreightWise</h1>
+
+              <h1>
+                Welcome to FreightWise
+              </h1>
 
               <p>
-                AI-Powered Freight &amp; Chartering Intelligence
-                for India's East Coast
+                AI-Powered Freight &amp; Chartering
+                Intelligence for India's East Coast
               </p>
+
             </div>
 
+
             <div className="heading-quote">
+
               <strong>
-                “Efficient Ports.<br />
+                “Efficient Ports.
+                <br />
                 Stronger Trade. Brighter Tomorrow.”
               </strong>
+
             </div>
 
           </section>
 
-          {/* =================================================
-              HERO
-              ================================================= */}
+
+          {/* HERO */}
 
           <section
             className="hero-card"
             style={{
-              backgroundImage: `url(${heroShip})`,
+              backgroundImage:
+                `url(${heroImage})`,
             }}
           >
 
             <div className="hero-overlay" />
+
 
             <div className="hero-content">
 
@@ -624,52 +999,77 @@ export default function Dashboard() {
 
             </div>
 
+
             <div className="hero-features">
 
               <div>
-                <Icon type="chart" size={26} />
+                <BarChart3 size={26} />
+
                 <span>
                   Real-time
-                  <small>Market Insights</small>
+                  <small>
+                    Market Insights
+                  </small>
                 </span>
               </div>
 
+
               <div>
-                <Icon type="ship" size={26} />
+                <Ship size={26} />
+
                 <span>
                   Optimal
-                  <small>Vessel Matching</small>
+                  <small>
+                    Vessel Matching
+                  </small>
                 </span>
               </div>
 
+
               <div>
-                <Icon type="location" size={26} />
+                <MapPin size={26} />
+
                 <span>
                   Smarter
-                  <small>Port Selection</small>
+                  <small>
+                    Port Selection
+                  </small>
                 </span>
               </div>
 
+
               <div>
-                <Icon type="shield" size={26} />
+                <ShieldCheck size={26} />
+
                 <span>
                   Lower Risk
-                  <small>Higher Savings</small>
+                  <small>
+                    Higher Savings
+                  </small>
                 </span>
               </div>
 
             </div>
 
+
             <div className="hero-badge">
-              <strong>India's East Coast</strong>
-              <span>Connecting Global Opportunities</span>
+
+              <strong>
+                India's East Coast
+              </strong>
+
+              <span>
+                Connecting Global Opportunities
+              </span>
+
             </div>
 
           </section>
 
+
           {/* =================================================
-              VOYAGE INPUT
-              ================================================= */}
+              CHARTER FORM
+          ================================================= */}
 
           <section className="charter-panel">
 
@@ -680,96 +1080,287 @@ export default function Dashboard() {
               </h2>
 
               <p>
-                Enter voyage requirements to get an AI-powered
-                chartering recommendation.
+                Enter voyage requirements to get an
+                AI-powered chartering recommendation.
               </p>
 
             </div>
 
+
             <div className="charter-form">
 
-              <label>
-                <span>Origin Port</span>
 
-                <div className="select-control">
-                  <Icon type="anchor" size={16} />
-                  <span>Select origin</span>
-                  <Icon type="chevron" size={14} />
+              {/* ORIGIN */}
+
+              <label className="form-field">
+
+                <span>
+                  Origin Port
+                </span>
+
+
+                <div className="select-wrapper">
+
+                  <Anchor
+                    size={16}
+                    className="field-icon"
+                  />
+
+
+                  <select
+                    value={originPort}
+                    onChange={handleOriginChange}
+                    className="port-select"
+                  >
+
+                    <option value="">
+                      Select origin
+                    </option>
+
+
+                    {ports.map((port) => (
+
+                      <option
+                        key={port}
+                        value={port}
+                      >
+                        {port}
+                      </option>
+
+                    ))}
+
+                  </select>
+
+
+                  <ChevronDown
+                    size={14}
+                    className="select-arrow"
+                  />
+
                 </div>
+
               </label>
 
-              <label>
-                <span>Destination Port</span>
 
-                <div className="select-control">
-                  <Icon type="anchor" size={16} />
-                  <span>Select destination</span>
-                  <Icon type="chevron" size={14} />
+              {/* DESTINATION */}
+
+              <label className="form-field">
+
+                <span>
+                  Destination Port
+                </span>
+
+
+                <div className="select-wrapper">
+
+                  <Anchor
+                    size={16}
+                    className="field-icon"
+                  />
+
+
+                  <select
+                    value={destinationPort}
+                    onChange={handleDestinationChange}
+                    className="port-select"
+                  >
+
+                    <option value="">
+                      Select destination
+                    </option>
+
+
+                    {ports.map((port) => (
+
+                      <option
+                        key={port}
+                        value={port}
+                        disabled={
+                          port === originPort
+                        }
+                      >
+                        {port}
+                        {port === originPort
+                          ? " (Origin)"
+                          : ""}
+                      </option>
+
+                    ))}
+
+                  </select>
+
+
+                  <ChevronDown
+                    size={14}
+                    className="select-arrow"
+                  />
+
                 </div>
+
               </label>
 
-              <label>
-                <span>Cargo Type</span>
 
-                <select
-                  className="native-select"
-                  value={cargo}
-                  onChange={(e) => setCargo(e.target.value)}
-                >
-                  <option>Coal</option>
-                  <option>Iron Ore</option>
-                  <option>Fertilizer</option>
-                  <option>Grain</option>
-                </select>
+              {/* CARGO */}
+
+              <label className="form-field">
+
+                <span>
+                  Cargo Type
+                </span>
+
+
+                <div className="select-wrapper">
+
+                  <select
+                    value={cargoType}
+                    onChange={(event) =>
+                      setCargoType(
+                        event.target.value
+                      )
+                    }
+                    className="cargo-select"
+                  >
+
+                    <option value="Coal">
+                      Coal
+                    </option>
+
+                    <option value="Iron Ore">
+                      Iron Ore
+                    </option>
+
+                    <option value="Fertilizer">
+                      Fertilizer
+                    </option>
+
+                    <option value="Grain">
+                      Grain
+                    </option>
+
+                  </select>
+
+
+                  <ChevronDown
+                    size={14}
+                    className="select-arrow"
+                  />
+
+                </div>
+
               </label>
 
-              <label>
-                <span>Quantity (MT)</span>
+
+              {/* QUANTITY */}
+
+              <label className="form-field">
+
+                <span>
+                  Quantity (MT)
+                </span>
+
 
                 <div className="input-control">
-                  <Icon type="box" size={16} />
+
+                  <Package size={16} />
 
                   <input
                     type="number"
-                    defaultValue="75000"
+                    min="1"
+                    value={quantity}
+                    onChange={(event) =>
+                      setQuantity(
+                        event.target.value
+                      )
+                    }
                   />
+
                 </div>
+
               </label>
 
-              <label>
-                <span>Arrival Window</span>
 
-                <div className="select-control">
-                  <Icon type="calendar" size={16} />
-                  <span>Select dates</span>
+              {/* ARRIVAL */}
+
+              <div className="arrival-window-field">
+
+                <span>
+                  Arrival Window
+                </span>
+
+
+                <div className="date-range-control">
+
+                  <CalendarDays
+                    size={16}
+                    className="calendar-icon"
+                  />
+
+
+                  <input
+                    type="date"
+                    value={arrivalFrom}
+                    onChange={
+                      handleArrivalFromChange
+                    }
+                  />
+
+
+                  <span className="date-separator">
+                    →
+                  </span>
+
+
+                  <input
+                    type="date"
+                    value={arrivalTo}
+                    min={
+                      arrivalFrom || undefined
+                    }
+                    disabled={!arrivalFrom}
+                    onChange={
+                      handleArrivalToChange
+                    }
+                  />
+
                 </div>
-              </label>
+
+              </div>
+
+
+              {/* ANALYZE */}
 
               <button
+                type="button"
                 className="analyze-button"
-                onClick={handleAnalyze}
+                onClick={
+                  handleAnalyzeVoyage
+                }
               >
+
                 Analyze Voyage
-                <Icon type="arrow" size={17} />
+
+                <ArrowRight size={17} />
+
               </button>
 
             </div>
 
           </section>
 
-          {/* =================================================
-              KPI CARDS
-              ================================================= */}
+
+          {/* KPI */}
 
           <section className="metrics-grid">
+
 
             <div className="metric-card">
 
               <div className="metric-icon blue">
-                <Icon type="database" size={27} />
+                <Database size={27} />
               </div>
 
               <div className="metric-content">
+
                 <span className="metric-title">
                   Current Freight Rate
                 </span>
@@ -781,21 +1372,24 @@ export default function Dashboard() {
                 <span className="metric-subtitle positive">
                   ↓ 6.2% expected
                 </span>
+
               </div>
 
               <div className="metric-decoration">
-                <Icon type="chart" size={52} />
+                <BarChart3 size={52} />
               </div>
 
             </div>
 
+
             <div className="metric-card">
 
               <div className="metric-icon green">
-                <Icon type="calendar" size={27} />
+                <CalendarDays size={27} />
               </div>
 
               <div className="metric-content">
+
                 <span className="metric-title">
                   Best Chartering Window
                 </span>
@@ -807,21 +1401,24 @@ export default function Dashboard() {
                 <span className="metric-subtitle positive">
                   AI suggested
                 </span>
+
               </div>
 
               <div className="metric-decoration">
-                <Icon type="calendar" size={48} />
+                <CalendarDays size={48} />
               </div>
 
             </div>
 
+
             <div className="metric-card">
 
               <div className="metric-icon emerald">
-                <Icon type="shield" size={28} />
+                <ShieldCheck size={28} />
               </div>
 
               <div className="metric-content">
+
                 <span className="metric-title">
                   Risk Score
                 </span>
@@ -833,21 +1430,24 @@ export default function Dashboard() {
                 <span className="metric-subtitle positive">
                   Low Risk
                 </span>
+
               </div>
 
               <div className="metric-decoration">
-                <Icon type="chart" size={50} />
+                <BarChart3 size={50} />
               </div>
 
             </div>
 
+
             <div className="metric-card">
 
               <div className="metric-icon sky">
-                <Icon type="money" size={27} />
+                <CircleDollarSign size={27} />
               </div>
 
               <div className="metric-content">
+
                 <span className="metric-title">
                   Expected Savings
                 </span>
@@ -859,145 +1459,216 @@ export default function Dashboard() {
                 <span className="metric-subtitle">
                   vs. current market
                 </span>
+
               </div>
 
               <div className="metric-decoration">
-                <Icon type="chart" size={52} />
+                <BarChart3 size={52} />
               </div>
 
             </div>
 
           </section>
 
+
           {/* =================================================
               ANALYTICS
-              ================================================= */}
+          ================================================= */}
 
           <section className="analytics-grid">
 
-            {/* FREIGHT CHART */}
+
+            {/* FREIGHT */}
 
             <div className="panel freight-panel">
 
               <div className="panel-header">
 
                 <div>
+
                   <h3>
-                    <Icon type="chart" size={18} />
+                    <BarChart3 size={18} />
                     Freight Rate Trend
                   </h3>
 
                   <span>
                     Freight Rate (USD/MT)
                   </span>
+
                 </div>
+
 
                 <div className="range-buttons">
 
-                  {["7 Days", "14 Days", "30 Days"].map((item) => (
+                  {[
+                    "7 Days",
+                    "14 Days",
+                    "30 Days",
+                  ].map((item) => (
+
                     <button
+                      type="button"
                       key={item}
-                      className={range === item ? "selected" : ""}
-                      onClick={() => setRange(item)}
+                      className={
+                        range === item
+                          ? "selected"
+                          : ""
+                      }
+                      onClick={() =>
+                        handleRangeChange(item)
+                      }
                     >
                       {item}
                     </button>
+
                   ))}
 
                 </div>
 
               </div>
 
+
               <div className="chart-container">
-                <FreightChart />
+
+                <FreightChart
+                  selectedRange={range}
+                  navigationIndex={
+                    navigationIndex
+                  }
+                />
+
               </div>
 
             </div>
 
-            {/* PORT STATUS */}
+
+            {/* PORTS */}
 
             <div className="panel port-panel">
 
               <div className="panel-header">
 
                 <h3>
-                  <Icon type="anchor" size={18} />
+                  <Anchor size={18} />
                   East Coast Port Status
                 </h3>
 
-                <button className="view-link">
+
+                <Link
+                  to="/ports"
+                  className="view-link"
+                >
                   View All Ports
-                  <Icon type="arrow" size={12} />
-                </button>
+                  <ArrowRight size={12} />
+                </Link>
 
               </div>
+
 
               <div className="port-table">
 
                 <div className="port-row table-heading">
+
                   <span>Port</span>
+
                   <span>Status</span>
-                  <span>Avg. Waiting Time</span>
-                  <span>Trend (7 days)</span>
+
+                  <span>
+                    Avg. Waiting Time
+                  </span>
+
+                  <span>
+                    Trend (7 days)
+                  </span>
+
                 </div>
 
-                {initialPorts.map((port) => (
-                  <div className="port-row" key={port.name}>
+
+                {portData.map((port) => (
+
+                  <div
+                    className="port-row"
+                    key={port.name}
+                  >
 
                     <div className="port-name">
-                      <Icon type="anchor" size={13} />
+
+                      <Anchor size={13} />
+
                       {port.name}
+
                     </div>
 
+
                     <div
-                      className={`port-status ${port.statusClass}`}
+                      className={
+                        `port-status ${port.statusClass}`
+                      }
                     >
+
                       <i />
+
                       {port.status}
+
                     </div>
+
 
                     <span>
                       {port.waiting}
                     </span>
 
-                    <PortTrend direction={port.trend} />
+
+                    <PortTrend
+                      direction={port.trend}
+                    />
 
                   </div>
+
                 ))}
 
               </div>
 
             </div>
 
-            {/* RECENT VOYAGES */}
+
+            {/* VOYAGES */}
 
             <div className="panel voyages-panel">
 
               <div className="panel-header">
 
                 <h3>
-                  <Icon type="ship" size={18} />
+                  <Ship size={18} />
                   Recent Voyages
                 </h3>
 
-                <button className="view-link">
+
+                <Link
+                  to="/new-voyage"
+                  className="view-link"
+                >
                   View All
-                  <Icon type="arrow" size={12} />
-                </button>
+                  <ArrowRight size={12} />
+                </Link>
 
               </div>
+
 
               <div className="voyage-table">
 
                 <div className="voyage-row table-heading">
+
                   <span>Voyage</span>
                   <span>Cargo</span>
                   <span>Route</span>
                   <span>Status</span>
                   <span>Cost</span>
+
                 </div>
 
+
                 {recentVoyages.map((voyage) => (
+
                   <div
                     className="voyage-row"
                     key={voyage.id}
@@ -1006,42 +1677,58 @@ export default function Dashboard() {
                     <div className="voyage-id">
 
                       <div className="ship-thumbnail">
-                        <Icon type="ship" size={17} />
+                        <Ship size={17} />
                       </div>
 
                       {voyage.id}
 
                     </div>
 
-                    <span>{voyage.cargo}</span>
 
-                    <span>{voyage.route}</span>
+                    <span>
+                      {voyage.cargo}
+                    </span>
+
+
+                    <span>
+                      {voyage.route}
+                    </span>
+
 
                     <span
-                      className={`voyage-status ${voyage.statusClass}`}
+                      className={
+                        `voyage-status ${voyage.statusClass}`
+                      }
                     >
+
                       <i />
+
                       {voyage.status}
+
                     </span>
+
 
                     <strong>
                       {voyage.cost}
                     </strong>
 
                   </div>
+
                 ))}
 
               </div>
 
             </div>
 
+
             {/* AI INSIGHT */}
 
             <div className="panel insight-panel">
 
               <div className="insight-icon">
-                <Icon type="lightbulb" size={29} />
+                <Lightbulb size={29} />
               </div>
+
 
               <div className="insight-content">
 
@@ -1057,30 +1744,40 @@ export default function Dashboard() {
 
                 </div>
 
+
                 <p>
-                  Freight rates are expected to decline over the
-                  next 10 days. FreightWise suggests monitoring
-                  the current market before locking a vessel.
+                  Freight rates are expected to
+                  decline over the next 10 days.
+                  FreightWise suggests monitoring
+                  the current market before locking
+                  a vessel.
                 </p>
 
+
                 <ul>
+
                   <li>
-                    Declining trend in global coal freight rates
+                    Declining trend in global coal
+                    freight rates
                   </li>
 
                   <li>
-                    Lower congestion expected at Paradip
+                    Lower congestion expected
+                    at Paradip
                   </li>
 
                   <li>
-                    Favourable weather conditions in Bay of Bengal
+                    Favourable weather conditions
+                    in Bay of Bengal
                   </li>
+
                 </ul>
 
               </div>
 
+
               <div className="insight-graph">
-                <Icon type="chart" size={88} />
+                <BarChart3 size={88} />
               </div>
 
             </div>

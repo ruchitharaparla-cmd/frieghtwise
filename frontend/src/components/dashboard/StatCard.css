@@ -1,0 +1,118 @@
+.metric-card {
+  position: relative;
+
+  min-width: 0;
+  min-height: 94px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 12px 14px;
+
+  overflow: hidden;
+
+  border: 1px solid #d4e4ef;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 8px rgba(31, 76, 114, 0.05);
+}
+
+.metric-icon {
+  width: 50px;
+  height: 50px;
+
+  min-width: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+.metric-icon.blue {
+  background: #e3f3ff;
+  color: #0875d5;
+}
+
+.metric-icon.green {
+  background: #e2f8ec;
+  color: #159a69;
+}
+
+.metric-icon.emerald {
+  background: #dff7ed;
+  color: #058b67;
+}
+
+.metric-icon.sky {
+  background: #e4f4ff;
+  color: #0983d8;
+}
+
+.metric-content {
+  position: relative;
+
+  z-index: 2;
+
+  min-width: 0;
+}
+
+.metric-title {
+  display: block;
+
+  color: #52708d;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.metric-content strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #12365f;
+
+  font-size: 21px;
+  line-height: 1;
+
+  letter-spacing: -0.4px;
+
+  white-space: nowrap;
+}
+
+.metric-subtitle {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #728ba1;
+
+  font-size: 9px;
+}
+
+.metric-subtitle.positive {
+  color: #12986a;
+
+  font-weight: 600;
+}
+
+.metric-decoration {
+  position: absolute;
+
+  right: 8px;
+  bottom: 7px;
+
+  color: #c7eaf8;
+
+  opacity: 0.95;
+}
