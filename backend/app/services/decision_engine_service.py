@@ -14,6 +14,7 @@ from app.services.congestion_service import (
 from app.services.cost_service import calculate_cost
 from app.services.risk_service import calculate_risk
 from app.services.recommendation_service import generate_recommendation
+from app.integrations.weather import get_weather_risk
 
 
 def run_decision_engine(
@@ -96,6 +97,10 @@ def run_decision_engine(
                 )
                 continue
 
+            # ---------------------------------------------------------
+            # CONGESTION RISK
+            # ---------------------------------------------------------
+
             congestion = calculate_congestion_score(
                 port.average_waiting_hours
             )
@@ -104,9 +109,64 @@ def run_decision_engine(
                 port.average_waiting_hours
             )
 
-            risk = calculate_risk(
-                congestion_score=congestion["score"]
+            # ---------------------------------------------------------
+            # WEATHER RISK
+            #
+            # Uses the selected port's coordinates and arrival date.
+            # Open-Meteo is an external data source.
+            #
+            # If weather data is unavailable, the risk engine still
+            # works using the available congestion signal.
+            # ---------------------------------------------------------
+
+            weather = get_weather_risk(
+                latitude=port.latitude,
+                longitude=port.longitude,
+                target_date=arrival_date,
             )
+
+            weather_score = weather.get("weather_score")
+
+            # ---------------------------------------------------------
+            # OVERALL RISK
+            # ---------------------------------------------------------
+
+            if weather.get("data_status") == "KNOWN":
+                risk_data_status = "KNOWN"
+            else:
+                risk_data_status = "ESTIMATED"
+
+            risk = calculate_risk(
+                congestion_score=congestion["score"],
+                weather_score=weather_score,
+                data_status=risk_data_status,
+            )
+
+            # Attach detailed weather information to the risk result
+            # so the recommendation/API can explain the risk.
+            risk["weather_details"] = {
+                "weather_score": weather.get("weather_score"),
+                "risk_level": weather.get("risk_level"),
+                "wind_speed_kn": weather.get("wind_speed_kn"),
+                "wind_gusts_kn": weather.get("wind_gusts_kn"),
+                "precipitation_mm": weather.get(
+                    "precipitation_mm"
+                ),
+                "precipitation_probability_percent": weather.get(
+                    "precipitation_probability_percent"
+                ),
+                "visibility_m": weather.get(
+                    "visibility_m"
+                ),
+                "weather_codes": weather.get(
+                    "weather_codes"
+                ),
+                "source": weather.get("source"),
+                "data_status": weather.get(
+                    "data_status"
+                ),
+                "message": weather.get("message"),
+            }
 
             # ---------------------------------------------------------
             # DEMO COST INPUTS
@@ -114,6 +174,7 @@ def run_decision_engine(
             # These remain explicitly estimated prototype values.
             # They are NOT claimed as live market data.
             # ---------------------------------------------------------
+
             bunker_cost = 300000.0
             port_cost = 100000.0
             demurrage_rate_per_day = 20000.0

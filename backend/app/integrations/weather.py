@@ -4,7 +4,53 @@ from urllib.request import Request, urlopen
 import json
 
 
-OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
+HISTORICAL_URL = "https://archive-api.open-meteo.com/v1/archive"
+
+
+HOURLY_VARIABLES = (
+    "wind_speed_10m,"
+    "wind_gusts_10m,"
+    "precipitation,"
+    "precipitation_probability,"
+    "visibility,"
+    "weather_code"
+)
+
+
+def _fetch_weather(
+    base_url: str,
+    latitude: float,
+    longitude: float,
+    target_date: date,
+) -> dict:
+    """
+    Fetch hourly weather data from an Open-Meteo endpoint.
+    """
+
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "hourly": HOURLY_VARIABLES,
+        "start_date": target_date.isoformat(),
+        "end_date": target_date.isoformat(),
+        "timezone": "auto",
+        "wind_speed_unit": "kn",
+    }
+
+    url = f"{base_url}?{urlencode(params)}"
+
+    request = Request(
+        url,
+        headers={
+            "User-Agent": "FreightWise/1.0",
+        },
+    )
+
+    with urlopen(request, timeout=10) as response:
+        return json.loads(
+            response.read().decode("utf-8")
+        )
 
 
 def get_weather_forecast(
@@ -13,56 +59,44 @@ def get_weather_forecast(
     target_date: date,
 ) -> dict:
     """
-    Fetch hourly weather data for a port/location from Open-Meteo.
+    Fetch weather data appropriate for the requested date.
 
-    No API key is required for the standard non-commercial
-    Open-Meteo endpoint used by the FreightWise prototype.
+    Past dates use Open-Meteo Historical Weather API.
+    Current/future dates use Open-Meteo Forecast API.
     """
 
-    params = {
-        "latitude": latitude,
-        "longitude": longitude,
-        "hourly": (
-            "wind_speed_10m,"
-            "wind_gusts_10m,"
-            "precipitation,"
-            "precipitation_probability,"
-            "visibility,"
-            "weather_code"
-        ),
-        "start_date": target_date.isoformat(),
-        "end_date": target_date.isoformat(),
-        "timezone": "auto",
-        "wind_speed_unit": "kn",
-    }
+    today = date.today()
 
-    url = f"{OPEN_METEO_URL}?{urlencode(params)}"
+    if target_date < today:
+        base_url = HISTORICAL_URL
+        source_type = "Open-Meteo Historical Weather"
+    else:
+        base_url = FORECAST_URL
+        source_type = "Open-Meteo Forecast"
 
     try:
-        request = Request(
-            url,
-            headers={
-                "User-Agent": "FreightWise/1.0",
-            },
+        data = _fetch_weather(
+            base_url=base_url,
+            latitude=latitude,
+            longitude=longitude,
+            target_date=target_date,
         )
-
-        with urlopen(request, timeout=10) as response:
-            data = json.loads(
-                response.read().decode("utf-8")
-            )
 
         hourly = data.get("hourly")
 
         if not hourly:
             return {
                 "data_status": "UNAVAILABLE",
-                "source": "Open-Meteo",
-                "message": "Open-Meteo returned no hourly weather data.",
+                "source": source_type,
+                "message": (
+                    "Open-Meteo returned no hourly "
+                    "weather data."
+                ),
             }
 
         return {
             "data_status": "KNOWN",
-            "source": "Open-Meteo",
+            "source": source_type,
             "latitude": data.get("latitude"),
             "longitude": data.get("longitude"),
             "timezone": data.get("timezone"),
@@ -72,8 +106,10 @@ def get_weather_forecast(
     except Exception as exc:
         return {
             "data_status": "UNAVAILABLE",
-            "source": "Open-Meteo",
-            "message": f"Weather provider unavailable: {exc}",
+            "source": source_type,
+            "message": (
+                f"Weather provider unavailable: {exc}"
+            ),
         }
 
 
@@ -101,7 +137,10 @@ def get_weather_risk(
             "weather_score": None,
             "risk_level": "UNKNOWN",
             "data_status": "UNAVAILABLE",
-            "source": "Open-Meteo",
+            "source": weather.get(
+                "source",
+                "Open-Meteo",
+            ),
             "message": weather.get(
                 "message",
                 "Weather data unavailable.",
@@ -112,16 +151,20 @@ def get_weather_risk(
 
     def maximum(values):
         valid = [
-            value for value in values
+            value
+            for value in values
             if value is not None
         ]
+
         return max(valid) if valid else None
 
     def average(values):
         valid = [
-            value for value in values
+            value
+            for value in values
             if value is not None
         ]
+
         return (
             sum(valid) / len(valid)
             if valid
@@ -191,17 +234,15 @@ def get_weather_risk(
     elif precipitation >= 5:
         score += 5
 
-    # Average visibility
+    # Visibility
     if visibility is not None:
         if visibility < 3000:
             score += 20
         elif visibility < 5000:
             score += 10
 
-    # Keep score within 0-100
     score = min(score, 100)
 
-    # Risk classification
     if score >= 60:
         risk_level = "HIGH"
     elif score >= 30:
@@ -221,7 +262,10 @@ def get_weather_risk(
         "visibility_m": visibility,
         "weather_codes": weather_codes,
         "data_status": "KNOWN",
-        "source": "Open-Meteo",
+        "source": weather.get(
+            "source",
+            "Open-Meteo",
+        ),
         "message": (
             "Weather risk calculated from Open-Meteo "
             "hourly weather data using FreightWise "
