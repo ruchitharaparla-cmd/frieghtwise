@@ -23,6 +23,7 @@ def run_decision_engine(
     origin_country: str,
     destination_region: str,
     arrival_date,
+    charter_duration_days=None,
 ):
     vessels = get_vessels(
         db=db,
@@ -86,7 +87,10 @@ def run_decision_engine(
                         "cost": None,
                         "risk": None,
                         "rejection_reasons": [
-                            "Freight forecast is unavailable for this route, cargo type, vessel class, or date."
+                            forecast.get(
+                                "message",
+                                "Freight market forecast is unavailable.",
+                            )
                         ],
                     }
                 )
@@ -106,8 +110,9 @@ def run_decision_engine(
 
             # ---------------------------------------------------------
             # DEMO COST INPUTS
-            # These are estimated prototype values.
-            # They are NOT claimed as real market data.
+            #
+            # These remain explicitly estimated prototype values.
+            # They are NOT claimed as live market data.
             # ---------------------------------------------------------
             bunker_cost = 300000.0
             port_cost = 100000.0
@@ -120,9 +125,23 @@ def run_decision_engine(
                 port_cost=port_cost,
                 expected_delay_hours=delay_hours,
                 demurrage_rate_per_day=demurrage_rate_per_day,
+                freight_rate_unit=forecast.get(
+                    "unit",
+                    "USD/day",
+                ),
+                voyage_duration_days=charter_duration_days,
             )
 
             if cost["total_landed_cost"] is None:
+                reason = (
+                    "Voyage duration is required to convert the "
+                    "USD/day market freight benchmark into freight cost."
+                    if charter_duration_days is None
+                    else
+                    "Required cost inputs are unavailable; total "
+                    "landed cost cannot be calculated reliably."
+                )
+
                 options.append(
                     {
                         "feasible": False,
@@ -137,9 +156,7 @@ def run_decision_engine(
                         "forecast": forecast,
                         "cost": cost,
                         "risk": risk,
-                        "rejection_reasons": [
-                            "Required cost inputs are unavailable; total landed cost cannot be calculated reliably."
-                        ],
+                        "rejection_reasons": [reason],
                     }
                 )
                 continue

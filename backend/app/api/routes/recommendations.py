@@ -27,4 +27,5 @@ def recommend(
         origin_country=request.origin_country,
         destination_region=request.destination_region,
         arrival_date=request.arrival_date,
+        charter_duration_days=request.charter_duration_days,
     )

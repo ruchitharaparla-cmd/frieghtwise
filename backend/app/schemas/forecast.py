@@ -15,8 +15,14 @@ class ForecastRequest(BaseModel):
 class ForecastResponse(BaseModel):
     forecast_rate: Optional[float] = None
     currency: str = "USD"
-    unit: str = "per_metric_tonne"
+    unit: str = "USD/day"
     forecast_date: date
+    model_name: Optional[str] = None
     model_version: Optional[str] = None
-    confidence: Optional[float] = Field(default=None, ge=0, le=1)
+    confidence: Optional[float] = Field(
+        default=None,
+        ge=0,
+        le=1,
+    )
     data_status: str = "UNAVAILABLE"
+    message: Optional[str] = None
