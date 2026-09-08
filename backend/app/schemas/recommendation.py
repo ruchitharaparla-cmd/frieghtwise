@@ -28,5 +28,9 @@ class RecommendationResponse(BaseModel):
     cost: Optional[dict[str, Any]] = None
     risk: Optional[dict[str, Any]] = None
 
-    reasons: list[str] = []
-    alternatives: list[dict[str, Any]] = []
+    reasons: list[str] = Field(default_factory=list)
+    alternatives: list[dict[str, Any]] = Field(default_factory=list)
+
+    # Stage 7 AI/RAG explanation layer.
+    # This does not replace or modify the numerical recommendation.
+    ai_analysis: Optional[dict[str, Any]] = None
