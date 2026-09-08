@@ -1,7 +1,7 @@
 """Stage 7.4 System Prompt and Prompt Builder for Market Analyst Agent."""
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from app.agents.contracts import AgentContext, EvidenceItem
 from app.agents.market.contracts import MarketAnalysisRequest
@@ -35,6 +35,7 @@ def build_market_analysis_prompt(
     evidence: Optional[List[EvidenceItem]] = None,
 ) -> str:
     """Build structured user prompt string for the Market Analyst Agent."""
+
     prompt_lines: List[str] = [
         "=== FREIGHTWISE MARKET ANALYSIS REQUEST ===",
         f"USER QUESTION: {request.question.strip()}",
@@ -42,41 +43,76 @@ def build_market_analysis_prompt(
     ]
 
     # Authoritative Numerical Outputs from Stage 2-6 Context
-    prompt_lines.append("=== AUTHORITATIVE PIPELINE CONTEXT (STAGES 2-6) ===")
+    prompt_lines.append(
+        "=== AUTHORITATIVE PIPELINE CONTEXT (STAGES 2-6) ==="
+    )
+
     if context:
         ctx_dict = context.to_dict()
         has_data = False
-        for k in ["freight_forecast", "delay_prediction", "congestion_prediction", "feasibility_result", "cost_result", "optimization_result"]:
+
+        for k in [
+            "freight_forecast",
+            "delay_prediction",
+            "congestion_prediction",
+            "feasibility_result",
+            "cost_result",
+            "optimization_result",
+        ]:
             val = ctx_dict.get(k)
+
             if val is not None:
                 has_data = True
-                prompt_lines.append(f"[{k.upper()}]: {json.dumps(val)}")
+
+                # default=str safely serializes Python date/datetime
+                # objects without changing the authoritative values.
+                serialized_value = json.dumps(
+                    val,
+                    default=str,
+                    ensure_ascii=False,
+                )
+
+                prompt_lines.append(
+                    f"[{k.upper()}]: {serialized_value}"
+                )
+
         if not has_data:
             prompt_lines.append("NO_PIPELINE_OUTPUTS_PROVIDED")
+
     else:
         prompt_lines.append("NO_PIPELINE_OUTPUTS_PROVIDED")
 
     prompt_lines.append("")
 
     # RAG Retrieved Evidence
-    prompt_lines.append("=== RETRIEVED DOCUMENT EVIDENCE (STAGE 7.3) ===")
+    prompt_lines.append(
+        "=== RETRIEVED DOCUMENT EVIDENCE (STAGE 7.3) ==="
+    )
+
     ev_list = evidence or (context.evidence if context else [])
+
     if ev_list:
-        for idx, ev in enumerate(ev_list[:request.max_evidence_items]):
+        for idx, ev in enumerate(
+            ev_list[:request.max_evidence_items]
+        ):
             prompt_lines.append(
-                f"EVIDENCE ITEM [{idx+1}] (ID: {ev.evidence_id}):\n"
+                f"EVIDENCE ITEM [{idx + 1}] (ID: {ev.evidence_id}):\n"
                 f"Source: {ev.source} (Type: {ev.source_type})\n"
                 f"Relevance: {ev.relevance}\n"
                 f"Content: {ev.content.strip()}\n"
             )
     else:
-        prompt_lines.append("NO_RETRIEVED_EVIDENCE_AVAILABLE")
+        prompt_lines.append(
+            "NO_RETRIEVED_EVIDENCE_AVAILABLE"
+        )
 
     prompt_lines.append("")
     prompt_lines.append("=== INSTRUCTIONS ===")
+
     prompt_lines.append(
-        "Analyze the user question using the authoritative pipeline context and retrieved evidence above. "
-        "Strictly obey all 14 architectural rules in the system prompt."
+        "Analyze the user question using the authoritative pipeline "
+        "context and retrieved evidence above. Strictly obey all 14 "
+        "architectural rules in the system prompt."
     )
 
     return "\n".join(prompt_lines)
