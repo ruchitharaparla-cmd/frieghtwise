@@ -10,7 +10,17 @@ from app.agents.safety import validate_agent_response, verify_authoritative_immu
 from app.rag.query import RetrievalQuery
 from app.rag.retriever import RAGRetriever
 
+_default_retriever: Optional[RAGRetriever] = None
 
+
+def get_default_retriever() -> RAGRetriever:
+    """Return a process-level cached production RAG retriever."""
+    global _default_retriever
+
+    if _default_retriever is None:
+        _default_retriever = RAGRetriever(is_testing=False)
+
+    return _default_retriever
 class MarketAnalystService:
     """Service orchestrator for the Stage 7.4 Market Analyst Agent."""
 
@@ -21,7 +31,10 @@ class MarketAnalystService:
         is_testing: bool = False,
     ):
         self.is_testing = is_testing
-        self.retriever = retriever or RAGRetriever(is_testing=is_testing)
+        self.retriever = (
+    retriever
+    or (get_default_retriever() if not is_testing else RAGRetriever(is_testing=True))
+)
         self.model = model or get_market_analyst_model(is_testing=is_testing)
 
     def _extract_numerical_inputs(self, context: AgentContext) -> Dict[str, Any]:
