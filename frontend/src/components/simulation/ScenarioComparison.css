@@ -1,0 +1,478 @@
+/* =========================================================
+   SCENARIO SECTION
+========================================================= */
+
+.scenario-section {
+  margin-top: 14px;
+}
+
+
+/* =========================================================
+   SCENARIO HEADING
+========================================================= */
+
+.scenario-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  margin-bottom: 10px;
+}
+
+.scenario-title {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.scenario-title-icon {
+  color: #087bdd;
+}
+
+.scenario-title h2 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.scenario-title p {
+  margin: 3px 0 0;
+
+  color: #7895af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   INFO BOX
+========================================================= */
+
+.scenario-info {
+  max-width: 420px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 9px 12px;
+
+  color: #4b7392;
+
+  background: #eff8ff;
+
+  border: 1px solid #d0e6f6;
+
+  border-radius: 8px;
+}
+
+.scenario-info svg {
+  flex-shrink: 0;
+
+  color: #087bdd;
+}
+
+.scenario-info p {
+  margin: 0;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   SCENARIO GRID
+========================================================= */
+
+.scenario-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 13px;
+}
+
+
+/* =========================================================
+   SCENARIO CARD
+========================================================= */
+
+.scenario-card {
+  min-width: 0;
+
+  padding: 17px 14px 14px;
+
+  background: white;
+
+  border: 1px solid #dce8f2;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+.recommended-card {
+  border-color: #98ddc3;
+
+  box-shadow:
+    0 3px 12px rgba(15, 155, 109, 0.05);
+}
+
+.scenario-high {
+  border-color: #f1c9c9;
+}
+
+
+/* =========================================================
+   RECOMMENDED BADGE
+========================================================= */
+
+.recommended-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 10px;
+
+  padding: 6px 11px;
+
+  color: white;
+
+  background: #10ad70;
+
+  border-radius: 7px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.scenario-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.scenario-heading {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.scenario-main-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #087bdd;
+
+  background: #edf7ff;
+
+  border-radius: 10px;
+}
+
+.scenario-high .scenario-main-icon {
+  color: #ed4c4c;
+
+  background: #fff0f0;
+}
+
+.scenario-heading h3 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.scenario-heading p {
+  margin: 3px 0 0;
+
+  color: #7895af;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   CARD IMAGE
+========================================================= */
+
+.scenario-ship-image {
+  width: 165px;
+  height: 79px;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 8px;
+
+  background: #eaf5fb;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.card-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 10px 0;
+
+  background: #e3edf4;
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.scenario-metrics {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 13px;
+}
+
+.metric {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.metric-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #143e69;
+
+  background: #f1f6fa;
+
+  border-radius: 7px;
+}
+
+.dollar-icon {
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.metric span {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #7592ab;
+
+  font-size: 10px;
+}
+
+.metric strong {
+  display: block;
+
+  color: #143e69;
+
+  font-size: 13px;
+  font-weight: 850;
+}
+
+
+/* =========================================================
+   RISK
+========================================================= */
+
+.risk-pill {
+  display: inline-block !important;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  font-size: 10px !important;
+
+  line-height: 1;
+
+  font-weight: 750 !important;
+}
+
+.risk-low {
+  color: #168f62 !important;
+
+  background: #def7eb;
+}
+
+.risk-moderate {
+  color: #b57c00 !important;
+
+  background: #fff0c8;
+}
+
+.risk-high {
+  color: #e44747 !important;
+
+  background: #ffe1e1;
+}
+
+
+/* =========================================================
+   SCENARIO MESSAGE
+========================================================= */
+
+.scenario-message {
+  min-height: 63px;
+
+  margin-top: 13px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  padding: 11px 12px;
+
+  border-radius: 8px;
+
+  font-size: 10px;
+
+  line-height: 1.45;
+}
+
+.scenario-message svg {
+  flex-shrink: 0;
+}
+
+.scenario-message p {
+  margin: 0;
+}
+
+
+/* =========================================================
+   LOW RISK MESSAGE
+========================================================= */
+
+.scenario-low .scenario-message {
+  color: #2b7e65;
+
+  background: #effaf5;
+
+  border: 1px solid #d0eee1;
+}
+
+.scenario-low .scenario-message svg {
+  color: #10a66d;
+}
+
+
+/* =========================================================
+   MODERATE RISK MESSAGE
+========================================================= */
+
+.scenario-moderate .scenario-message {
+  color: #4a7595;
+
+  background: #edf7ff;
+
+  border: 1px solid #d5e8f7;
+}
+
+.scenario-moderate .scenario-message svg {
+  color: #477fa8;
+}
+
+
+/* =========================================================
+   HIGH RISK MESSAGE
+========================================================= */
+
+.scenario-high .scenario-message {
+  color: #db5656;
+
+  background: #fff0f0;
+
+  border: 1px solid #f5cccc;
+}
+
+.scenario-high .scenario-message svg {
+  color: #ef4444;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+  .scenario-heading-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .scenario-info {
+    width: 100%;
+
+    max-width: none;
+  }
+
+  .scenario-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .scenario-card-header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 450px) {
+  .scenario-card-header {
+    flex-direction: column;
+  }
+
+  .scenario-ship-image {
+    width: 100%;
+    height: 110px;
+  }
+
+  .scenario-metrics {
+    grid-template-columns: 1fr;
+  }
+}

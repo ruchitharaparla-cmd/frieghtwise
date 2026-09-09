@@ -18,6 +18,10 @@ class Scenario(BaseModel):
     origin_country: str
     destination_region: str
     arrival_date: date
+    charter_duration_days: Optional[float] = Field(
+        default=None,
+        gt=0,
+    )
 
 
 class SimulationRequest(BaseModel):
@@ -42,6 +46,7 @@ def run_simulation(
         origin_country=base["origin_country"],
         destination_region=base["destination_region"],
         arrival_date=base["arrival_date"],
+        charter_duration_days=base.get("charter_duration_days"),
     )
 
     modified_result = run_decision_engine(
@@ -51,6 +56,7 @@ def run_simulation(
         origin_country=modified["origin_country"],
         destination_region=modified["destination_region"],
         arrival_date=modified["arrival_date"],
+        charter_duration_days=modified.get("charter_duration_days"),
     )
 
     base_cost = (

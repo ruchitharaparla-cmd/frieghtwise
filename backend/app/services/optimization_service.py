@@ -55,67 +55,151 @@ def calculate_option_score(
     freight_min: float,
     freight_max: float,
 ) -> Optional[float]:
+    """
+    Calculate a weighted option score using only available signals.
 
-    required_values = [
-        total_landed_cost,
-        overall_risk,
-        expected_delay_hours,
-        freight_rate,
-        port_suitability_score,
-        arrival_feasibility_score,
-    ]
+    Lower final score = better option.
 
-    if any(value is None for value in required_values):
+    Missing signals are excluded and the remaining weights are
+    renormalized. No missing value is fabricated.
+    """
+
+    components = []
+
+    # ---------------------------------------------------------
+    # COST
+    # ---------------------------------------------------------
+    if total_landed_cost is not None:
+        components.append(
+            (
+                normalize_lower_better(
+                    total_landed_cost,
+                    cost_min,
+                    cost_max,
+                ),
+                COST_WEIGHT,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # RISK
+    # ---------------------------------------------------------
+    if overall_risk is not None:
+        components.append(
+            (
+                max(
+                    0.0,
+                    min(100.0, overall_risk),
+                ),
+                RISK_WEIGHT,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # DELAY
+    # ---------------------------------------------------------
+    if expected_delay_hours is not None:
+        components.append(
+            (
+                normalize_lower_better(
+                    expected_delay_hours,
+                    delay_min,
+                    delay_max,
+                ),
+                DELAY_WEIGHT,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # FREIGHT RATE
+    # ---------------------------------------------------------
+    if freight_rate is not None:
+        components.append(
+            (
+                normalize_lower_better(
+                    freight_rate,
+                    freight_min,
+                    freight_max,
+                ),
+                FREIGHT_WEIGHT,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # PORT SUITABILITY
+    # ---------------------------------------------------------
+    if port_suitability_score is not None:
+        components.append(
+            (
+                max(
+                    0.0,
+                    min(
+                        100.0,
+                        100.0 - port_suitability_score,
+                    ),
+                ),
+                PORT_WEIGHT,
+            )
+        )
+
+    # ---------------------------------------------------------
+    # ARRIVAL FEASIBILITY
+    # ---------------------------------------------------------
+    if arrival_feasibility_score is not None:
+        components.append(
+            (
+                max(
+                    0.0,
+                    min(
+                        100.0,
+                        100.0 - arrival_feasibility_score,
+                    ),
+                ),
+                ARRIVAL_WEIGHT,
+            )
+        )
+
+    # No usable signals
+    if not components:
         return None
 
-    cost_score = normalize_lower_better(
-        total_landed_cost,
-        cost_min,
-        cost_max,
+    # ---------------------------------------------------------
+    # RENORMALIZE AVAILABLE WEIGHTS
+    # ---------------------------------------------------------
+    total_weight = sum(
+        weight
+        for _, weight in components
     )
 
-    risk_score = max(
-        0.0,
-        min(100.0, overall_risk),
-    )
+    if total_weight <= 0:
+        return None
 
-    delay_score = normalize_lower_better(
-        expected_delay_hours,
-        delay_min,
-        delay_max,
-    )
-
-    freight_score = normalize_lower_better(
-        freight_rate,
-        freight_min,
-        freight_max,
-    )
-
-    port_score = max(
-        0.0,
-        min(100.0, 100.0 - port_suitability_score),
-    )
-
-    arrival_score = max(
-        0.0,
-        min(100.0, 100.0 - arrival_feasibility_score),
-    )
-
-    final_score = (
-        cost_score * COST_WEIGHT
-        + risk_score * RISK_WEIGHT
-        + delay_score * DELAY_WEIGHT
-        + freight_score * FREIGHT_WEIGHT
-        + port_score * PORT_WEIGHT
-        + arrival_score * ARRIVAL_WEIGHT
+    final_score = sum(
+        score * (weight / total_weight)
+        for score, weight in components
     )
 
     return round(final_score, 2)
 
 
-def rank_options(options: list[dict]) -> list[dict]:
+def rank_options(
+    options: list[dict],
+) -> list[dict]:
     """
     Rank feasible vessel-port options.
+
+    Required for economic ranking:
+        - total_landed_cost
+        - freight_rate
+
+    Optional signals:
+        - overall_risk
+        - expected_delay_hours
+        - port_suitability_score
+        - arrival_feasibility_score
+
+    Missing optional signals are excluded from the score and
+    the remaining weights are renormalized.
 
     Lower final score = better option.
     """
@@ -129,10 +213,30 @@ def rank_options(options: list[dict]) -> list[dict]:
     if not feasible_options:
         return []
 
+    # ---------------------------------------------------------
+    # REQUIRED ECONOMIC DATA
+    # ---------------------------------------------------------
+    required_fields = [
+        "total_landed_cost",
+        "freight_rate",
+    ]
+
+    for option in feasible_options:
+        for field in required_fields:
+            if option.get(field) is None:
+                return []
+
+    # ---------------------------------------------------------
+    # NORMALIZATION DATA
+    # ---------------------------------------------------------
     costs = [
         option["total_landed_cost"]
         for option in feasible_options
-        if option.get("total_landed_cost") is not None
+    ]
+
+    freight_rates = [
+        option["freight_rate"]
+        for option in feasible_options
     ]
 
     delays = [
@@ -141,46 +245,41 @@ def rank_options(options: list[dict]) -> list[dict]:
         if option.get("expected_delay_hours") is not None
     ]
 
-    freight_rates = [
-        option["freight_rate"]
-        for option in feasible_options
-        if option.get("freight_rate") is not None
-    ]
-
-    if (
-        len(costs) != len(feasible_options)
-        or len(delays) != len(feasible_options)
-        or len(freight_rates) != len(feasible_options)
-    ):
-        return []
-
-    if any(
-        option.get("overall_risk") is None
-        or option.get("port_suitability_score") is None
-        or option.get("arrival_feasibility_score") is None
-        for option in feasible_options
-    ):
-        return []
-
     cost_min = min(costs)
     cost_max = max(costs)
-
-    delay_min = min(delays)
-    delay_max = max(delays)
 
     freight_min = min(freight_rates)
     freight_max = max(freight_rates)
 
+    if delays:
+        delay_min = min(delays)
+        delay_max = max(delays)
+    else:
+        delay_min = 0.0
+        delay_max = 0.0
+
     scored_options = []
 
+    # ---------------------------------------------------------
+    # SCORE EACH OPTION
+    # ---------------------------------------------------------
     for option in feasible_options:
+
         scored_option = option.copy()
 
         scored_option["score"] = calculate_option_score(
-            total_landed_cost=option.get("total_landed_cost"),
-            overall_risk=option.get("overall_risk"),
-            expected_delay_hours=option.get("expected_delay_hours"),
-            freight_rate=option.get("freight_rate"),
+            total_landed_cost=option.get(
+                "total_landed_cost"
+            ),
+            overall_risk=option.get(
+                "overall_risk"
+            ),
+            expected_delay_hours=option.get(
+                "expected_delay_hours"
+            ),
+            freight_rate=option.get(
+                "freight_rate"
+            ),
             port_suitability_score=option.get(
                 "port_suitability_score"
             ),
@@ -195,15 +294,65 @@ def rank_options(options: list[dict]) -> list[dict]:
             freight_max=freight_max,
         )
 
-        scored_options.append(scored_option)
+        # -----------------------------------------------------
+        # TRACK MISSING SIGNALS
+        # -----------------------------------------------------
+        unavailable_signals = []
 
+        if option.get("overall_risk") is None:
+            unavailable_signals.append(
+                "risk"
+            )
+
+        if option.get("expected_delay_hours") is None:
+            unavailable_signals.append(
+                "delay"
+            )
+
+        if option.get("port_suitability_score") is None:
+            unavailable_signals.append(
+                "port_suitability"
+            )
+
+        if option.get("arrival_feasibility_score") is None:
+            unavailable_signals.append(
+                "arrival_feasibility"
+            )
+
+        scored_option["unavailable_signals"] = (
+            unavailable_signals
+        )
+
+        scored_options.append(
+            scored_option
+        )
+
+    # ---------------------------------------------------------
+    # REMOVE OPTIONS WITH NO SCORE
+    # ---------------------------------------------------------
+    scored_options = [
+        option
+        for option in scored_options
+        if option.get("score") is not None
+    ]
+
+    if not scored_options:
+        return []
+
+    # ---------------------------------------------------------
+    # SORT
+    # ---------------------------------------------------------
     scored_options.sort(
         key=lambda option: option["score"]
-        if option["score"] is not None
-        else float("inf")
     )
 
-    for rank, option in enumerate(scored_options, start=1):
+    # ---------------------------------------------------------
+    # ASSIGN RANK
+    # ---------------------------------------------------------
+    for rank, option in enumerate(
+        scored_options,
+        start=1,
+    ):
         option["rank"] = rank
 
     return scored_options
@@ -213,6 +362,9 @@ def choose_strategy(
     best_option: Optional[dict],
     forecast_direction: Optional[str] = None,
 ) -> str:
+    """
+    Select the chartering strategy.
+    """
 
     if best_option is None:
         return "WAIT"
