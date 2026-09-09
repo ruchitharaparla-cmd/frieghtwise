@@ -1,0 +1,482 @@
+/* =========================================================
+   HERO
+========================================================= */
+
+.simulation-hero {
+  position: relative;
+
+  width: 100%;
+  height: 190px;
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 30px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f5fbff 0%,
+      #eff9ff 35%,
+      #e6f6ff 100%
+    );
+}
+
+.simulation-hero::after {
+  content: "";
+
+  position: absolute;
+
+  width: 360px;
+  height: 360px;
+
+  right: 130px;
+  top: -180px;
+
+  border: 1px solid rgba(46, 130, 183, 0.12);
+
+  border-radius: 50%;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.simulation-hero-content {
+  position: relative;
+
+  z-index: 5;
+
+  width: 40%;
+}
+
+.hero-eyebrow {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #52799d;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.simulation-hero-content h1 {
+  margin: 0;
+
+  color: #123e6e;
+
+  font-size: 38px;
+  font-weight: 850;
+
+  letter-spacing: -1px;
+
+  line-height: 1.05;
+}
+
+.simulation-hero-content p {
+  margin: 7px 0 0;
+
+  color: #163e67;
+
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   HERO IMAGE
+========================================================= */
+
+.simulation-hero-ship {
+  position: absolute;
+
+  right: 150px;
+  bottom: 0;
+
+  width: 55%;
+  max-width: 720px;
+
+  height: 190px;
+
+  object-fit: contain;
+  object-position: center bottom;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   HERO SLOGAN
+========================================================= */
+
+.simulation-hero-slogan {
+  position: absolute;
+
+  right: 28px;
+  top: 61px;
+
+  z-index: 6;
+
+  width: 150px;
+
+  display: flex;
+  flex-direction: column;
+
+  color: #113b65;
+
+  font-size: 16px;
+
+  line-height: 1.17;
+}
+
+.simulation-hero-slogan strong {
+  font-weight: 850;
+}
+
+.simulation-hero-slogan span {
+  width: 100%;
+  height: 2px;
+
+  margin-top: 10px;
+
+  background: #0aa875;
+}
+
+
+/* =========================================================
+   PARAMETERS CARD
+========================================================= */
+
+.parameters-card {
+  margin-top: 10px;
+
+  padding: 14px 16px 15px;
+
+  background: white;
+
+  border: 1px solid #dce8f2;
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 2px 8px rgba(26, 76, 111, 0.03);
+}
+
+
+/* =========================================================
+   PARAMETERS HEADING
+========================================================= */
+
+.parameters-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 13px;
+}
+
+.parameters-icon {
+  width: 43px;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #087bdd;
+
+  background: #eaf5ff;
+
+  border-radius: 10px;
+}
+
+.parameters-heading h2 {
+  margin: 0;
+
+  color: #143e69;
+
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.parameters-heading p {
+  margin: 2px 0 0;
+
+  color: #7895af;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   PARAMETER GRID
+========================================================= */
+
+.parameter-grid {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1fr
+    1.05fr
+    1fr;
+
+  gap: 13px;
+
+  align-items: end;
+}
+
+.parameter-field {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   FIELD LABEL
+========================================================= */
+
+.parameter-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #153d65;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   INPUT / SELECT
+========================================================= */
+
+.input-wrapper,
+.select-wrapper {
+  position: relative;
+
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 13px;
+
+  color: #087bdd;
+
+  background: white;
+
+  border: 1px solid #ccdeed;
+
+  border-radius: 9px;
+}
+
+.input-wrapper input,
+.select-wrapper select {
+  width: 100%;
+
+  min-width: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #163f68;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.input-wrapper input {
+  cursor: pointer;
+}
+
+.select-wrapper select {
+  appearance: none;
+
+  cursor: pointer;
+
+  padding-right: 20px;
+}
+
+.select-arrow {
+  position: absolute;
+
+  right: 11px;
+
+  color: #537b9d;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   RUN BUTTON
+========================================================= */
+
+.run-simulation-button {
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  color: white;
+
+  background: #087bdd;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 12px rgba(8, 123, 221, 0.2);
+
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+.run-simulation-button:hover {
+  background: #066dc7;
+
+  transform: translateY(-1px);
+}
+
+.run-simulation-button:disabled {
+  opacity: 0.7;
+
+  cursor: wait;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.simulation-status {
+  min-height: 37px;
+
+  margin-top: 10px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 13px;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+}
+
+.status-success {
+  color: #188460;
+
+  background: #ecfaf4;
+
+  border: 1px solid #cdeee0;
+}
+
+.status-running {
+  color: #1475b5;
+
+  background: #edf7ff;
+
+  border: 1px solid #cfe7f7;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1250px) {
+  .parameter-grid {
+    grid-template-columns:
+      1fr
+      1fr
+      1fr;
+  }
+
+  .run-simulation-button {
+    width: 100%;
+  }
+
+  .simulation-hero-ship {
+    right: 130px;
+    width: 55%;
+  }
+}
+
+
+@media (max-width: 1050px) {
+  .simulation-hero-ship {
+    right: 100px;
+
+    width: 60%;
+
+    opacity: 0.65;
+  }
+}
+
+
+@media (max-width: 800px) {
+  .simulation-hero {
+    height: 220px;
+
+    padding: 25px;
+  }
+
+  .simulation-hero-content {
+    width: 100%;
+  }
+
+  .simulation-hero-content h1 {
+    font-size: 31px;
+  }
+
+  .simulation-hero-ship {
+    right: -40px;
+
+    width: 90%;
+
+    opacity: 0.28;
+  }
+
+  .simulation-hero-slogan {
+    display: none;
+  }
+
+  .parameter-grid {
+    grid-template-columns: 1fr;
+  }
+}
