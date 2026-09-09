@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+
 import {
   Search,
   Bell,
@@ -9,20 +10,24 @@ import {
   MapPin,
   RotateCcw,
   Settings,
-  ArrowRight,
-  Star,
-  CheckCircle2,
-  XCircle,
-  Navigation,
   ShipWheel,
+  CheckCircle2,
 } from "lucide-react";
-
-import "./Vessels.css";
 
 import oceanStar from "../../assets/images/vessel-ocean-star.png";
 import stella from "../../assets/images/vessel-stella.png";
 import horizon from "../../assets/images/vessel-horizon.png";
 import pacificGlory from "../../assets/images/vessel-pacific-glory.png";
+
+import VesselCard from "../../components/vessels/VesselCard";
+import VesselTable from "../../components/vessels/VesselTable";
+
+import {
+  FitBadge,
+  AvailabilityBadge,
+} from "../../components/vessels/CompatibilityBadge";
+
+import "./Vessels.css";
 
 const vesselData = [
   {
@@ -164,53 +169,22 @@ const navItems = [
 
 function navigateTo(path) {
   window.history.pushState({}, "", path);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
-
-function FitBadge({ value }) {
-  const className =
-    value === "Excellent"
-      ? "fit-excellent"
-      : value === "Good"
-        ? "fit-good"
-        : "fit-moderate";
-
-  return (
-    <span className={`fit-badge ${className}`}>
-      <CheckCircle2 size={12} />
-      {value}
-    </span>
-  );
-}
-
-function AvailabilityBadge({ value }) {
-  let icon = <CheckCircle2 size={12} />;
-  let className = "availability-available";
-
-  if (value === "In Positioning") {
-    icon = <Navigation size={12} />;
-    className = "availability-positioning";
-  }
-
-  if (value === "Unavailable") {
-    icon = <XCircle size={12} />;
-    className = "availability-unavailable";
-  }
-
-  return (
-    <span className={`availability-badge ${className}`}>
-      {icon}
-      {value}
-    </span>
+  window.dispatchEvent(
+    new PopStateEvent("popstate")
   );
 }
 
 function Sidebar() {
   return (
     <aside className="vessels-sidebar">
+
       <div className="sidebar-brand">
+
         <div className="sidebar-logo">
-          <Ship size={35} strokeWidth={2} />
+          <Ship
+            size={35}
+            strokeWidth={2}
+          />
         </div>
 
         <div className="sidebar-brand-name">
@@ -222,12 +196,15 @@ function Sidebar() {
           <br />
           Charter Better.
         </div>
+
       </div>
 
       <nav className="sidebar-navigation">
+
         {navItems.map((item) => {
           const Icon = item.icon;
-          const active = item.label === "Vessels";
+          const active =
+            item.label === "Vessels";
 
           return (
             <button
@@ -235,17 +212,28 @@ function Sidebar() {
               className={`sidebar-nav-item ${
                 active ? "active" : ""
               }`}
-              onClick={() => navigateTo(item.path)}
+              onClick={() =>
+                navigateTo(item.path)
+              }
             >
-              <Icon size={21} strokeWidth={2} />
-              <span>{item.label}</span>
+              <Icon
+                size={21}
+                strokeWidth={2}
+              />
+
+              <span>
+                {item.label}
+              </span>
             </button>
           );
         })}
+
       </nav>
 
       <div className="sidebar-bottom">
+
         <div className="ai-status">
+
           <div className="ai-status-title">
             <span className="online-indicator" />
             AI Engine Online
@@ -258,6 +246,7 @@ function Sidebar() {
           <div className="ai-status-time">
             2 min ago
           </div>
+
         </div>
 
         <div className="sidebar-waves">
@@ -272,7 +261,9 @@ function Sidebar() {
           <br />
           A Stronger India.”
         </p>
+
       </div>
+
     </aside>
   );
 }
@@ -280,36 +271,50 @@ function Sidebar() {
 function Topbar() {
   return (
     <header className="vessels-topbar">
+
       <div className="global-search">
+
         <Search size={18} />
 
         <input
           type="text"
           placeholder="Search vessels, ports, routes..."
         />
+
       </div>
 
       <div className="topbar-right">
+
         <div className="topbar-divider" />
 
         <button className="notification-button">
+
           <Bell size={23} />
 
           <span className="notification-count">
             3
           </span>
+
         </button>
 
         <div className="topbar-divider" />
 
         <button className="user-button">
-          <span className="user-avatar">K</span>
 
-          <span>User</span>
+          <span className="user-avatar">
+            K
+          </span>
+
+          <span>
+            User
+          </span>
 
           <ChevronDown size={16} />
+
         </button>
+
       </div>
+
     </header>
   );
 }
@@ -322,110 +327,37 @@ function FilterSelect({
 }) {
   return (
     <div className="filter-field">
-      <label>{label}</label>
+
+      <label>
+        {label}
+      </label>
 
       <div className="filter-select-wrapper">
-        <select value={value} onChange={onChange}>
+
+        <select
+          value={value}
+          onChange={onChange}
+        >
           {options.map((option) => (
-            <option key={option} value={option}>
+            <option
+              key={option}
+              value={option}
+            >
               {option}
             </option>
           ))}
         </select>
 
         <ChevronDown size={15} />
+
       </div>
+
     </div>
   );
 }
 
-function VesselCard({ vessel }) {
-  return (
-    <article
-      className={`vessel-card ${
-        vessel.recommended ? "recommended-card" : ""
-      }`}
-    >
-      <div className="vessel-card-image">
-        <img
-          src={vessel.image}
-          alt={`${vessel.name} bulk carrier`}
-        />
-
-        {vessel.recommended && (
-          <div className="ai-recommended">
-            <CheckCircle2 size={13} />
-            AI Recommended
-          </div>
-        )}
-
-        {vessel.recommended && (
-          <button
-            className="favorite-button"
-            aria-label="Favorite vessel"
-          >
-            <Star
-              size={18}
-              fill="currentColor"
-            />
-          </button>
-        )}
-      </div>
-
-      <div className="vessel-card-body">
-        <div className="vessel-card-title">
-          <h3>{vessel.name}</h3>
-
-          <p>
-            {vessel.dwt.toLocaleString()} DWT
-            <span>|</span>
-            {vessel.type}
-          </p>
-        </div>
-
-        <div className="vessel-card-details">
-          <div className="fit-section">
-            <div className="fit-row">
-              <span>Cargo Fit</span>
-              <FitBadge value={vessel.cargoFit} />
-            </div>
-
-            <div className="fit-row">
-              <span>Port Fit</span>
-              <FitBadge value={vessel.portFit} />
-            </div>
-
-            <div className="fit-row">
-              <span>Availability</span>
-              <AvailabilityBadge
-                value={vessel.availability}
-              />
-            </div>
-          </div>
-
-          <div className="estimated-cost">
-            <span>Est. Cost</span>
-
-            <strong>
-              ₹ {vessel.cost.toFixed(2)} Cr
-            </strong>
-
-            <small>
-              (${vessel.costPerMt.toFixed(1)} / MT)
-            </small>
-          </div>
-        </div>
-
-        <button className="view-details-link">
-          View Details
-          <ArrowRight size={15} />
-        </button>
-      </div>
-    </article>
-  );
-}
-
 export default function Vessels() {
+
   const [vesselType, setVesselType] =
     useState("All Types");
 
@@ -441,8 +373,13 @@ export default function Vessels() {
   const [portFit, setPortFit] =
     useState("All");
 
+  const [selectedVessel, setSelectedVessel] =
+    useState(null);
+
   const filteredVessels = useMemo(() => {
+
     return vesselData.filter((vessel) => {
+
       const typeMatch =
         vesselType === "All Types" ||
         vessel.type === vesselType;
@@ -461,19 +398,28 @@ export default function Vessels() {
 
       let dwtMatch = true;
 
-      if (dwtRange === "50,000 - 100,000") {
+      if (
+        dwtRange ===
+        "50,000 - 100,000"
+      ) {
         dwtMatch =
           vessel.dwt >= 50000 &&
           vessel.dwt <= 100000;
       }
 
-      if (dwtRange === "60,000 - 80,000") {
+      if (
+        dwtRange ===
+        "60,000 - 80,000"
+      ) {
         dwtMatch =
           vessel.dwt >= 60000 &&
           vessel.dwt <= 80000;
       }
 
-      if (dwtRange === "80,000 - 100,000") {
+      if (
+        dwtRange ===
+        "80,000 - 100,000"
+      ) {
         dwtMatch =
           vessel.dwt >= 80000 &&
           vessel.dwt <= 100000;
@@ -487,6 +433,7 @@ export default function Vessels() {
         dwtMatch
       );
     });
+
   }, [
     vesselType,
     dwtRange,
@@ -505,39 +452,65 @@ export default function Vessels() {
 
   return (
     <div className="vessels-page">
+
       <Sidebar />
 
       <main className="vessels-main">
+
         <Topbar />
 
         <div className="vessels-content">
 
           {/* PAGE HEADER */}
+
           <section className="vessels-page-header">
+
             <div>
-              <h1>Recommended Vessels</h1>
+
+              <h1>
+                Recommended Vessels
+              </h1>
 
               <p>
                 Best matching vessels for your cargo and route
               </p>
+
             </div>
 
             <div className="fleet-banner">
+
               <div className="fleet-banner-overlay">
-                <strong>Global Fleet.</strong>
-                <span>Smarter Choices.</span>
-                <span>Brighter Voyages.</span>
+
+                <strong>
+                  Global Fleet.
+                </strong>
+
+                <span>
+                  Smarter Choices.
+                </span>
+
+                <span>
+                  Brighter Voyages.
+                </span>
+
               </div>
+
             </div>
+
           </section>
 
+
           {/* FILTERS */}
+
           <section className="filters-card">
+
             <FilterSelect
               label="Vessel Type"
               value={vesselType}
               onChange={(e) =>
-                setVesselType(e.target.value)
+                setVesselType(
+                  e.target.value
+                )
               }
               options={[
                 "All Types",
@@ -549,7 +522,9 @@ export default function Vessels() {
               label="DWT Range"
               value={dwtRange}
               onChange={(e) =>
-                setDwtRange(e.target.value)
+                setDwtRange(
+                  e.target.value
+                )
               }
               options={[
                 "50,000 - 100,000",
@@ -563,7 +538,9 @@ export default function Vessels() {
               label="Availability"
               value={availability}
               onChange={(e) =>
-                setAvailability(e.target.value)
+                setAvailability(
+                  e.target.value
+                )
               }
               options={[
                 "Available",
@@ -577,7 +554,9 @@ export default function Vessels() {
               label="Cargo Fit"
               value={cargoFit}
               onChange={(e) =>
-                setCargoFit(e.target.value)
+                setCargoFit(
+                  e.target.value
+                )
               }
               options={[
                 "All",
@@ -591,7 +570,9 @@ export default function Vessels() {
               label="Port Fit"
               value={portFit}
               onChange={(e) =>
-                setPortFit(e.target.value)
+                setPortFit(
+                  e.target.value
+                )
               }
               options={[
                 "All",
@@ -602,6 +583,7 @@ export default function Vessels() {
             />
 
             <div className="filter-buttons">
+
               <button
                 className="clear-filters-button"
                 onClick={clearFilters}
@@ -610,162 +592,267 @@ export default function Vessels() {
               </button>
 
               <button className="search-vessels-button">
+
                 <Search size={16} />
+
                 Search
+
               </button>
+
             </div>
+
           </section>
 
+
           {/* RECOMMENDED CARDS */}
+
           <section className="recommended-grid">
+
             {filteredVessels
               .slice(0, 3)
               .map((vessel) => (
                 <VesselCard
                   key={vessel.id}
                   vessel={vessel}
+                  onViewDetails={
+                    setSelectedVessel
+                  }
                 />
               ))}
+
           </section>
+
 
           {/* ALL VESSELS */}
-          <section className="all-vessels-card">
 
-            <div className="all-vessels-header">
+          <VesselTable
+            vessels={filteredVessels}
+            onViewDetails={
+              setSelectedVessel
+            }
+          />
 
-              <div className="all-vessels-heading">
-                <Ship
-                  size={29}
-                  strokeWidth={2}
-                />
 
-                <div>
-                  <h2>All Available Vessels</h2>
+          {/* VESSEL DETAILS MODAL */}
 
-                  <p>
-                    Compare vessels based on compatibility,
-                    availability and estimated cost
-                  </p>
+          {selectedVessel && (
+
+            <div
+              className="vessel-details-overlay"
+              onClick={() =>
+                setSelectedVessel(null)
+              }
+            >
+
+              <div
+                className="vessel-details-modal"
+                onClick={(e) =>
+                  e.stopPropagation()
+                }
+              >
+
+                <button
+                  className="vessel-details-close"
+                  onClick={() =>
+                    setSelectedVessel(null)
+                  }
+                  aria-label="Close vessel details"
+                >
+                  ×
+                </button>
+
+
+                {/* IMAGE */}
+
+                <div className="vessel-details-image">
+
+                  <img
+                    src={selectedVessel.image}
+                    alt={`${selectedVessel.name} bulk carrier`}
+                  />
+
+                  {selectedVessel.recommended && (
+                    <div className="details-recommended-badge">
+
+                      <CheckCircle2
+                        size={14}
+                      />
+
+                      AI Recommended
+
+                    </div>
+                  )}
+
                 </div>
+
+
+                {/* DETAILS */}
+
+                <div className="vessel-details-content">
+
+                  <div className="vessel-details-heading">
+
+                    <div>
+
+                      <h2>
+                        {selectedVessel.name}
+                      </h2>
+
+                      <p>
+                        {selectedVessel.dwt.toLocaleString()} DWT
+                        <span>
+                          |
+                        </span>
+                        {selectedVessel.type}
+                      </p>
+
+                    </div>
+
+                    <AvailabilityBadge
+                      value={
+                        selectedVessel.availability
+                      }
+                    />
+
+                  </div>
+
+
+                  {/* COMPATIBILITY */}
+
+                  <div className="vessel-details-grid">
+
+                    <div className="detail-item">
+
+                      <span>
+                        Cargo Fit
+                      </span>
+
+                      <FitBadge
+                        value={
+                          selectedVessel.cargoFit
+                        }
+                      />
+
+                    </div>
+
+
+                    <div className="detail-item">
+
+                      <span>
+                        Port Fit
+                      </span>
+
+                      <FitBadge
+                        value={
+                          selectedVessel.portFit
+                        }
+                      />
+
+                    </div>
+
+
+                    <div className="detail-item">
+
+                      <span>
+                        Availability
+                      </span>
+
+                      <AvailabilityBadge
+                        value={
+                          selectedVessel.availability
+                        }
+                      />
+
+                    </div>
+
+
+                    <div className="detail-item">
+
+                      <span>
+                        Deadweight
+                      </span>
+
+                      <strong>
+                        {selectedVessel.dwt.toLocaleString()} DWT
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* COST */}
+
+                  <div className="vessel-cost-details">
+
+                    <div>
+
+                      <span>
+                        Estimated Voyage Cost
+                      </span>
+
+                      <strong>
+                        ₹ {selectedVessel.cost.toFixed(2)} Cr
+                      </strong>
+
+                    </div>
+
+                    <div>
+
+                      <span>
+                        Freight Cost
+                      </span>
+
+                      <strong>
+                        ${selectedVessel.costPerMt.toFixed(1)} / MT
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+                  {/* AI NOTE */}
+
+                  {selectedVessel.recommended && (
+
+                    <div className="vessel-ai-note">
+
+                      <CheckCircle2
+                        size={17}
+                      />
+
+                      <div>
+
+                        <strong>
+                          AI Recommendation
+                        </strong>
+
+                        <p>
+                          This vessel is currently
+                          identified as a recommended
+                          match for the selected cargo
+                          and route.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  )}
+
+                </div>
+
               </div>
 
-              <div className="table-toolbar">
-                <span>
-                  Showing{" "}
-                  <strong>
-                    {filteredVessels.length}
-                  </strong>{" "}
-                  vessels
-                </span>
-
-                <label>
-                  Sort by
-
-                  <select defaultValue="recommended">
-                    <option value="recommended">
-                      Recommended
-                    </option>
-
-                    <option value="cost">
-                      Lowest Cost
-                    </option>
-
-                    <option value="dwt">
-                      DWT
-                    </option>
-                  </select>
-                </label>
-              </div>
             </div>
 
-            <div className="table-container">
-              <table className="vessel-table">
-
-                <thead>
-                  <tr>
-                    <th>Vessel</th>
-                    <th>DWT</th>
-                    <th>Type</th>
-                    <th>Cargo Fit</th>
-                    <th>Port Fit</th>
-                    <th>Availability</th>
-                    <th>Estimated Cost</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {filteredVessels.map((vessel) => (
-                    <tr key={vessel.id}>
-
-                      <td>
-                        <div className="table-vessel">
-                          <img
-                            src={vessel.image}
-                            alt=""
-                          />
-
-                          <strong>
-                            {vessel.name}
-                          </strong>
-                        </div>
-                      </td>
-
-                      <td>
-                        {vessel.dwt.toLocaleString()}
-                      </td>
-
-                      <td>{vessel.type}</td>
-
-                      <td>
-                        <FitBadge
-                          value={vessel.cargoFit}
-                        />
-                      </td>
-
-                      <td>
-                        <FitBadge
-                          value={vessel.portFit}
-                        />
-                      </td>
-
-                      <td>
-                        <AvailabilityBadge
-                          value={
-                            vessel.availability
-                          }
-                        />
-                      </td>
-
-                      <td>
-                        <div className="table-cost">
-                          <strong>
-                            ₹ {vessel.cost.toFixed(2)} Cr
-                          </strong>
-
-                          <span>
-                            (${vessel.costPerMt.toFixed(1)} / MT)
-                          </span>
-                        </div>
-                      </td>
-
-                      <td>
-                        <button className="table-details-button">
-                          View Details
-                        </button>
-                      </td>
-
-                    </tr>
-                  ))}
-                </tbody>
-
-              </table>
-            </div>
-
-          </section>
+          )}
 
         </div>
+
       </main>
+
     </div>
   );
 }

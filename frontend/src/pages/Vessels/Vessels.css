@@ -179,6 +179,7 @@
   line-height: 1.55;
 }
 
+
 /* =========================
    MAIN
 ========================= */
@@ -188,6 +189,7 @@
   margin-left: 190px;
   min-height: 100vh;
 }
+
 
 /* =========================
    TOPBAR
@@ -292,6 +294,7 @@
   font-weight: 700;
 }
 
+
 /* =========================
    CONTENT
 ========================= */
@@ -299,6 +302,7 @@
 .vessels-content {
   padding: 0 20px 22px;
 }
+
 
 /* =========================
    PAGE HEADER
@@ -363,6 +367,7 @@
   font-size: 13px;
   line-height: 1.35;
 }
+
 
 /* =========================
    FILTERS
@@ -456,8 +461,13 @@
     0 2px 5px rgba(0, 101, 205, 0.18);
 }
 
+.search-vessels-button:hover {
+  background: #0569bd;
+}
+
+
 /* =========================
-   RECOMMENDED CARDS
+   RECOMMENDED GRID
 ========================= */
 
 .recommended-grid {
@@ -467,349 +477,202 @@
   gap: 10px;
 }
 
-.vessel-card {
+
+/* =========================
+   VESSEL DETAILS MODAL
+========================= */
+
+.vessel-details-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(3, 35, 63, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+
+.vessel-details-modal {
+  position: relative;
+  width: min(700px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
   background: white;
-  border: 1px solid #d8e5ef;
-  border-radius: 8px;
-  overflow: hidden;
+  border-radius: 12px;
   box-shadow:
-    0 2px 8px rgba(30, 76, 112, 0.06);
+    0 20px 60px rgba(0, 35, 70, 0.28);
 }
 
-.recommended-card {
-  border: 2px solid #55c79a;
+.vessel-details-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  color: #163d63;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.vessel-card-image {
-  height: 111px;
+.vessel-details-close:hover {
+  background: #f0f6fb;
+}
+
+.vessel-details-image {
+  height: 230px;
   position: relative;
   overflow: hidden;
 }
 
-.vessel-card-image img {
+.vessel-details-image img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
 }
 
-.ai-recommended {
+.details-recommended-badge {
   position: absolute;
-  top: 9px;
-  left: 10px;
-  height: 25px;
-  padding: 0 9px;
+  top: 15px;
+  left: 15px;
+  height: 30px;
+  padding: 0 11px;
   border-radius: 6px;
   background: #08a56a;
   color: white;
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 10px;
+  gap: 6px;
+  font-size: 11px;
   font-weight: 800;
 }
 
-.favorite-button {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  width: 31px;
-  height: 31px;
-  border: 0;
-  border-radius: 50%;
-  background: white;
-  color: #079a70;
+.vessel-details-content {
+  padding: 22px 25px 25px;
+}
+
+.vessel-details-heading {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow:
-    0 2px 7px rgba(0, 0, 0, 0.15);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e0e9f1;
 }
 
-.vessel-card-body {
-  padding: 8px 13px 9px;
-}
-
-.vessel-card-title h3 {
+.vessel-details-heading h2 {
   margin: 0;
   color: #0b3264;
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 25px;
+  font-weight: 900;
 }
 
-.vessel-card-title p {
-  margin: 2px 0 0;
+.vessel-details-heading p {
+  margin: 5px 0 0;
+  color: #526d89;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.vessel-details-heading p span {
+  margin: 0 7px;
+  color: #8798aa;
+}
+
+.vessel-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.detail-item {
+  min-height: 65px;
+  padding: 12px;
+  background: #f5f9fc;
+  border: 1px solid #dce7ef;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.detail-item > span {
   color: #526d89;
   font-size: 11px;
   font-weight: 600;
 }
 
-.vessel-card-title p span {
-  margin: 0 6px;
-  color: #8798aa;
+.detail-item > strong {
+  color: #123b65;
+  font-size: 13px;
 }
 
-.vessel-card-details {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.fit-section {
-  flex: 1;
-}
-
-.fit-row {
-  min-height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.fit-row > span {
-  color: #38536e;
-  font-size: 11px;
-}
-
-.fit-badge,
-.availability-badge {
-  min-height: 21px;
-  padding: 2px 7px;
-  border-radius: 5px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 9px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.fit-excellent,
-.fit-good,
-.availability-available {
-  background: #d7f5e6;
-  color: #078d5b;
-}
-
-.fit-moderate {
-  background: #fff0cc;
-  color: #c57a00;
-}
-
-.availability-positioning {
-  background: #dceeff;
-  color: #126fc2;
-}
-
-.availability-unavailable {
-  background: #ffe0e3;
-  color: #d82337;
-}
-
-.estimated-cost {
-  width: 116px;
+.vessel-cost-details {
+  margin-top: 15px;
+  padding: 15px;
   background: #eef7ff;
-  border-radius: 4px;
-  padding: 8px 9px;
-}
-
-.estimated-cost span {
-  display: block;
-  color: #2a659e;
-  font-size: 9px;
-}
-
-.estimated-cost strong {
-  display: block;
-  margin: 2px 0;
-  color: #092f60;
-  font-size: 17px;
-  line-height: 1.1;
-}
-
-.estimated-cost small {
-  display: block;
-  color: #64798e;
-  font-size: 9px;
-}
-
-.view-details-link {
-  margin-top: 5px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #0875d1;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* =========================
-   ALL VESSELS TABLE
-========================= */
-
-.all-vessels-card {
-  margin-top: 10px;
-  background: white;
-  border: 1px solid #d7e4ee;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow:
-    0 2px 8px rgba(30, 76, 112, 0.06);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.all-vessels-header {
-  min-height: 59px;
-  padding: 8px 13px;
-  border-bottom: 1px solid #dce7ef;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.all-vessels-heading {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #087acb;
-}
-
-.all-vessels-heading h2 {
-  margin: 0;
-  color: #0b3565;
-  font-size: 17px;
-  font-weight: 800;
-}
-
-.all-vessels-heading p {
-  margin: 1px 0 0;
-  color: #75899e;
-  font-size: 10px;
-}
-
-.table-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  color: #7a8da2;
-  font-size: 10px;
-}
-
-.table-toolbar strong {
-  color: #49627b;
-}
-
-.table-toolbar label {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.table-toolbar select {
-  height: 30px;
-  min-width: 125px;
-  border: 1px solid #cbdbe8;
-  border-radius: 6px;
-  background: white;
-  color: #345575;
-  padding: 0 8px;
-  outline: none;
-}
-
-.table-container {
-  overflow-x: auto;
-}
-
-.vessel-table {
-  width: 100%;
-  min-width: 1050px;
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.vessel-table thead th {
-  height: 29px;
-  padding: 0 10px;
-  background: #e8f4fc;
-  color: #21496f;
-  text-align: left;
-  font-size: 10px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.vessel-table tbody td {
-  height: 36px;
-  padding: 3px 10px;
-  border-bottom: 1px solid #edf2f6;
-  color: #37536e;
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.vessel-table tbody tr:hover {
-  background: #f8fbfe;
-}
-
-.table-vessel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.table-vessel img {
-  width: 45px;
-  height: 25px;
-  border-radius: 3px;
-  object-fit: cover;
-}
-
-.table-vessel strong {
-  color: #173c66;
-}
-
-.table-cost strong {
+.vessel-cost-details span {
   display: block;
-  color: #173c66;
+  color: #52789e;
   font-size: 11px;
 }
 
-.table-cost span {
-  color: #778b9f;
-  font-size: 9px;
+.vessel-cost-details strong {
+  display: block;
+  margin-top: 4px;
+  color: #092f60;
+  font-size: 20px;
 }
 
-.table-details-button {
-  height: 26px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 5px;
-  background: #0878d8;
-  color: white;
-  font-size: 9px;
-  font-weight: 800;
-  cursor: pointer;
+.vessel-ai-note {
+  margin-top: 15px;
+  padding: 13px;
+  border: 1px solid #b9e7d2;
+  border-radius: 8px;
+  background: #effbf5;
+  color: #078d5b;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
 }
 
-.table-details-button:hover,
-.search-vessels-button:hover {
-  background: #0569bd;
+.vessel-ai-note strong {
+  font-size: 12px;
 }
+
+.vessel-ai-note p {
+  margin: 4px 0 0;
+  color: #456b5a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 
 /* =========================
    RESPONSIVE
 ========================= */
 
 @media (max-width: 1250px) {
+
   .filters-card {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
   }
 
   .filter-buttons {
@@ -821,12 +684,10 @@
     grid-template-columns: 1fr;
   }
 
-  .vessel-card-image {
-    height: 145px;
-  }
 }
 
 @media (max-width: 850px) {
+
   .vessels-sidebar {
     width: 72px;
   }
@@ -864,9 +725,11 @@
   .filter-buttons {
     grid-column: span 2;
   }
+
 }
 
 @media (max-width: 600px) {
+
   .vessels-topbar {
     padding: 0 10px;
   }
@@ -896,22 +759,28 @@
     flex: 1;
   }
 
-  .all-vessels-header {
-    align-items: flex-start;
+  .vessel-details-overlay {
+    padding: 12px;
+  }
+
+  .vessel-details-image {
+    height: 180px;
+  }
+
+  .vessel-details-content {
+    padding: 18px;
+  }
+
+  .vessel-details-heading {
     flex-direction: column;
-    gap: 10px;
   }
 
-  .table-toolbar {
-    width: 100%;
-    justify-content: space-between;
+  .vessel-details-grid {
+    grid-template-columns: 1fr;
   }
 
-  .vessel-card-details {
-    flex-direction: column;
+  .vessel-cost-details {
+    grid-template-columns: 1fr;
   }
 
-  .estimated-cost {
-    width: 100%;
-  }
 }

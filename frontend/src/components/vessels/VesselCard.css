@@ -1,0 +1,167 @@
+.vessel-card {
+  background: white;
+  border: 1px solid #d8e5ef;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(30, 76, 112, 0.06);
+}
+
+.recommended-card {
+  border: 2px solid #55c79a;
+}
+
+.vessel-card-image {
+  height: 111px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vessel-card-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.ai-recommended {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  height: 25px;
+  padding: 0 9px;
+  border-radius: 6px;
+  background: #08a56a;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.favorite-button {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 31px;
+  height: 31px;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  color: #079a70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.15);
+}
+
+.vessel-card-body {
+  padding: 8px 13px 9px;
+}
+
+.vessel-card-title h3 {
+  margin: 0;
+  color: #0b3264;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.vessel-card-title p {
+  margin: 2px 0 0;
+  color: #526d89;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vessel-card-title p span {
+  margin: 0 6px;
+  color: #8798aa;
+}
+
+.vessel-card-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.fit-section {
+  flex: 1;
+}
+
+.fit-row {
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fit-row > span {
+  color: #38536e;
+  font-size: 11px;
+}
+
+.estimated-cost {
+  width: 116px;
+  background: #eef7ff;
+  border-radius: 4px;
+  padding: 8px 9px;
+}
+
+.estimated-cost span {
+  display: block;
+  color: #2a659e;
+  font-size: 9px;
+}
+
+.estimated-cost strong {
+  display: block;
+  margin: 2px 0;
+  color: #092f60;
+  font-size: 17px;
+  line-height: 1.1;
+}
+
+.estimated-cost small {
+  display: block;
+  color: #64798e;
+  font-size: 9px;
+}
+
+.view-details-link {
+  margin-top: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0875d1;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.view-details-link:hover {
+  color: #0569bd;
+}
+
+@media (max-width: 1250px) {
+  .vessel-card-image {
+    height: 145px;
+  }
+}
+
+@media (max-width: 600px) {
+  .vessel-card-details {
+    flex-direction: column;
+  }
+
+  .estimated-cost {
+    width: 100%;
+  }
+}

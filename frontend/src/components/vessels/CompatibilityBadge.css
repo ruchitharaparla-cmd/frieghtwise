@@ -1,0 +1,35 @@
+.fit-badge,
+.availability-badge {
+  min-height: 21px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.fit-excellent,
+.fit-good,
+.availability-available {
+  background: #d7f5e6;
+  color: #078d5b;
+}
+
+.fit-moderate {
+  background: #fff0cc;
+  color: #c57a00;
+}
+
+.availability-positioning {
+  background: #dceeff;
+  color: #126fc2;
+}
+
+.availability-unavailable {
+  background: #ffe0e3;
+  color: #d82337;
+}
