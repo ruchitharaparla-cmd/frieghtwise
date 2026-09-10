@@ -46,7 +46,7 @@ def calculate_option_score(
     overall_risk: Optional[float],
     expected_delay_hours: Optional[float],
     freight_rate: Optional[float],
-    port_suitability_score: Optional[float],
+    congestion_score: Optional[float],
     arrival_feasibility_score: Optional[float],
     cost_min: float,
     cost_max: float,
@@ -54,7 +54,7 @@ def calculate_option_score(
     delay_max: float,
     freight_min: float,
     freight_max: float,
-) -> Optional[float]:
+) -> Optional[dict]:
     """
     Calculate a weighted option score using only available signals.
 
@@ -62,6 +62,19 @@ def calculate_option_score(
 
     Missing signals are excluded and the remaining weights are
     renormalized. No missing value is fabricated.
+
+    Returns:
+        {
+            "score": float,
+            "score_breakdown": {
+                "cost": float,
+                "risk": float,
+                "delay": float,
+                "freight": float,
+                "congestion": float,
+                "arrival_feasibility": float
+            }
+        }
     """
 
     components = []
@@ -70,96 +83,102 @@ def calculate_option_score(
     # COST
     # ---------------------------------------------------------
     if total_landed_cost is not None:
+        cost_score = normalize_lower_better(
+            total_landed_cost,
+            cost_min,
+            cost_max,
+        )
+
         components.append(
-            (
-                normalize_lower_better(
-                    total_landed_cost,
-                    cost_min,
-                    cost_max,
-                ),
-                COST_WEIGHT,
-            )
+            ("cost", cost_score, COST_WEIGHT)
         )
 
     # ---------------------------------------------------------
     # RISK
     # ---------------------------------------------------------
     if overall_risk is not None:
+        risk_score = max(
+            0.0,
+            min(100.0, overall_risk),
+        )
+
         components.append(
-            (
-                max(
-                    0.0,
-                    min(100.0, overall_risk),
-                ),
-                RISK_WEIGHT,
-            )
+            ("risk", risk_score, RISK_WEIGHT)
         )
 
     # ---------------------------------------------------------
     # DELAY
     # ---------------------------------------------------------
     if expected_delay_hours is not None:
+        delay_score = normalize_lower_better(
+            expected_delay_hours,
+            delay_min,
+            delay_max,
+        )
+
         components.append(
-            (
-                normalize_lower_better(
-                    expected_delay_hours,
-                    delay_min,
-                    delay_max,
-                ),
-                DELAY_WEIGHT,
-            )
+            ("delay", delay_score, DELAY_WEIGHT)
         )
 
     # ---------------------------------------------------------
     # FREIGHT RATE
     # ---------------------------------------------------------
     if freight_rate is not None:
+        freight_score = normalize_lower_better(
+            freight_rate,
+            freight_min,
+            freight_max,
+        )
+
         components.append(
-            (
-                normalize_lower_better(
-                    freight_rate,
-                    freight_min,
-                    freight_max,
-                ),
-                FREIGHT_WEIGHT,
-            )
+            ("freight", freight_score, FREIGHT_WEIGHT)
         )
 
     # ---------------------------------------------------------
-    # PORT SUITABILITY
+    # PORT CONGESTION
     # ---------------------------------------------------------
-    if port_suitability_score is not None:
+    # Congestion score:
+    # 20 = LOW
+    # 50 = MEDIUM
+    # 80 = HIGH
+    #
+    # Lower congestion = better option.
+    if congestion_score is not None:
+        congestion_score = max(
+            0.0,
+            min(
+                100.0,
+                congestion_score,
+            ),
+        )
+
         components.append(
-            (
-                max(
-                    0.0,
-                    min(
-                        100.0,
-                        100.0 - port_suitability_score,
-                    ),
-                ),
-                PORT_WEIGHT,
-            )
+            ("congestion", congestion_score, PORT_WEIGHT)
         )
 
     # ---------------------------------------------------------
     # ARRIVAL FEASIBILITY
     # ---------------------------------------------------------
     if arrival_feasibility_score is not None:
+        arrival_score = max(
+            0.0,
+            min(
+                100.0,
+                100.0 - arrival_feasibility_score,
+            ),
+        )
+
         components.append(
             (
-                max(
-                    0.0,
-                    min(
-                        100.0,
-                        100.0 - arrival_feasibility_score,
-                    ),
-                ),
+                "arrival_feasibility",
+                arrival_score,
                 ARRIVAL_WEIGHT,
             )
         )
 
-    # No usable signals
+    # ---------------------------------------------------------
+    # NO USABLE SIGNALS
+    # ---------------------------------------------------------
     if not components:
         return None
 
@@ -168,18 +187,37 @@ def calculate_option_score(
     # ---------------------------------------------------------
     total_weight = sum(
         weight
-        for _, weight in components
+        for _, _, weight in components
     )
 
     if total_weight <= 0:
         return None
 
-    final_score = sum(
-        score * (weight / total_weight)
-        for score, weight in components
-    )
+    # ---------------------------------------------------------
+    # CALCULATE WEIGHTED CONTRIBUTIONS
+    # ---------------------------------------------------------
+    score_breakdown = {}
 
-    return round(final_score, 2)
+    final_score = 0.0
+
+    for name, raw_score, weight in components:
+        normalized_weight = weight / total_weight
+
+        contribution = (
+            raw_score * normalized_weight
+        )
+
+        score_breakdown[name] = round(
+            contribution,
+            2,
+        )
+
+        final_score += contribution
+
+    return {
+        "score": round(final_score, 2),
+        "score_breakdown": score_breakdown,
+    }
 
 
 def rank_options(
@@ -195,7 +233,7 @@ def rank_options(
     Optional signals:
         - overall_risk
         - expected_delay_hours
-        - port_suitability_score
+        - congestion_score
         - arrival_feasibility_score
 
     Missing optional signals are excluded from the score and
@@ -267,7 +305,7 @@ def rank_options(
 
         scored_option = option.copy()
 
-        scored_option["score"] = calculate_option_score(
+        score_result = calculate_option_score(
             total_landed_cost=option.get(
                 "total_landed_cost"
             ),
@@ -280,8 +318,8 @@ def rank_options(
             freight_rate=option.get(
                 "freight_rate"
             ),
-            port_suitability_score=option.get(
-                "port_suitability_score"
+            congestion_score=option.get(
+                "congestion_score"
             ),
             arrival_feasibility_score=option.get(
                 "arrival_feasibility_score"
@@ -293,6 +331,18 @@ def rank_options(
             freight_min=freight_min,
             freight_max=freight_max,
         )
+
+        if score_result is not None:
+            scored_option["score"] = (
+                score_result["score"]
+            )
+
+            scored_option["score_breakdown"] = (
+                score_result["score_breakdown"]
+            )
+        else:
+            scored_option["score"] = None
+            scored_option["score_breakdown"] = {}
 
         # -----------------------------------------------------
         # TRACK MISSING SIGNALS
@@ -309,9 +359,9 @@ def rank_options(
                 "delay"
             )
 
-        if option.get("port_suitability_score") is None:
+        if option.get("congestion_score") is None:
             unavailable_signals.append(
-                "port_suitability"
+                "congestion"
             )
 
         if option.get("arrival_feasibility_score") is None:

@@ -28,6 +28,16 @@ class RecommendationResponse(BaseModel):
     cost: Optional[dict[str, Any]] = None
     risk: Optional[dict[str, Any]] = None
 
+    # Overall optimization score.
+    # Lower score = better option.
+    score: Optional[float] = None
+
+    # Contribution of each optimization factor
+    # to the overall score.
+    score_breakdown: dict[str, float] = Field(
+        default_factory=dict
+    )
+
     reasons: list[str] = Field(default_factory=list)
     alternatives: list[dict[str, Any]] = Field(default_factory=list)
 

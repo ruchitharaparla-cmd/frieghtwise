@@ -40,6 +40,8 @@ def generate_recommendation(options, forecast_direction=None):
             "forecast": None,
             "cost": None,
             "risk": None,
+            "score": None,
+            "score_breakdown": {},
             "reasons": reasons,
             "alternatives": [],
         }
@@ -60,6 +62,8 @@ def generate_recommendation(options, forecast_direction=None):
             "forecast": None,
             "cost": None,
             "risk": None,
+            "score": None,
+            "score_breakdown": {},
             "reasons": [
                 "Insufficient data is available to rank the feasible options."
             ],
@@ -167,7 +171,7 @@ def generate_recommendation(options, forecast_direction=None):
     signal_labels = {
         "risk": "operational risk",
         "delay": "delay",
-        "port_suitability": "port congestion/suitability",
+        "congestion": "port congestion",
         "arrival_feasibility": "arrival feasibility",
     }
 
@@ -244,6 +248,17 @@ def generate_recommendation(options, forecast_direction=None):
                 "port_id": option.get(
                     "port_id"
                 ),
+
+                # Optimization result
+                "score": option.get(
+                    "score"
+                ),
+                "score_breakdown": option.get(
+                    "score_breakdown",
+                    {},
+                ),
+
+                # Cost / risk / operational signals
                 "total_landed_cost": option.get(
                     "total_landed_cost"
                 ),
@@ -256,10 +271,14 @@ def generate_recommendation(options, forecast_direction=None):
                 "arrival_feasibility_score": option.get(
                     "arrival_feasibility_score"
                 ),
+
+                # Data availability
                 "unavailable_signals": option.get(
                     "unavailable_signals",
                     [],
                 ),
+
+                # Rejection information
                 "rejection_reasons": option.get(
                     "rejection_reasons",
                     [],
@@ -273,21 +292,44 @@ def generate_recommendation(options, forecast_direction=None):
 
     return {
         "strategy": strategy,
+
         "vessel_id": best_option.get(
             "vessel_id"
         ),
+
         "port_id": best_option.get(
             "port_id"
         ),
+
+        # Forecast result
         "forecast": best_option.get(
             "forecast"
         ),
+
+        # Cost result
         "cost": best_option.get(
             "cost"
         ),
+
+        # Risk result
         "risk": best_option.get(
             "risk"
         ),
+
+        # Overall optimization score
+        "score": best_option.get(
+            "score"
+        ),
+
+        # Contribution of each decision factor
+        "score_breakdown": best_option.get(
+            "score_breakdown",
+            {},
+        ),
+
+        # Human-readable explanation
         "reasons": reasons,
+
+        # Ranked alternatives
         "alternatives": alternatives,
     }

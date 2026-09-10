@@ -208,7 +208,7 @@ def run_decision_engine(
                         "total_landed_cost": None,
                         "overall_risk": None,
                         "expected_delay_hours": None,
-                        "port_suitability_score": None,
+                        "congestion_score": None,
                         "arrival_feasibility_score": (
                             arrival_feasibility_score
                         ),
@@ -356,7 +356,7 @@ def run_decision_engine(
                         "total_landed_cost": None,
                         "overall_risk": risk["overall_risk"],
                         "expected_delay_hours": delay_hours,
-                        "port_suitability_score": (
+                        "congestion_score": (
                             congestion["score"]
                         ),
                         "arrival_feasibility_score": (
@@ -385,7 +385,7 @@ def run_decision_engine(
                     "freight_rate": forecast["forecast_rate"],
                     "expected_delay_hours": delay_hours,
                     "overall_risk": risk["overall_risk"],
-                    "port_suitability_score": (
+                    "congestion_score": (
                         congestion["score"]
                     ),
                     "arrival_feasibility_score": (
