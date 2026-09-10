@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Bell,
@@ -290,9 +291,10 @@ const Settings = () => {
             const Icon = item.icon;
 
             return (
-              <a
+              <button
                 key={item.label}
-                href={item.path}
+                type="button"
+                onClick={() => navigate(item.path)}
                 className={`main-nav-item ${
                   item.label === "Settings"
                     ? "active"
@@ -309,7 +311,7 @@ const Settings = () => {
                   {item.label}
                 </span>
 
-              </a>
+              </button>
             );
           })}
 
@@ -387,6 +389,7 @@ const Settings = () => {
               type="button"
               className="notification-button"
               aria-label="Notifications"
+              onClick={() => navigate("/notifications")}
             >
 
               <Bell size={21} />
@@ -404,6 +407,7 @@ const Settings = () => {
             <button
               type="button"
               className="user-menu"
+              onClick={() => navigate("/profile")}
             >
 
               <div className="user-avatar">

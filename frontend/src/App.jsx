@@ -10,6 +10,7 @@ import Simulation from "./pages/Simulation/Simulation";
 import Settings from "./pages/Settings/Settings";
 import Profile from "./pages/Profile/Profile";
 import Notifications from "./pages/Notifications/Notifications";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/notifications" element={<Notifications />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

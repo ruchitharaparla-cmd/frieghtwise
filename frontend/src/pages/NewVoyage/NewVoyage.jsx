@@ -131,7 +131,10 @@ function NewVoyage() {
 
       navigate("/analysis");
     } catch (error) {
-      console.error("FreightWise analysis error:", error);
+      console.error(
+        "FreightWise analysis error:",
+        error
+      );
 
       setMessage(
         error.message ||
@@ -191,17 +194,30 @@ function NewVoyage() {
         </div>
 
         <nav className="sidebar-nav">
-          <button className="nav-item">
+
+          {/* DASHBOARD */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/")}
+          >
             <Icon type="home" />
             <span>Dashboard</span>
           </button>
 
-          <button className="nav-item active">
+          {/* NEW VOYAGE */}
+          <button
+            type="button"
+            className="nav-item active"
+            onClick={() => navigate("/new-voyage")}
+          >
             <Icon type="voyage" />
             <span>New Voyage</span>
           </button>
 
+          {/* ANALYSIS */}
           <button
+            type="button"
             className="nav-item"
             onClick={() => navigate("/analysis")}
           >
@@ -209,25 +225,46 @@ function NewVoyage() {
             <span>Analysis</span>
           </button>
 
-          <button className="nav-item">
+          {/* VESSELS */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/vessels")}
+          >
             <Icon type="vessel" />
             <span>Vessels</span>
           </button>
 
-          <button className="nav-item">
+          {/* PORTS */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/ports")}
+          >
             <Icon type="port" />
             <span>Ports</span>
           </button>
 
-          <button className="nav-item">
+          {/* SIMULATION */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/simulation")}
+          >
             <Icon type="simulation" />
             <span>Simulation</span>
           </button>
 
-          <button className="nav-item">
+          {/* SETTINGS */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/settings")}
+          >
             <Icon type="settings" />
             <span>Settings</span>
           </button>
+
         </nav>
 
         <div className="engine-status">
@@ -278,9 +315,15 @@ function NewVoyage() {
             </div>
 
             <div className="user-profile">
-              <div className="avatar">K</div>
+              <div className="avatar">
+                K
+              </div>
+
               <span>User</span>
-              <span className="dropdown-arrow">⌄</span>
+
+              <span className="dropdown-arrow">
+                ⌄
+              </span>
             </div>
 
           </div>
@@ -414,6 +457,7 @@ function NewVoyage() {
         <div className="bottom-actions">
 
           <button
+            type="button"
             className="reset-button"
             onClick={resetForm}
             disabled={loading}
@@ -423,11 +467,14 @@ function NewVoyage() {
           </button>
 
           <button
+            type="button"
             className="analysis-button"
             onClick={handleAnalysis}
             disabled={loading}
           >
-            <span>{loading ? "⏳" : "✨"}</span>
+            <span>
+              {loading ? "⏳" : "✨"}
+            </span>
 
             <span>
               {loading
@@ -447,6 +494,7 @@ function NewVoyage() {
         )}
 
       </main>
+
     </div>
   );
 }

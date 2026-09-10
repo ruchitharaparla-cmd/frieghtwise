@@ -95,11 +95,11 @@ export default function VesselCard({
             <span>Est. Cost</span>
 
             <strong>
-              ₹ {vessel.cost.toFixed(2)} Cr
+              {typeof vessel.cost === "number" ? `₹ ${vessel.cost.toFixed(2)} Cr` : "Unavailable"}
             </strong>
 
             <small>
-              (${vessel.costPerMt.toFixed(1)} / MT)
+              {typeof vessel.costPerMt === "number" ? `($${vessel.costPerMt.toFixed(1)} / MT)` : "(N/A)"}
             </small>
 
           </div>

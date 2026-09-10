@@ -63,7 +63,7 @@ export default function CostBreakdown({ data }) {
           <CostRow
             color="purple"
             name="Port Charges"
-            value={value(delay)}
+            value={value(port)}
             percent={percent(port)}
           />
 

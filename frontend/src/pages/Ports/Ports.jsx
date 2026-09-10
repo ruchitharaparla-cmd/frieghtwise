@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Search,
@@ -18,6 +19,7 @@ import PortCard from "../../components/ports/PortCard";
 import PortTable from "../../components/ports/PortTable";
 
 import "./Ports.css";
+import { getPorts } from "../../services/api";
 
 
 /* =========================================================
@@ -73,7 +75,7 @@ const mainNavigation = [
    PORT DATA
 ========================================================= */
 
-const portsData = [
+const demoPortsData = [
   {
     name: "Kolkata",
     location: "West Bengal",
@@ -137,6 +139,11 @@ const portsData = [
 
 
 function Ports() {
+  const navigate = useNavigate();
+
+  const [portsData, setPortsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
 
   const [statusFilter, setStatusFilter] =
@@ -146,6 +153,66 @@ function Ports() {
   /* =========================================================
      FILTER PORTS
   ========================================================= */
+
+  useEffect(() => {
+    async function loadPorts() {
+      try {
+        const data = await getPorts();
+
+        const apiPorts = Array.isArray(data?.ports)
+          ? data.ports
+          : Array.isArray(data)
+          ? data
+          : [];
+
+        const normalized = apiPorts.map((port) => {
+              const utilization = port.utilization_percent;
+
+              let status = "Unavailable";
+              let statusClass = "moderate";
+
+              if (typeof utilization === "number") {
+                if (utilization < 50) {
+                  status = "Low";
+                  statusClass = "low";
+                } else if (utilization < 80) {
+                  status = "Moderate";
+                  statusClass = "moderate";
+                } else {
+                  status = "High";
+                  statusClass = "high";
+                }
+              }
+
+              return {
+                id: port.id,
+                name: port.name || "Name unavailable",
+                location: port.state || "Location unavailable",
+                status,
+                statusClass,
+                waiting:
+                  typeof port.average_waiting_hours === "number"
+                    ? `${port.average_waiting_hours} h`
+                    : "Unavailable",
+                trend: "unavailable",
+                congestion:
+                  typeof utilization === "number"
+                    ? `${utilization}%`
+                    : "Unavailable",
+              };
+            });
+
+        setPortsData(normalized);
+      } catch (error) {
+        console.error("Failed to load ports:", error);
+        setPortsData([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPorts();
+  }, []);
 
   const filteredPorts = portsData.filter((port) => {
     const matchesSearch =
@@ -203,9 +270,10 @@ function Ports() {
             const Icon = item.icon;
 
             return (
-              <a
+              <button
+                type="button"
                 key={item.label}
-                href={item.path}
+                onClick={() => navigate(item.path)}
                 className={
                   item.label === "Ports"
                     ? "ports-nav-item active"
@@ -222,7 +290,7 @@ function Ports() {
                   {item.label}
                 </span>
 
-              </a>
+              </button>
             );
 
           })}
@@ -300,9 +368,10 @@ function Ports() {
 
           <div className="ports-topbar-right">
 
-            <a
-              href="/notifications"
+            <button
+              type="button"
               className="ports-notification"
+              onClick={() => navigate("/notifications")}
             >
 
               <Bell size={20} />
@@ -311,15 +380,16 @@ function Ports() {
                 3
               </span>
 
-            </a>
+            </button>
 
 
             <div className="ports-divider"></div>
 
 
-            <a
-              href="/profile"
+            <button
+              type="button"
               className="ports-user"
+              onClick={() => navigate("/profile")}
             >
 
               <div className="ports-avatar">
@@ -332,7 +402,7 @@ function Ports() {
 
               <ChevronDown size={15} />
 
-            </a>
+            </button>
 
           </div>
 
@@ -380,6 +450,11 @@ function Ports() {
         ================================================= */}
 
         <section className="ports-content">
+          {loading && (
+            <div className="ports-loading">
+              Loading ports from backend...
+            </div>
+          )}
 
 
           {/* =================================================

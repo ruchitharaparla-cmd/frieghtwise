@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Bell,
@@ -86,11 +87,13 @@ const quickLinks = [
 
 
 const NotFound = () => {
+  const navigate = useNavigate();
+
   const handleGoBack = () => {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = "/";
+      navigate("/");
     }
   };
 
@@ -129,9 +132,10 @@ const NotFound = () => {
             const Icon = item.icon;
 
             return (
-              <a
+              <button
+                type="button"
                 key={item.label}
-                href={item.path}
+                onClick={() => navigate(item.path)}
                 className="not-found-nav-item"
               >
                 <Icon
@@ -142,7 +146,7 @@ const NotFound = () => {
                 <span>
                   {item.label}
                 </span>
-              </a>
+              </button>
             );
           })}
 
@@ -222,6 +226,7 @@ const NotFound = () => {
               type="button"
               className="not-found-notification"
               aria-label="Notifications"
+              onClick={() => navigate("/notifications")}
             >
 
               <Bell size={22} />
@@ -237,6 +242,7 @@ const NotFound = () => {
             <button
               type="button"
               className="not-found-user"
+              onClick={() => navigate("/profile")}
             >
 
               <div className="not-found-user-avatar">
@@ -357,9 +363,10 @@ const NotFound = () => {
               const Icon = item.icon;
 
               return (
-                <a
+                <button
+                  type="button"
                   key={item.title}
-                  href={item.path}
+                  onClick={() => navigate(item.path)}
                   className="not-found-quick-card"
                 >
 
@@ -387,7 +394,7 @@ const NotFound = () => {
 
                   </div>
 
-                </a>
+                </button>
               );
             })}
 

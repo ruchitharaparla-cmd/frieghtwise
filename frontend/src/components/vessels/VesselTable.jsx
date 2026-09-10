@@ -135,11 +135,11 @@ export default function VesselTable({
                   <div className="table-cost">
 
                     <strong>
-                      ₹ {vessel.cost.toFixed(2)} Cr
+                      {typeof vessel.cost === "number" ? `₹ ${vessel.cost.toFixed(2)} Cr` : "Unavailable"}
                     </strong>
 
                     <span>
-                      (${vessel.costPerMt.toFixed(1)} / MT)
+                      {typeof vessel.costPerMt === "number" ? `($${vessel.costPerMt.toFixed(1)} / MT)` : "(N/A)"}
                     </span>
 
                   </div>

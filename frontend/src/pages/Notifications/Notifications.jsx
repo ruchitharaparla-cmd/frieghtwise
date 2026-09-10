@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Bell,
@@ -204,9 +205,10 @@ function Notifications() {
             const Icon = item.icon;
 
             return (
-              <a
+              <button
                 key={item.label}
-                href={item.path}
+                type="button"
+                onClick={() => navigate(item.path)}
                 className="notifications-main-nav-item"
               >
 
@@ -219,7 +221,7 @@ function Notifications() {
                   {item.label}
                 </span>
 
-              </a>
+              </button>
             );
 
           })}
@@ -305,8 +307,9 @@ function Notifications() {
             <div className="notifications-topbar-divider"></div>
 
 
-            <a
-              href="/profile"
+            <button
+              type="button"
+              onClick={() => navigate("/profile")}
               className="notifications-user-menu"
             >
 
@@ -320,7 +323,7 @@ function Notifications() {
 
               <ChevronDown size={16} />
 
-            </a>
+            </button>
 
           </div>
 

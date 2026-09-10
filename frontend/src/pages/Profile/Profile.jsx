@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Bell,
@@ -135,9 +136,10 @@ function Profile() {
             const Icon = item.icon;
 
             return (
-              <a
+              <button
                 key={item.label}
-                href={item.path}
+                type="button"
+                onClick={() => navigate(item.path)}
                 className="profile-main-nav-item"
               >
                 <Icon size={19} strokeWidth={1.8} />
@@ -145,7 +147,7 @@ function Profile() {
                 <span>
                   {item.label}
                 </span>
-              </a>
+              </button>
             );
           })}
 
@@ -216,10 +218,11 @@ function Profile() {
 
           <div className="profile-topbar-actions">
 
-            <a
-              href="/notifications"
+            <button
+              type="button"
               className="profile-notification-button"
               aria-label="Notifications"
+              onClick={() => navigate("/notifications")}
             >
 
               <Bell size={21} />
@@ -228,7 +231,7 @@ function Profile() {
                 3
               </span>
 
-            </a>
+            </button>
 
 
             <div className="profile-topbar-divider"></div>
