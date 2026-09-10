@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./NewVoyage.css";
 import shipImage from "../../assets/images/ship.png";
-import portImage from "../../assets/images/port.png";
+
+import CargoInput from "../../components/voyage/CargoInput";
+import RouteInput from "../../components/voyage/RouteInput";
+import DateRangeInput from "../../components/voyage/DateRangeInput";
+import VoyageForm from "../../components/voyage/VoyageForm";
 
 const Icon = ({ type }) => {
   const icons = {
@@ -12,46 +16,57 @@ const Icon = ({ type }) => {
     port: "♙",
     simulation: "⟳",
     settings: "⚙",
-    cargo: "▣",
-    route: "⌖",
-    calendar: "▣",
-    ship: "♜",
-    document: "▤",
-    bulb: "💡",
     search: "⌕",
     bell: "♧",
-    arrow: "→",
   };
 
-  return <span className={`icon icon-${type}`}>{icons[type]}</span>;
+  return (
+    <span className={`icon icon-${type}`}>
+      {icons[type]}
+    </span>
+  );
 };
 
 function NewVoyage() {
   const [cargoType, setCargoType] = useState("Coal");
   const [quantity, setQuantity] = useState("75000");
-  const [loadingPort, setLoadingPort] = useState("Hay Point, Australia");
-  const [dischargePort, setDischargePort] = useState("Paradip, India");
+
+  const [loadingPort, setLoadingPort] =
+    useState("Hay Point, Australia");
+
+  const [dischargePort, setDischargePort] =
+    useState("Paradip, India");
+
   const [arrivalDate, setArrivalDate] = useState("");
   const [flexibleDate, setFlexibleDate] = useState(false);
 
-  const [vesselType, setVesselType] = useState("Bulk Carrier");
+  const [vesselType, setVesselType] =
+    useState("Bulk Carrier");
+
   const [draft, setDraft] = useState("14.5");
   const [loa, setLoa] = useState("200");
   const [beam, setBeam] = useState("32");
 
   const [weather, setWeather] = useState("Normal");
   const [contract, setContract] = useState("Spot");
-  const [priority, setPriority] = useState("Lowest Cost");
+  const [priority, setPriority] =
+    useState("Lowest Cost");
 
-  const [previousVoyage, setPreviousVoyage] = useState(true);
-  const [alternativeRoutes, setAlternativeRoutes] = useState(true);
+  const [previousVoyage, setPreviousVoyage] =
+    useState(true);
+
+  const [alternativeRoutes, setAlternativeRoutes] =
+    useState(true);
+
   const [whatIf, setWhatIf] = useState(false);
 
   const [message, setMessage] = useState("");
 
   const handleAnalysis = () => {
     setMessage(
-      `Analysis started for ${quantity || "0"} MT ${cargoType} from ${loadingPort} to ${dischargePort}.`
+      `Analysis started for ${
+        quantity || "0"
+      } MT ${cargoType} from ${loadingPort} to ${dischargePort}.`
     );
 
     setTimeout(() => {
@@ -62,8 +77,10 @@ function NewVoyage() {
   const resetForm = () => {
     setCargoType("Coal");
     setQuantity("75000");
+
     setLoadingPort("Hay Point, Australia");
     setDischargePort("Paradip, India");
+
     setArrivalDate("");
     setFlexibleDate(false);
 
@@ -86,7 +103,7 @@ function NewVoyage() {
   return (
     <div className="freightwise-app">
 
-      {/* ================= SIDEBAR ================= */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
 
         <div className="brand">
@@ -106,7 +123,6 @@ function NewVoyage() {
         </div>
 
         <nav className="sidebar-nav">
-
           <button className="nav-item">
             <Icon type="home" />
             <span>Dashboard</span>
@@ -141,7 +157,6 @@ function NewVoyage() {
             <Icon type="settings" />
             <span>Settings</span>
           </button>
-
         </nav>
 
         <div className="engine-status">
@@ -169,7 +184,7 @@ function NewVoyage() {
 
       </aside>
 
-      {/* ================= MAIN AREA ================= */}
+      {/* MAIN */}
       <main className="main-area">
 
         {/* TOP BAR */}
@@ -177,6 +192,7 @@ function NewVoyage() {
 
           <div className="search-box">
             <Icon type="search" />
+
             <input
               type="text"
               placeholder="Search ports, vessels, routes..."
@@ -200,34 +216,36 @@ function NewVoyage() {
 
         </header>
 
-        {/* ================= HERO ================= */}
+        {/* HERO */}
         <section className="page-hero">
 
           <div className="hero-text">
             <h1>Plan a New Voyage</h1>
 
             <p>
-              Provide voyage details to get AI-powered recommendations
+              Provide voyage details to get AI-powered
+              recommendations
             </p>
           </div>
 
           <div className="hero-image">
             <img
-            src={shipImage}
-            alt="Cargo ship"
+              src={shipImage}
+              alt="Cargo ship"
             />
+
             <div className="hero-quote">
               "Better Planning
               <br />
               Smarter Chartering
               <br />
               A Stronger India."
-              </div>
-              </div>
+            </div>
+          </div>
 
         </section>
 
-        {/* ================= STEPS ================= */}
+        {/* STEPS */}
         <div className="steps-container">
 
           <div className="step active">
@@ -272,400 +290,56 @@ function NewVoyage() {
 
         </div>
 
-        {/* ================= CONTENT GRID ================= */}
+        {/* COMPONENTS */}
         <section className="content-grid">
 
-          {/* CARD 1 */}
-          <div className="form-card">
-
-            <div className="card-heading">
-              <div className="card-icon">
-                <Icon type="cargo" />
-              </div>
-
-              <div>
-                <h2>1. Cargo Details</h2>
-                <p>Tell us what you want to ship</p>
-              </div>
-            </div>
-
-            <div className="form-row">
-
-              <div className="field">
-                <label>
-                  Cargo Type <span>*</span>
-                </label>
-
-                <select
-                  value={cargoType}
-                  onChange={(e) => setCargoType(e.target.value)}
-                >
-                  <option>Coal</option>
-                  <option>Iron Ore</option>
-                  <option>Fertilizer</option>
-                  <option>Grain</option>
-                  <option>Other Bulk Cargo</option>
-                </select>
-              </div>
-
-              <div className="field">
-                <label>
-                  Quantity (MT) <span>*</span>
-                </label>
-
-                <div className="input-unit">
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                  />
-                  <span>MT</span>
-                </div>
-              </div>
-
-            </div>
-
-            <div className="info-box">
-              <b>ⓘ</b>
-              Supported: Coal, Iron Ore, Fertilizer, Grain and other bulk
-              cargoes.
-            </div>
-
-          </div>
-
-          {/* CARD 2 */}
-          <div className="form-card">
-
-            <div className="card-heading">
-              <div className="card-icon">
-                <Icon type="route" />
-              </div>
-
-              <div>
-                <h2>2. Route</h2>
-                <p>Select loading and discharge ports</p>
-              </div>
-            </div>
-
-            <div className="route-fields">
-
-              <div className="field">
-                <label>
-                  Loading Port <span>*</span>
-                </label>
-
-                <select
-                  value={loadingPort}
-                  onChange={(e) => setLoadingPort(e.target.value)}
-                >
-                  <option>Hay Point, Australia</option>
-                  <option>Newcastle, Australia</option>
-                  <option>Gladstone, Australia</option>
-                  <option>Richards Bay, South Africa</option>
-                </select>
-              </div>
-
-              <div className="swap-button">⇄</div>
-
-              <div className="field">
-                <label>
-                  Discharge Port <span>*</span>
-                </label>
-
-                <select
-                  value={dischargePort}
-                  onChange={(e) => setDischargePort(e.target.value)}
-                >
-                  <option>Paradip, India</option>
-                  <option>Visakhapatnam, India</option>
-                  <option>Kakinada, India</option>
-                  <option>Chennai, India</option>
-                  <option>Kolkata, India</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div className="route-info">
-              <span className="route-icon">♜</span>
-
-              <div>
-                <strong>Distance (approx.): 5,620 nautical miles</strong>
-                <br />
-                Estimated voyage duration: 24 – 28 days
-              </div>
-            </div>
-
-          </div>
-
-          {/* CARD 3 */}
-          <div className="form-card">
-
-            <div className="card-heading">
-              <div className="card-icon">
-                <Icon type="calendar" />
-              </div>
-
-              <div>
-                <h2>3. Voyage Dates</h2>
-                <p>When do you need the vessel?</p>
-              </div>
-            </div>
-
-            <div className="field">
-
-              <label>
-                Expected Arrival Date <span>*</span>
-              </label>
-
-              <input
-                className="date-input"
-                type="date"
-                value={arrivalDate}
-                onChange={(e) => setArrivalDate(e.target.value)}
-              />
-
-            </div>
-
-            <label className="checkbox-row">
-              <input
-                type="checkbox"
-                checked={flexibleDate}
-                onChange={(e) => setFlexibleDate(e.target.checked)}
-              />
-
-              <span>Flexible date</span>
-            </label>
-
-            <div className="info-box">
-              <b>ⓘ</b>
-              You can select a fixed arrival date or allow flexibility for
-              better recommendations.
-            </div>
-
-          </div>
-
-          {/* CARD 4 */}
-          <div className="form-card">
-
-            <div className="card-heading">
-              <div className="card-icon">
-                <Icon type="ship" />
-              </div>
-
-              <div>
-                <h2>4. Vessel Requirements</h2>
-                <p>Specify your vessel preferences</p>
-              </div>
-            </div>
-
-            <div className="form-row">
-
-              <div className="field">
-                <label>Vessel Type <span>*</span></label>
-
-                <select
-                  value={vesselType}
-                  onChange={(e) => setVesselType(e.target.value)}
-                >
-                  <option>Bulk Carrier</option>
-                  <option>Panamax</option>
-                  <option>Supramax</option>
-                  <option>Capesize</option>
-                </select>
-              </div>
-
-              <div className="field">
-                <label>Maximum Draft (m)</label>
-
-                <div className="input-unit">
-                  <input
-                    type="number"
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                  />
-                  <span>m</span>
-                </div>
-              </div>
-
-            </div>
-
-            <div className="form-row">
-
-              <div className="field">
-                <label>Maximum LOA (m)</label>
-
-                <div className="input-unit">
-                  <input
-                    type="number"
-                    value={loa}
-                    onChange={(e) => setLoa(e.target.value)}
-                  />
-                  <span>m</span>
-                </div>
-              </div>
-
-              <div className="field">
-                <label>Maximum Beam (m)</label>
-
-                <div className="input-unit">
-                  <input
-                    type="number"
-                    value={beam}
-                    onChange={(e) => setBeam(e.target.value)}
-                  />
-                  <span>m</span>
-                </div>
-              </div>
-
-            </div>
-
-            <div className="info-box">
-              <b>ⓘ</b>
-              Enter minimum requirements. We will match the best available
-              vessels.
-            </div>
-
-          </div>
-
-          {/* CARD 5 */}
-          <div className="form-card">
-
-            <div className="card-heading">
-              <div className="card-icon">
-                <Icon type="document" />
-              </div>
-
-              <div>
-                <h2>5. Additional Constraints</h2>
-                <p>Add any operational constraints</p>
-              </div>
-            </div>
-
-            <div className="constraint-layout">
-
-              <div>
-
-                <div className="field">
-                  <label>Weather Tolerance</label>
-
-                  <select
-                    value={weather}
-                    onChange={(e) => setWeather(e.target.value)}
-                  >
-                    <option>Normal</option>
-                    <option>Low Risk Preferred</option>
-                    <option>High Risk Tolerant</option>
-                  </select>
-                </div>
-
-                <div className="field">
-                  <label>Contract Type</label>
-
-                  <select
-                    value={contract}
-                    onChange={(e) => setContract(e.target.value)}
-                  >
-                    <option>Spot</option>
-                    <option>Time Charter</option>
-                    <option>COA</option>
-                  </select>
-                </div>
-
-                <div className="field">
-                  <label>Priority</label>
-
-                  <select
-                    value={priority}
-                    onChange={(e) => setPriority(e.target.value)}
-                  >
-                    <option>Lowest Cost</option>
-                    <option>Lowest Risk</option>
-                    <option>Balanced</option>
-                    <option>Fastest Delivery</option>
-                  </select>
-                </div>
-
-              </div>
-
-              <div className="check-list">
-
-                <label className="check-option">
-                  <input
-                    type="checkbox"
-                    checked={previousVoyage}
-                    onChange={(e) => setPreviousVoyage(e.target.checked)}
-                  />
-                  <span>
-                    Consider previous voyage /
-                    <br />
-                    positioning
-                  </span>
-                </label>
-
-                <label className="check-option">
-                  <input
-                    type="checkbox"
-                    checked={alternativeRoutes}
-                    onChange={(e) =>
-                      setAlternativeRoutes(e.target.checked)
-                    }
-                  />
-                  <span>Include alternative routes</span>
-                </label>
-
-                <label className="check-option">
-                  <input
-                    type="checkbox"
-                    checked={whatIf}
-                    onChange={(e) => setWhatIf(e.target.checked)}
-                  />
-                  <span>Enable what-if analysis</span>
-                </label>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* CARD 6 */}
-          <div className="form-card tips-card">
-
-            <div className="card-heading">
-
-              <div className="bulb-icon">
-                <Icon type="bulb" />
-              </div>
-
-              <div>
-                <h2>Tips for Better Recommendations</h2>
-              </div>
-
-            </div>
-
-            <ul className="tips-list">
-              <li>Provide accurate cargo details</li>
-              <li>Select flexible dates for more options</li>
-              <li>Include any draft or port restrictions</li>
-              <li>Consider alternative routes</li>
-              <li>Enable what-if analysis to compare scenarios</li>
-            </ul>
-
-            <div className="tips-image"
-            style={{ backgroundImage: `url(${portImage})` }}>
-              <div className="tips-quote">
-                "Connecting Global Resources
-                <br />
-                to India's Growth"
-              </div>
-            </div>
-
-          </div>
+          <CargoInput
+            cargoType={cargoType}
+            setCargoType={setCargoType}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
+
+          <RouteInput
+            loadingPort={loadingPort}
+            setLoadingPort={setLoadingPort}
+            dischargePort={dischargePort}
+            setDischargePort={setDischargePort}
+          />
+
+          <DateRangeInput
+            arrivalDate={arrivalDate}
+            setArrivalDate={setArrivalDate}
+            flexibleDate={flexibleDate}
+            setFlexibleDate={setFlexibleDate}
+          />
+
+          <VoyageForm
+            vesselType={vesselType}
+            setVesselType={setVesselType}
+            draft={draft}
+            setDraft={setDraft}
+            loa={loa}
+            setLoa={setLoa}
+            beam={beam}
+            setBeam={setBeam}
+            weather={weather}
+            setWeather={setWeather}
+            contract={contract}
+            setContract={setContract}
+            priority={priority}
+            setPriority={setPriority}
+            previousVoyage={previousVoyage}
+            setPreviousVoyage={setPreviousVoyage}
+            alternativeRoutes={alternativeRoutes}
+            setAlternativeRoutes={setAlternativeRoutes}
+            whatIf={whatIf}
+            setWhatIf={setWhatIf}
+          />
 
         </section>
 
-        {/* ================= BOTTOM ACTION ================= */}
+        {/* BOTTOM ACTIONS */}
         <div className="bottom-actions">
 
           <button
