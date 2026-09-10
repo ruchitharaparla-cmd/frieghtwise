@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Analysis.css";
 
 import RecommendationCard from "../../components/analysis/RecommendationCard";
@@ -7,6 +7,24 @@ import CostBreakdown from "../../components/analysis/CostBreakdown";
 import RiskScore from "../../components/analysis/RiskScore";
 import DelayPrediction from "../../components/analysis/DelayPrediction";
 import ReasonList from "../../components/analysis/ReasonList";
+import { getVessels, getPorts } from "../../services/api";
+
+const storedRecommendation = sessionStorage.getItem(
+  "freightwise_recommendation"
+);
+
+const storedVoyage = sessionStorage.getItem(
+  "freightwise_voyage_input"
+);
+
+const recommendation = storedRecommendation
+  ? JSON.parse(storedRecommendation)
+  : null;
+
+const voyage = storedVoyage
+  ? JSON.parse(storedVoyage)
+  : null;
+
 
 const Icon = ({ children, size = 20 }) => (
   <span
@@ -132,26 +150,42 @@ function Topbar() {
 }
 
 function VoyageHeader() {
+  const cargo = voyage?.cargoType || "Cargo unavailable";
+  const quantity = voyage?.quantity
+    ? `${Number(voyage.quantity).toLocaleString()} MT`
+    : "Quantity unavailable";
+
+  const origin = voyage?.loadingPort || "Origin unavailable";
+  const destination = voyage?.dischargePort || "Destination unavailable";
+  const arrivalDate = voyage?.arrivalDate || "Arrival date unavailable";
+
+  const formattedDate = arrivalDate !== "Arrival date unavailable"
+    ? new Date(`${arrivalDate}T00:00:00`).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : arrivalDate;
   return (
     <section className="voyage-header">
       <div>
-        <h1>Voyage Analysis – 75,000 MT Coal</h1>
+        <h1>Voyage Analysis – {quantity} {cargo}</h1>
 
         <div className="voyage-route">
           <span>
-            ⚓ <strong>Hay Point, Australia</strong>
+            ⚓ <strong>{origin}</strong>
           </span>
 
           <span className="route-arrow">→</span>
 
           <span>
-            <strong>Paradip, India</strong>
+            <strong>{destination}</strong>
           </span>
 
           <span className="calendar-icon">▣</span>
 
           <span>
-            <strong>12 – 18 Sep 2026</strong>
+            <strong>{formattedDate}</strong>
           </span>
         </div>
       </div>
@@ -224,6 +258,43 @@ function CongestionTrend() {
 }
 
 export default function Analysis() {
+  const [vessels, setVessels] = useState([]);
+  const [ports, setPorts] = useState([]);
+
+  useEffect(() => {
+    async function loadReferenceData() {
+      try {
+        const [vesselData, portData] = await Promise.all([
+          getVessels(),
+          getPorts(),
+        ]);
+
+        setVessels(Array.isArray(vesselData) ? vesselData : []);
+        setPorts(Array.isArray(portData) ? portData : []);
+      } catch (error) {
+        console.error("Failed to load vessel/port data:", error);
+      }
+    }
+
+    loadReferenceData();
+  }, []);
+
+  const vessel = vessels.find(
+    (item) => String(item.id) === String(recommendation?.vessel_id)
+  );
+
+  const port = ports.find(
+    (item) => String(item.id) === String(recommendation?.port_id)
+  );
+
+  const displayRecommendation = recommendation
+    ? {
+        ...recommendation,
+        vessel_name: vessel?.name || null,
+        port_name: port?.name || null,
+      }
+    : null;
+
   return (
     <div className="analysis-page">
       <Sidebar />
@@ -234,18 +305,18 @@ export default function Analysis() {
         <main className="analysis-main">
           <VoyageHeader />
 
-          <RecommendationCard />
+          <RecommendationCard data={displayRecommendation} voyage={voyage} />
 
           <div className="analysis-row top-row">
-            <ForecastCard />
-            <CostBreakdown />
+            <ForecastCard data={recommendation?.forecast} />
+            <CostBreakdown data={recommendation?.cost} />
           </div>
 
           <div className="analysis-row bottom-row">
-            <RiskScore />
-            <DelayPrediction />
+            <RiskScore data={recommendation?.risk} />
+            <DelayPrediction data={recommendation?.risk} />
             <CongestionTrend />
-            <ReasonList />
+            <ReasonList reasons={recommendation?.reasons || []} />
           </div>
 
           <div className="analysis-bottom-space" />

@@ -11,7 +11,21 @@ function CostRow({ color, name, value, percent }) {
   );
 }
 
-export default function CostBreakdown() {
+export default function CostBreakdown({ data }) {
+  const value = (v) =>
+    typeof v === "number" ? `USD ${v.toLocaleString()}` : "Unavailable";
+
+  const total = data?.total_landed_cost;
+  const freight = data?.freight_cost;
+  const bunker = data?.bunker_cost;
+  const port = data?.port_cost;
+  const delay = data?.expected_delay_cost;
+  const demurrage = data?.expected_demurrage;
+
+  const percent = (v) =>
+    typeof v === "number" && typeof total === "number" && total > 0
+      ? `${Math.round((v / total) * 100)}%`
+      : "N/A";
   return (
     <section className="panel cost-panel">
       <div className="panel-heading">
@@ -25,7 +39,7 @@ export default function CostBreakdown() {
         <div className="donut-wrapper">
           <div className="donut">
             <div className="donut-center">
-              <strong>₹ 6.42 Cr</strong>
+              <strong>{value(total)}</strong>
               <span>Total Expected Cost</span>
             </div>
           </div>
@@ -35,43 +49,43 @@ export default function CostBreakdown() {
           <CostRow
             color="blue"
             name="Base Freight"
-            value="₹ 4.10 Cr"
-            percent="64%"
+            value={value(freight)}
+            percent={percent(freight)}
           />
 
           <CostRow
             color="orange"
             name="Bunker / Fuel"
-            value="₹ 0.82 Cr"
-            percent="13%"
+            value={value(bunker)}
+            percent={percent(bunker)}
           />
 
           <CostRow
             color="purple"
             name="Port Charges"
-            value="₹ 0.46 Cr"
-            percent="7%"
+            value={value(delay)}
+            percent={percent(port)}
           />
 
           <CostRow
             color="dark-blue"
             name="Expected Demurrage"
-            value="₹ 0.36 Cr"
-            percent="6%"
+            value={value(demurrage)}
+            percent={percent(demurrage)}
           />
 
           <CostRow
             color="light-blue"
             name="Other Costs"
-            value="₹ 0.46 Cr"
-            percent="7%"
+            value={value(delay)}
+            percent={percent(delay)}
           />
         </div>
 
         <div className="hidden-risk">
-          <strong>Hidden Cost Risk</strong>
+          <strong>Expected Additional Costs</strong>
 
-          <span>+8.4%</span>
+          <span>{typeof delay === "number" ? value(delay) : "Unavailable"}</span>
 
           <p>
             Due to potential delays,

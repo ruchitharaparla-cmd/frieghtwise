@@ -27,7 +27,22 @@ function RiskGauge({
   );
 }
 
-export default function RiskScore() {
+export default function RiskScore({ data }) {
+  const factors = data?.factors || {};
+
+  const score = (name) =>
+    typeof factors[name]?.score === "number"
+      ? factors[name].score
+      : null;
+
+  const label = (value) =>
+    value == null
+      ? "Unavailable"
+      : value < 35
+      ? "Low"
+      : value < 65
+      ? "Moderate"
+      : "High";
   return (
     <section className="panel risk-panel">
       <div className="panel-heading">
@@ -40,26 +55,26 @@ export default function RiskScore() {
       <div className="risk-grid">
         <RiskGauge
           title="Weather Risk"
-          value="24%"
-          label="Low"
-          progress={24}
+          value={score("weather") != null ? `${score("weather")}%` : "Unavailable"}
+          label={label(score("weather"))}
+          progress={score("weather") || 0}
           type="green"
         />
 
         <RiskGauge
           title="Port Congestion"
-          value="41%"
-          label="Moderate"
-          progress={41}
+          value={score("congestion") != null ? `${score("congestion")}%` : "Unavailable"}
+          label={label(score("congestion"))}
+          progress={score("congestion") || 0}
           type="orange"
         />
 
         <RiskGauge
-          title="Vessel Availability"
-          value="18%"
-          label="Low"
-          progress={18}
-          type="green"
+          title="Demurrage Risk"
+          value={score("demurrage") != null ? `${score("demurrage")}%` : "Unavailable"}
+          label={label(score("demurrage"))}
+          progress={score("demurrage") || 0}
+          type={score("demurrage") != null && score("demurrage") >= 65 ? "orange" : "green"}
         />
       </div>
     </section>

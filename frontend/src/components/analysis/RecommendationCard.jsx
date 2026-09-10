@@ -22,7 +22,34 @@ function Kpi({ icon, title, value, subtitle, type }) {
   );
 }
 
-export default function RecommendationCard() {
+export default function RecommendationCard({ data, voyage }) {
+  const vesselName =
+    data?.vessel_name ||
+    (data?.vessel_id ? `Vessel #${data.vessel_id}` : "Vessel unavailable");
+
+  const portName =
+    data?.port_name ||
+    (data?.port_id ? `Port #${data.port_id}` : "Port unavailable");
+
+  const strategy = data?.strategy || "Recommendation unavailable";
+
+  const totalCost = data?.cost?.total_landed_cost;
+  const riskScore = data?.risk?.overall_risk;
+  const riskLevel = data?.risk?.risk_level;
+  const delayHours = data?.risk?.factors?.congestion?.score;
+
+  const formatCost = (value) =>
+    typeof value === "number"
+      ? `USD ${value.toLocaleString()}`
+      : "Unavailable";
+
+  const formatRisk = (value) =>
+    typeof value === "number" ? `${value} / 100` : "Unavailable";
+
+  const formatDelay = (value) =>
+    typeof value === "number"
+      ? `${(value / 24).toFixed(1)} Days`
+      : "Unavailable";
   return (
     <section className="recommendation-card">
       <div className="recommendation-main">
@@ -32,9 +59,9 @@ export default function RecommendationCard() {
           </div>
 
           <div className="recommendation-vessel">
-            <strong>MV Ocean Star</strong>
+            <strong>{vesselName}</strong>
             <span>
-              76,000 DWT&nbsp; | &nbsp;Bulk Carrier
+              {voyage?.vesselType || "Vessel selected by backend"}
             </span>
           </div>
         </div>
@@ -45,22 +72,33 @@ export default function RecommendationCard() {
           </div>
 
           <h2>
-            Charter MV Ocean Star between
+            {strategy}
             <br />
-            12 – 18 Sep via Paradip Port.
+            {portName}
           </h2>
 
           <p>
-            Best balance of cost, risk and availability.
+            Best option calculated from freight, cost, risk and feasibility.
           </p>
         </div>
 
         <div className="confidence-box">
-          <strong>87%</strong>
+          <strong>
+              {data?.forecast?.confidence != null
+                ? `${Math.round(Number(data.forecast.confidence) * 100)}%`
+                : "N/A"}
+            </strong>
           <span>Confidence</span>
 
           <div className="confidence-bar">
-            <div style={{ width: "87%" }} />
+            <div
+                style={{
+                  width:
+                    data?.forecast?.confidence != null
+                      ? `${Math.round(Number(data.forecast.confidence) * 100)}%`
+                      : "0%",
+                }}
+              />
           </div>
         </div>
       </div>
@@ -69,14 +107,14 @@ export default function RecommendationCard() {
         <Kpi
           icon="▣"
           title="Expected Total Cost"
-          value="₹ 6.42 Cr"
+          value={formatCost(totalCost)}
           type="blue"
         />
 
         <Kpi
           icon="↗"
           title="Expected Savings"
-          value="₹ 18.4 L"
+          value="Unavailable"
           subtitle="vs. current market"
           type="green"
         />
@@ -84,15 +122,15 @@ export default function RecommendationCard() {
         <Kpi
           icon="✓"
           title="Risk Score"
-          value="32 / 100"
-          subtitle="Low Risk"
+          value={formatRisk(riskScore)}
+          subtitle={riskLevel || "Unavailable"}
           type="green"
         />
 
         <Kpi
           icon="◷"
           title="Expected Delay"
-          value="2.4 Days"
+          value={formatDelay(delayHours)}
           type="blue"
         />
       </div>

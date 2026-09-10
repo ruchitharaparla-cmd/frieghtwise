@@ -86,25 +86,32 @@ function ForecastChart({ days }) {
   );
 }
 
-export default function ForecastCard() {
+export default function ForecastCard({ data }) {
   const [selectedDays, setSelectedDays] = useState(14);
 
-  const forecastData = {
-    7: {
-      change: "↓ 3.1%",
-      description: "in next 7 days.",
-    },
-    14: {
-      change: "↓ 4.8%",
-      description: "in next 14 days.",
-    },
-    30: {
-      change: "↓ 6.2%",
-      description: "in next 30 days.",
-    },
+  const hasForecast =
+    data &&
+    data.forecast_rate != null &&
+    data.data_status !== "UNAVAILABLE";
+
+  const forecastRate = hasForecast
+    ? `USD ${Number(data.forecast_rate).toLocaleString()} / day`
+    : "Unavailable";
+
+  const confidence =
+    data?.confidence != null
+      ? `${Math.round(Number(data.confidence) * 100)}%`
+      : "Unavailable";
+
+  const currentForecast = {
+    change: hasForecast ? forecastRate : "Forecast unavailable",
+    description: hasForecast
+      ? `Model confidence: ${confidence}`
+      : data?.message ||
+        "Validated freight forecast is currently unavailable.",
   };
 
-  const currentForecast = forecastData[selectedDays];
+
 
   return (
     <section className="panel forecast-panel">
@@ -141,10 +148,9 @@ export default function ForecastCard() {
           <p>{currentForecast.description}</p>
 
           <div className="insight-text">
-            Freight rates are projected
-            to decrease, driven by
-            increased vessel supply
-            and lower demand.
+            {hasForecast
+              ? `Forecast rate: ${forecastRate}.`
+              : "No validated ML forecast is available for this voyage date."}
           </div>
         </div>
       </div>
