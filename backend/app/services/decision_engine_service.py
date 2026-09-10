@@ -17,6 +17,14 @@ from app.services.recommendation_service import generate_recommendation
 from app.integrations.weather import get_weather_risk
 
 
+
+
+# Prototype cost assumptions.
+# These are estimated values, not live market data.
+PROTOTYPE_BUNKER_COST_USD = 300000.0
+PROTOTYPE_PORT_COST_USD = 100000.0
+PROTOTYPE_DEMURRAGE_RATE_USD_PER_DAY = 20000.0
+
 def calculate_arrival_feasibility_score(
     port,
     vessel_loa_m: float,
@@ -315,9 +323,9 @@ def run_decision_engine(
             # They are NOT claimed as live market data.
             # ---------------------------------------------------------
 
-            bunker_cost = 300000.0
-            port_cost = 100000.0
-            demurrage_rate_per_day = 20000.0
+            bunker_cost = PROTOTYPE_BUNKER_COST_USD
+            port_cost = PROTOTYPE_PORT_COST_USD
+            demurrage_rate_per_day = PROTOTYPE_DEMURRAGE_RATE_USD_PER_DAY
 
             cost = calculate_cost(
                 quantity_tonnes=quantity_tonnes,

@@ -10,7 +10,9 @@ from app.services.ai_service import FreightWiseAIService
 from app.services.decision_engine_service import run_decision_engine
 
 
-router = APIRouter(tags=["Recommendations"])
+router = APIRouter(
+    tags=["Recommendations"]
+)
 
 
 @router.post(

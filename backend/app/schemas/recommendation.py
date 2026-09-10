@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -11,26 +11,26 @@ class RecommendationRequest(BaseModel):
     destination_region: str
     arrival_date: date
 
-    # Required when a USD/day freight benchmark is converted
-    # into a voyage freight cost.
-    charter_duration_days: Optional[float] = Field(
-        default=None,
+    # Required because the current FreightWise freight forecast
+    # is expressed as USD/day and must be converted into voyage
+    # freight cost using the charter duration.
+    charter_duration_days: float = Field(
         gt=0,
     )
 
 
 class RecommendationResponse(BaseModel):
     strategy: str
-    vessel_id: Optional[int] = None
-    port_id: Optional[int] = None
+    vessel_id: int | None = None
+    port_id: int | None = None
 
-    forecast: Optional[dict[str, Any]] = None
-    cost: Optional[dict[str, Any]] = None
-    risk: Optional[dict[str, Any]] = None
+    forecast: dict[str, Any] | None = None
+    cost: dict[str, Any] | None = None
+    risk: dict[str, Any] | None = None
 
     # Overall optimization score.
     # Lower score = better option.
-    score: Optional[float] = None
+    score: float | None = None
 
     # Contribution of each optimization factor
     # to the overall score.
@@ -38,9 +38,14 @@ class RecommendationResponse(BaseModel):
         default_factory=dict
     )
 
-    reasons: list[str] = Field(default_factory=list)
-    alternatives: list[dict[str, Any]] = Field(default_factory=list)
+    reasons: list[str] = Field(
+        default_factory=list
+    )
+
+    alternatives: list[dict[str, Any]] = Field(
+        default_factory=list
+    )
 
     # Stage 7 AI/RAG explanation layer.
     # This does not replace or modify the numerical recommendation.
-    ai_analysis: Optional[dict[str, Any]] = None
+    ai_analysis: dict[str, Any] | None = None
