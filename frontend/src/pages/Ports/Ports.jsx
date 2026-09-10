@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Search,
   Bell,
@@ -10,10 +11,11 @@ import {
   Ship,
   RotateCcw,
   Settings as SettingsIcon,
-  ArrowUp,
-  ArrowDown,
   Clock,
 } from "lucide-react";
+
+import PortCard from "../../components/ports/PortCard";
+import PortTable from "../../components/ports/PortTable";
 
 import "./Ports.css";
 
@@ -28,31 +30,37 @@ const mainNavigation = [
     path: "/",
     icon: LayoutDashboard,
   },
+
   {
     label: "New Voyage",
     path: "/new-voyage",
     icon: PlusCircle,
   },
+
   {
     label: "Analysis",
     path: "/analysis",
     icon: BarChart3,
   },
+
   {
     label: "Vessels",
     path: "/vessels",
     icon: Ship,
   },
+
   {
     label: "Ports",
     path: "/ports",
     icon: Anchor,
   },
+
   {
     label: "Simulation",
     path: "/simulation",
     icon: RotateCcw,
   },
+
   {
     label: "Settings",
     path: "/settings",
@@ -75,6 +83,7 @@ const portsData = [
     trend: "up",
     congestion: "18%",
   },
+
   {
     name: "Paradip",
     location: "Odisha",
@@ -84,6 +93,7 @@ const portsData = [
     trend: "down",
     congestion: "42%",
   },
+
   {
     name: "Visakhapatnam",
     location: "Andhra Pradesh",
@@ -93,6 +103,7 @@ const portsData = [
     trend: "up",
     congestion: "22%",
   },
+
   {
     name: "Kakinada",
     location: "Andhra Pradesh",
@@ -102,6 +113,7 @@ const portsData = [
     trend: "down",
     congestion: "36%",
   },
+
   {
     name: "Chennai",
     location: "Tamil Nadu",
@@ -111,6 +123,7 @@ const portsData = [
     trend: "down",
     congestion: "68%",
   },
+
   {
     name: "Krishnapatnam",
     location: "Andhra Pradesh",
@@ -124,15 +137,17 @@ const portsData = [
 
 
 function Ports() {
-
   const [search, setSearch] = useState("");
 
   const [statusFilter, setStatusFilter] =
     useState("All");
 
 
-  const filteredPorts = portsData.filter((port) => {
+  /* =========================================================
+     FILTER PORTS
+  ========================================================= */
 
+  const filteredPorts = portsData.filter((port) => {
     const matchesSearch =
       port.name
         .toLowerCase()
@@ -141,11 +156,9 @@ function Ports() {
         .toLowerCase()
         .includes(search.toLowerCase());
 
-
     const matchesStatus =
       statusFilter === "All" ||
       port.status === statusFilter;
-
 
     return matchesSearch && matchesStatus;
   });
@@ -164,7 +177,10 @@ function Ports() {
         <div className="ports-brand">
 
           <div className="ports-brand-logo">
-            <Ship size={35} strokeWidth={1.6} />
+            <Ship
+              size={35}
+              strokeWidth={1.6}
+            />
           </div>
 
           <h1>
@@ -348,10 +364,12 @@ function Ports() {
 
 
           <div className="ports-header-icon">
+
             <Anchor
               size={82}
               strokeWidth={1.2}
             />
+
           </div>
 
         </section>
@@ -364,297 +382,76 @@ function Ports() {
         <section className="ports-content">
 
 
-          {/* SUMMARY */}
+          {/* =================================================
+              SUMMARY CARDS
+          ================================================= */}
 
           <div className="ports-summary">
 
-            <div className="ports-summary-card">
-
-              <div className="ports-summary-icon">
-                <Anchor size={23} />
-              </div>
-
-              <div>
-                <span>
-                  Total Ports
-                </span>
-
-                <strong>
-                  {portsData.length}
-                </strong>
-              </div>
-
-            </div>
+            <PortCard
+              icon={Anchor}
+              title="Total Ports"
+              value={portsData.length}
+            />
 
 
-            <div className="ports-summary-card">
-
-              <div className="ports-summary-icon low">
-                <Clock size={23} />
-              </div>
-
-              <div>
-                <span>
-                  Low Congestion
-                </span>
-
-                <strong>
-                  {
-                    portsData.filter(
-                      (port) => port.status === "Low"
-                    ).length
-                  }
-                </strong>
-              </div>
-
-            </div>
+            <PortCard
+              icon={Clock}
+              title="Low Congestion"
+              value={
+                portsData.filter(
+                  (port) =>
+                    port.status === "Low"
+                ).length
+              }
+              type="low"
+            />
 
 
-            <div className="ports-summary-card">
-
-              <div className="ports-summary-icon moderate">
-                <Clock size={23} />
-              </div>
-
-              <div>
-                <span>
-                  Moderate
-                </span>
-
-                <strong>
-                  {
-                    portsData.filter(
-                      (port) => port.status === "Moderate"
-                    ).length
-                  }
-                </strong>
-              </div>
-
-            </div>
+            <PortCard
+              icon={Clock}
+              title="Moderate"
+              value={
+                portsData.filter(
+                  (port) =>
+                    port.status === "Moderate"
+                ).length
+              }
+              type="moderate"
+            />
 
 
-            <div className="ports-summary-card">
-
-              <div className="ports-summary-icon high">
-                <Clock size={23} />
-              </div>
-
-              <div>
-                <span>
-                  High Congestion
-                </span>
-
-                <strong>
-                  {
-                    portsData.filter(
-                      (port) => port.status === "High"
-                    ).length
-                  }
-                </strong>
-              </div>
-
-            </div>
+            <PortCard
+              icon={Clock}
+              title="High Congestion"
+              value={
+                portsData.filter(
+                  (port) =>
+                    port.status === "High"
+                ).length
+              }
+              type="high"
+            />
 
           </div>
 
 
-          {/* FILTER */}
-
-          <div className="ports-filter-bar">
-
-            <div>
-
-              <h3>
-                East Coast Port Status
-              </h3>
-
-              <p>
-                Current operational conditions and waiting times
-              </p>
-
-            </div>
-
-
-            <div className="ports-filter-controls">
-
-              <select
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value)
-                }
-              >
-
-                <option value="All">
-                  All Status
-                </option>
-
-                <option value="Low">
-                  Low
-                </option>
-
-                <option value="Moderate">
-                  Moderate
-                </option>
-
-                <option value="High">
-                  High
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          {/* PORT TABLE */}
-
-          <div className="ports-table-card">
-
-            <div className="ports-table-header">
-
-              <span>
-                Port
-              </span>
-
-              <span>
-                Status
-              </span>
-
-              <span>
-                Avg. Waiting Time
-              </span>
-
-              <span>
-                Congestion
-              </span>
-
-              <span>
-                Trend
-              </span>
-
-            </div>
-
-
-            {filteredPorts.map((port) => (
-
-              <div
-                className="ports-table-row"
-                key={port.name}
-              >
-
-                <div className="ports-name-cell">
-
-                  <div className="ports-anchor-icon">
-                    <Anchor size={18} />
-                  </div>
-
-                  <div>
-
-                    <strong>
-                      {port.name}
-                    </strong>
-
-                    <span>
-                      {port.location}
-                    </span>
-
-                  </div>
-
-                </div>
-
-
-                <div
-                  className={
-                    `ports-status ${port.statusClass}`
-                  }
-                >
-
-                  <i></i>
-
-                  {port.status}
-
-                </div>
-
-
-                <div className="ports-waiting">
-
-                  <Clock size={15} />
-
-                  {port.waiting}
-
-                </div>
-
-
-                <div className="ports-congestion">
-
-                  <div className="congestion-bar">
-
-                    <span
-                      style={{
-                        width: port.congestion
-                      }}
-                    ></span>
-
-                  </div>
-
-                  <small>
-                    {port.congestion}
-                  </small>
-
-                </div>
-
-
-                <div
-                  className={
-                    `ports-trend ${port.trend}`
-                  }
-                >
-
-                  {port.trend === "up" ? (
-                    <ArrowDown size={17} />
-                  ) : (
-                    <ArrowUp size={17} />
-                  )}
-
-                  <span>
-                    {port.trend === "up"
-                      ? "Improving"
-                      : "Increasing"}
-                  </span>
-
-                </div>
-
-              </div>
-
-            ))}
-
-
-            {filteredPorts.length === 0 && (
-
-              <div className="ports-empty">
-
-                <Anchor size={40} />
-
-                <h3>
-                  No ports found
-                </h3>
-
-                <p>
-                  Try a different search or status filter.
-                </p>
-
-              </div>
-
-            )}
-
-          </div>
-
+          {/* =================================================
+              PORT TABLE + FILTER
+          ================================================= */}
+
+          <PortTable
+            filteredPorts={filteredPorts}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+          />
 
         </section>
 
 
-        {/* FOOTER */}
+        {/* =================================================
+            FOOTER
+        ================================================= */}
 
         <footer className="ports-footer">
 
