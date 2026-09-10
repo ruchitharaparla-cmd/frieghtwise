@@ -6,7 +6,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
 /* =========================================================
    PAGES
 ========================================================= */
@@ -131,4 +130,4 @@ function App() {
 }
 
 
-export default App;
+export default App; 

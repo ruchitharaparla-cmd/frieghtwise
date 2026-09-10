@@ -1,650 +1,701 @@
 import React, { useState } from "react";
-import {
-  Search,
-  Bell,
-  ChevronDown,
-  Ship,
-  LayoutDashboard,
-  PlusCircle,
-  BarChart3,
-  Anchor,
-  RotateCcw,
-  Settings as SettingsIcon,
-  Clock,
-} from "lucide-react";
-
 import "./NewVoyage.css";
+import shipImage from "../../assets/images/ship.png";
+import portImage from "../../assets/images/port.png";
 
+const Icon = ({ type }) => {
+  const icons = {
+    home: "⌂",
+    voyage: "➤",
+    analysis: "▥",
+    vessel: "♜",
+    port: "♙",
+    simulation: "⟳",
+    settings: "⚙",
+    cargo: "▣",
+    route: "⌖",
+    calendar: "▣",
+    ship: "♜",
+    document: "▤",
+    bulb: "💡",
+    search: "⌕",
+    bell: "♧",
+    arrow: "→",
+  };
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+  return <span className={`icon icon-${type}`}>{icons[type]}</span>;
+};
 
-const mainNavigation = [
-  {
-    label: "Dashboard",
-    path: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "New Voyage",
-    path: "/new-voyage",
-    icon: PlusCircle,
-  },
-  {
-    label: "Analysis",
-    path: "/analysis",
-    icon: BarChart3,
-  },
-  {
-    label: "Vessels",
-    path: "/vessels",
-    icon: Ship,
-  },
-  {
-    label: "Ports",
-    path: "/ports",
-    icon: Anchor,
-  },
-  {
-    label: "Simulation",
-    path: "/simulation",
-    icon: RotateCcw,
-  },
-  {
-    label: "Settings",
-    path: "/settings",
-    icon: SettingsIcon,
-  },
-];
+function NewVoyage() {
+  const [cargoType, setCargoType] = useState("Coal");
+  const [quantity, setQuantity] = useState("75000");
+  const [loadingPort, setLoadingPort] = useState("Hay Point, Australia");
+  const [dischargePort, setDischargePort] = useState("Paradip, India");
+  const [arrivalDate, setArrivalDate] = useState("");
+  const [flexibleDate, setFlexibleDate] = useState(false);
 
+  const [vesselType, setVesselType] = useState("Bulk Carrier");
+  const [draft, setDraft] = useState("14.5");
+  const [loa, setLoa] = useState("200");
+  const [beam, setBeam] = useState("32");
 
-/* =========================================================
-   VOYAGE DATA
-========================================================= */
+  const [weather, setWeather] = useState("Normal");
+  const [contract, setContract] = useState("Spot");
+  const [priority, setPriority] = useState("Lowest Cost");
 
-const voyageData = [
-  {
-    id: "FW-0268",
-    cargo: "Coal",
-    route: "Hay Point → Paradip",
-    status: "Completed",
-    statusClass: "completed",
-    cost: "₹6.42 Cr",
-  },
-  {
-    id: "FW-0267",
-    cargo: "Iron Ore",
-    route: "Port Hedland → Vizag",
-    status: "In Transit",
-    statusClass: "transit",
-    cost: "₹5.98 Cr",
-  },
-  {
-    id: "FW-0266",
-    cargo: "Coal",
-    route: "Newcastle → Kakinada",
-    status: "Loading",
-    statusClass: "loading",
-    cost: "₹6.21 Cr",
-  },
-  {
-    id: "FW-0265",
-    cargo: "Fertilizer",
-    route: "Muscat → Chennai",
-    status: "Completed",
-    statusClass: "completed",
-    cost: "₹4.87 Cr",
-  },
-];
+  const [previousVoyage, setPreviousVoyage] = useState(true);
+  const [alternativeRoutes, setAlternativeRoutes] = useState(true);
+  const [whatIf, setWhatIf] = useState(false);
 
+  const [message, setMessage] = useState("");
 
-function Voyages() {
+  const handleAnalysis = () => {
+    setMessage(
+      `Analysis started for ${quantity || "0"} MT ${cargoType} from ${loadingPort} to ${dischargePort}.`
+    );
 
-  const [search, setSearch] = useState("");
+    setTimeout(() => {
+      setMessage("");
+    }, 4000);
+  };
 
-  const [statusFilter, setStatusFilter] =
-    useState("All");
+  const resetForm = () => {
+    setCargoType("Coal");
+    setQuantity("75000");
+    setLoadingPort("Hay Point, Australia");
+    setDischargePort("Paradip, India");
+    setArrivalDate("");
+    setFlexibleDate(false);
 
+    setVesselType("Bulk Carrier");
+    setDraft("14.5");
+    setLoa("200");
+    setBeam("32");
 
-  const filteredVoyages = voyageData.filter((voyage) => {
+    setWeather("Normal");
+    setContract("Spot");
+    setPriority("Lowest Cost");
 
-    const searchValue =
-      search.toLowerCase();
+    setPreviousVoyage(true);
+    setAlternativeRoutes(true);
+    setWhatIf(false);
 
-
-    const matchesSearch =
-      voyage.id
-        .toLowerCase()
-        .includes(searchValue) ||
-      voyage.cargo
-        .toLowerCase()
-        .includes(searchValue) ||
-      voyage.route
-        .toLowerCase()
-        .includes(searchValue);
-
-
-    const matchesStatus =
-      statusFilter === "All" ||
-      voyage.status === statusFilter;
-
-
-    return matchesSearch && matchesStatus;
-  });
-
+    setMessage("");
+  };
 
   return (
-    <div className="voyages-page">
+    <div className="freightwise-app">
 
+      {/* ================= SIDEBAR ================= */}
+      <aside className="sidebar">
 
-      {/* =================================================
-          SIDEBAR
-      ================================================= */}
-
-      <aside className="voyages-sidebar">
-
-        <div className="voyages-brand">
-
-          <div className="voyages-brand-logo">
-            <Ship size={35} strokeWidth={1.6} />
+        <div className="brand">
+          <div className="brand-logo">
+            ⚓
           </div>
 
-          <h1>
+          <div className="brand-name">
             FREIGHTWISE
-          </h1>
+          </div>
 
-          <p>
+          <div className="brand-tagline">
             Navigate Smarter.
             <br />
             Charter Better.
-          </p>
-
+          </div>
         </div>
 
+        <nav className="sidebar-nav">
 
-        <nav className="voyages-navigation">
+          <button className="nav-item">
+            <Icon type="home" />
+            <span>Dashboard</span>
+          </button>
 
-          {mainNavigation.map((item) => {
+          <button className="nav-item active">
+            <Icon type="voyage" />
+            <span>New Voyage</span>
+          </button>
 
-            const Icon = item.icon;
+          <button className="nav-item">
+            <Icon type="analysis" />
+            <span>Analysis</span>
+          </button>
 
-            return (
-              <a
-                key={item.label}
-                href={item.path}
-                className="voyages-nav-item"
-              >
+          <button className="nav-item">
+            <Icon type="vessel" />
+            <span>Vessels</span>
+          </button>
 
-                <Icon
-                  size={19}
-                  strokeWidth={1.8}
-                />
+          <button className="nav-item">
+            <Icon type="port" />
+            <span>Ports</span>
+          </button>
 
-                <span>
-                  {item.label}
-                </span>
+          <button className="nav-item">
+            <Icon type="simulation" />
+            <span>Simulation</span>
+          </button>
 
-              </a>
-            );
-
-          })}
+          <button className="nav-item">
+            <Icon type="settings" />
+            <span>Settings</span>
+          </button>
 
         </nav>
 
-
-        <div className="voyages-sidebar-bottom">
-
-          <div className="voyages-ai-status">
-
-            <div className="voyages-ai-header">
-
-              <span className="voyages-online-dot"></span>
-
-              <span>
-                AI Engine Online
-              </span>
-
-            </div>
-
-            <p>
-              Data updated
-            </p>
-
-            <strong>
-              2 min ago
-            </strong>
-
+        <div className="engine-status">
+          <div className="engine-title">
+            <span className="online-dot"></span>
+            AI Engine Online
           </div>
 
-
-          <div className="voyages-sidebar-wave"></div>
-
-
-          <div className="voyages-sidebar-quote">
-            "Smarter Oceans
+          <div className="engine-text">
+            Data updated
             <br />
-            for a Stronger India."
+            2 min ago
           </div>
+        </div>
 
+        <div className="sidebar-bottom">
+          <p>
+            "Right Data.
+            <br />
+            Smarter Decisions.
+            <br />
+            Greener Seas."
+          </p>
         </div>
 
       </aside>
 
+      {/* ================= MAIN AREA ================= */}
+      <main className="main-area">
 
-      {/* =================================================
-          MAIN
-      ================================================= */}
+        {/* TOP BAR */}
+        <header className="topbar">
 
-      <main className="voyages-main">
-
-
-        {/* TOPBAR */}
-
-        <header className="voyages-topbar">
-
-          <div className="voyages-search">
-
-            <Search size={18} />
-
+          <div className="search-box">
+            <Icon type="search" />
             <input
               type="text"
-              placeholder="Search voyages, cargo, routes..."
-              value={search}
-              onChange={(event) =>
-                setSearch(event.target.value)
-              }
+              placeholder="Search ports, vessels, routes..."
             />
-
           </div>
 
+          <div className="topbar-right">
 
-          <div className="voyages-topbar-right">
+            <div className="notification">
+              <span>♧</span>
+              <b>3</b>
+            </div>
 
-            <a
-              href="/notifications"
-              className="voyages-notification"
-            >
-
-              <Bell size={20} />
-
-              <span>
-                3
-              </span>
-
-            </a>
-
-
-            <div className="voyages-divider"></div>
-
-
-            <a
-              href="/profile"
-              className="voyages-user"
-            >
-
-              <div className="voyages-avatar">
-                U
-              </div>
-
-              <span>
-                User
-              </span>
-
-              <ChevronDown size={15} />
-
-            </a>
+            <div className="user-profile">
+              <div className="avatar">K</div>
+              <span>User</span>
+              <span className="dropdown-arrow">⌄</span>
+            </div>
 
           </div>
 
         </header>
 
+        {/* ================= HERO ================= */}
+        <section className="page-hero">
 
-        {/* PAGE HEADER */}
-
-        <section className="voyages-header">
-
-          <div>
-
-            <div className="voyages-kicker">
-              VOYAGE MANAGEMENT
-            </div>
-
-            <h2>
-              All Voyages
-            </h2>
+          <div className="hero-text">
+            <h1>Plan a New Voyage</h1>
 
             <p>
-              Review your voyage activity, cargo movements,
-              routes and chartering costs
+              Provide voyage details to get AI-powered recommendations
             </p>
-
           </div>
 
-
-          <div className="voyages-header-icon">
-
-            <Ship
-              size={84}
-              strokeWidth={1.2}
+          <div className="hero-image">
+            <img
+            src={shipImage}
+            alt="Cargo ship"
             />
-
-          </div>
+            <div className="hero-quote">
+              "Better Planning
+              <br />
+              Smarter Chartering
+              <br />
+              A Stronger India."
+              </div>
+              </div>
 
         </section>
 
+        {/* ================= STEPS ================= */}
+        <div className="steps-container">
 
-        {/* CONTENT */}
-
-        <section className="voyages-content">
-
-
-          {/* SUMMARY */}
-
-          <div className="voyages-summary">
-
-            <div className="voyages-summary-card">
-
-              <div className="voyages-summary-icon">
-                <Ship size={23} />
-              </div>
-
-              <div>
-
-                <span>
-                  Total Voyages
-                </span>
-
-                <strong>
-                  {voyageData.length}
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div className="voyages-summary-card">
-
-              <div className="voyages-summary-icon transit">
-                <Clock size={23} />
-              </div>
-
-              <div>
-
-                <span>
-                  In Transit
-                </span>
-
-                <strong>
-                  {
-                    voyageData.filter(
-                      (voyage) =>
-                        voyage.status === "In Transit"
-                    ).length
-                  }
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div className="voyages-summary-card">
-
-              <div className="voyages-summary-icon loading">
-                <Ship size={23} />
-              </div>
-
-              <div>
-
-                <span>
-                  Loading
-                </span>
-
-                <strong>
-                  {
-                    voyageData.filter(
-                      (voyage) =>
-                        voyage.status === "Loading"
-                    ).length
-                  }
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <div className="voyages-summary-card">
-
-              <div className="voyages-summary-icon completed">
-                <Ship size={23} />
-              </div>
-
-              <div>
-
-                <span>
-                  Completed
-                </span>
-
-                <strong>
-                  {
-                    voyageData.filter(
-                      (voyage) =>
-                        voyage.status === "Completed"
-                    ).length
-                  }
-                </strong>
-
-              </div>
-
-            </div>
-
+          <div className="step active">
+            <span>1</span>
+            <strong>Cargo Details</strong>
           </div>
 
+          <div className="step-line"></div>
 
-          {/* TABLE HEADER */}
+          <div className="step">
+            <span>2</span>
+            <strong>Route</strong>
+          </div>
 
-          <div className="voyages-table-card">
+          <div className="step-line"></div>
 
-            <div className="voyages-table-toolbar">
+          <div className="step">
+            <span>3</span>
+            <strong>Voyage Dates</strong>
+          </div>
 
-              <div>
+          <div className="step-line"></div>
 
-                <h3>
-                  Voyage History
-                </h3>
+          <div className="step">
+            <span>4</span>
+            <strong>Vessel Requirements</strong>
+          </div>
 
-                <p>
-                  All recorded FreightWise voyages
-                </p>
+          <div className="step-line"></div>
 
+          <div className="step">
+            <span>5</span>
+            <strong>Additional Constraints</strong>
+          </div>
+
+          <div className="step-line"></div>
+
+          <div className="step">
+            <span>6</span>
+            <strong>Review</strong>
+          </div>
+
+        </div>
+
+        {/* ================= CONTENT GRID ================= */}
+        <section className="content-grid">
+
+          {/* CARD 1 */}
+          <div className="form-card">
+
+            <div className="card-heading">
+              <div className="card-icon">
+                <Icon type="cargo" />
               </div>
 
+              <div>
+                <h2>1. Cargo Details</h2>
+                <p>Tell us what you want to ship</p>
+              </div>
+            </div>
 
-              <div className="voyages-toolbar-controls">
+            <div className="form-row">
+
+              <div className="field">
+                <label>
+                  Cargo Type <span>*</span>
+                </label>
 
                 <select
-                  value={statusFilter}
-                  onChange={(event) =>
-                    setStatusFilter(event.target.value)
-                  }
+                  value={cargoType}
+                  onChange={(e) => setCargoType(e.target.value)}
                 >
-
-                  <option value="All">
-                    All Status
-                  </option>
-
-                  <option value="Completed">
-                    Completed
-                  </option>
-
-                  <option value="In Transit">
-                    In Transit
-                  </option>
-
-                  <option value="Loading">
-                    Loading
-                  </option>
-
+                  <option>Coal</option>
+                  <option>Iron Ore</option>
+                  <option>Fertilizer</option>
+                  <option>Grain</option>
+                  <option>Other Bulk Cargo</option>
                 </select>
+              </div>
 
+              <div className="field">
+                <label>
+                  Quantity (MT) <span>*</span>
+                </label>
+
+                <div className="input-unit">
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                  <span>MT</span>
+                </div>
               </div>
 
             </div>
 
+            <div className="info-box">
+              <b>ⓘ</b>
+              Supported: Coal, Iron Ore, Fertilizer, Grain and other bulk
+              cargoes.
+            </div>
 
-            {/* TABLE */}
+          </div>
 
-            <div className="voyages-table">
+          {/* CARD 2 */}
+          <div className="form-card">
 
-              <div className="voyages-table-heading">
+            <div className="card-heading">
+              <div className="card-icon">
+                <Icon type="route" />
+              </div>
 
-                <span>
-                  Voyage
-                </span>
+              <div>
+                <h2>2. Route</h2>
+                <p>Select loading and discharge ports</p>
+              </div>
+            </div>
 
-                <span>
-                  Cargo
-                </span>
+            <div className="route-fields">
 
-                <span>
-                  Route
-                </span>
+              <div className="field">
+                <label>
+                  Loading Port <span>*</span>
+                </label>
 
-                <span>
-                  Status
-                </span>
+                <select
+                  value={loadingPort}
+                  onChange={(e) => setLoadingPort(e.target.value)}
+                >
+                  <option>Hay Point, Australia</option>
+                  <option>Newcastle, Australia</option>
+                  <option>Gladstone, Australia</option>
+                  <option>Richards Bay, South Africa</option>
+                </select>
+              </div>
 
-                <span>
-                  Cost
-                </span>
+              <div className="swap-button">⇄</div>
+
+              <div className="field">
+                <label>
+                  Discharge Port <span>*</span>
+                </label>
+
+                <select
+                  value={dischargePort}
+                  onChange={(e) => setDischargePort(e.target.value)}
+                >
+                  <option>Paradip, India</option>
+                  <option>Visakhapatnam, India</option>
+                  <option>Kakinada, India</option>
+                  <option>Chennai, India</option>
+                  <option>Kolkata, India</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div className="route-info">
+              <span className="route-icon">♜</span>
+
+              <div>
+                <strong>Distance (approx.): 5,620 nautical miles</strong>
+                <br />
+                Estimated voyage duration: 24 – 28 days
+              </div>
+            </div>
+
+          </div>
+
+          {/* CARD 3 */}
+          <div className="form-card">
+
+            <div className="card-heading">
+              <div className="card-icon">
+                <Icon type="calendar" />
+              </div>
+
+              <div>
+                <h2>3. Voyage Dates</h2>
+                <p>When do you need the vessel?</p>
+              </div>
+            </div>
+
+            <div className="field">
+
+              <label>
+                Expected Arrival Date <span>*</span>
+              </label>
+
+              <input
+                className="date-input"
+                type="date"
+                value={arrivalDate}
+                onChange={(e) => setArrivalDate(e.target.value)}
+              />
+
+            </div>
+
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={flexibleDate}
+                onChange={(e) => setFlexibleDate(e.target.checked)}
+              />
+
+              <span>Flexible date</span>
+            </label>
+
+            <div className="info-box">
+              <b>ⓘ</b>
+              You can select a fixed arrival date or allow flexibility for
+              better recommendations.
+            </div>
+
+          </div>
+
+          {/* CARD 4 */}
+          <div className="form-card">
+
+            <div className="card-heading">
+              <div className="card-icon">
+                <Icon type="ship" />
+              </div>
+
+              <div>
+                <h2>4. Vessel Requirements</h2>
+                <p>Specify your vessel preferences</p>
+              </div>
+            </div>
+
+            <div className="form-row">
+
+              <div className="field">
+                <label>Vessel Type <span>*</span></label>
+
+                <select
+                  value={vesselType}
+                  onChange={(e) => setVesselType(e.target.value)}
+                >
+                  <option>Bulk Carrier</option>
+                  <option>Panamax</option>
+                  <option>Supramax</option>
+                  <option>Capesize</option>
+                </select>
+              </div>
+
+              <div className="field">
+                <label>Maximum Draft (m)</label>
+
+                <div className="input-unit">
+                  <input
+                    type="number"
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                  />
+                  <span>m</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="form-row">
+
+              <div className="field">
+                <label>Maximum LOA (m)</label>
+
+                <div className="input-unit">
+                  <input
+                    type="number"
+                    value={loa}
+                    onChange={(e) => setLoa(e.target.value)}
+                  />
+                  <span>m</span>
+                </div>
+              </div>
+
+              <div className="field">
+                <label>Maximum Beam (m)</label>
+
+                <div className="input-unit">
+                  <input
+                    type="number"
+                    value={beam}
+                    onChange={(e) => setBeam(e.target.value)}
+                  />
+                  <span>m</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="info-box">
+              <b>ⓘ</b>
+              Enter minimum requirements. We will match the best available
+              vessels.
+            </div>
+
+          </div>
+
+          {/* CARD 5 */}
+          <div className="form-card">
+
+            <div className="card-heading">
+              <div className="card-icon">
+                <Icon type="document" />
+              </div>
+
+              <div>
+                <h2>5. Additional Constraints</h2>
+                <p>Add any operational constraints</p>
+              </div>
+            </div>
+
+            <div className="constraint-layout">
+
+              <div>
+
+                <div className="field">
+                  <label>Weather Tolerance</label>
+
+                  <select
+                    value={weather}
+                    onChange={(e) => setWeather(e.target.value)}
+                  >
+                    <option>Normal</option>
+                    <option>Low Risk Preferred</option>
+                    <option>High Risk Tolerant</option>
+                  </select>
+                </div>
+
+                <div className="field">
+                  <label>Contract Type</label>
+
+                  <select
+                    value={contract}
+                    onChange={(e) => setContract(e.target.value)}
+                  >
+                    <option>Spot</option>
+                    <option>Time Charter</option>
+                    <option>COA</option>
+                  </select>
+                </div>
+
+                <div className="field">
+                  <label>Priority</label>
+
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                  >
+                    <option>Lowest Cost</option>
+                    <option>Lowest Risk</option>
+                    <option>Balanced</option>
+                    <option>Fastest Delivery</option>
+                  </select>
+                </div>
 
               </div>
 
+              <div className="check-list">
 
-              {filteredVoyages.map((voyage) => (
+                <label className="check-option">
+                  <input
+                    type="checkbox"
+                    checked={previousVoyage}
+                    onChange={(e) => setPreviousVoyage(e.target.checked)}
+                  />
+                  <span>
+                    Consider previous voyage /
+                    <br />
+                    positioning
+                  </span>
+                </label>
 
-                <div
-                  className="voyages-table-row"
-                  key={voyage.id}
-                >
-
-                  <div className="voyage-id-cell">
-
-                    <div className="voyage-ship-icon">
-                      <Ship size={18} />
-                    </div>
-
-                    <div>
-
-                      <strong>
-                        {voyage.id}
-                      </strong>
-
-                      <span>
-                        FreightWise Voyage
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-                  <div className="voyage-cargo">
-                    {voyage.cargo}
-                  </div>
-
-
-                  <div className="voyage-route">
-                    {voyage.route}
-                  </div>
-
-
-                  <div
-                    className={
-                      `voyage-status ${voyage.statusClass}`
+                <label className="check-option">
+                  <input
+                    type="checkbox"
+                    checked={alternativeRoutes}
+                    onChange={(e) =>
+                      setAlternativeRoutes(e.target.checked)
                     }
-                  >
+                  />
+                  <span>Include alternative routes</span>
+                </label>
 
-                    <i></i>
+                <label className="check-option">
+                  <input
+                    type="checkbox"
+                    checked={whatIf}
+                    onChange={(e) => setWhatIf(e.target.checked)}
+                  />
+                  <span>Enable what-if analysis</span>
+                </label>
 
-                    {voyage.status}
-
-                  </div>
-
-
-                  <strong className="voyage-cost">
-                    {voyage.cost}
-                  </strong>
-
-                </div>
-
-              ))}
-
-
-              {filteredVoyages.length === 0 && (
-
-                <div className="voyages-empty">
-
-                  <Ship size={42} />
-
-                  <h3>
-                    No voyages found
-                  </h3>
-
-                  <p>
-                    Try a different search or status filter.
-                  </p>
-
-                </div>
-
-              )}
+              </div>
 
             </div>
 
           </div>
 
+          {/* CARD 6 */}
+          <div className="form-card tips-card">
+
+            <div className="card-heading">
+
+              <div className="bulb-icon">
+                <Icon type="bulb" />
+              </div>
+
+              <div>
+                <h2>Tips for Better Recommendations</h2>
+              </div>
+
+            </div>
+
+            <ul className="tips-list">
+              <li>Provide accurate cargo details</li>
+              <li>Select flexible dates for more options</li>
+              <li>Include any draft or port restrictions</li>
+              <li>Consider alternative routes</li>
+              <li>Enable what-if analysis to compare scenarios</li>
+            </ul>
+
+            <div className="tips-image"
+            style={{ backgroundImage: `url(${portImage})` }}>
+              <div className="tips-quote">
+                "Connecting Global Resources
+                <br />
+                to India's Growth"
+              </div>
+            </div>
+
+          </div>
 
         </section>
 
+        {/* ================= BOTTOM ACTION ================= */}
+        <div className="bottom-actions">
 
-        {/* FOOTER */}
+          <button
+            className="reset-button"
+            onClick={resetForm}
+          >
+            ⟳
+            <span>Reset Form</span>
+          </button>
 
-        <footer className="voyages-footer">
+          <button
+            className="analysis-button"
+            onClick={handleAnalysis}
+          >
+            ✨
+            <span>Run FreightWise Analysis</span>
+            <span>→</span>
+          </button>
 
-          <span>
-            © 2026 FreightWise. All rights reserved.
-          </span>
+        </div>
 
-          <div>
-
-            <a href="#help">
-              Help
-            </a>
-
-            <a href="#privacy">
-              Privacy
-            </a>
-
-            <a href="#terms">
-              Terms
-            </a>
-
-            <a href="#contact">
-              Contact
-            </a>
-
+        {message && (
+          <div className="success-message">
+            ✓ {message}
           </div>
-
-        </footer>
+        )}
 
       </main>
-
     </div>
   );
 }
 
-
-export default Voyages;
+export default NewVoyage;
