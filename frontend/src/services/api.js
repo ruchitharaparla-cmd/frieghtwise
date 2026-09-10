@@ -49,3 +49,11 @@ export async function createVoyage(data) {
     body: JSON.stringify(data),
   });
 }
+
+
+export async function runSimulation(data) {
+  return request("/simulation", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}

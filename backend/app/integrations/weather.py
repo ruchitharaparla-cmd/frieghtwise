@@ -74,6 +74,23 @@ def get_weather_forecast(
         base_url = FORECAST_URL
         source_type = "Open-Meteo Forecast"
 
+    # Open-Meteo forecast data is not available indefinitely
+    # into the future. Avoid waiting for a network timeout when
+    # the requested date is outside the forecast horizon.
+    if target_date >= today:
+        forecast_days_ahead = (target_date - today).days
+
+        if forecast_days_ahead > 16:
+            return {
+                "data_status": "UNAVAILABLE",
+                "source": source_type,
+                "message": (
+                    "Weather forecast is unavailable for the "
+                    "requested date because it is beyond the "
+                    "available forecast horizon."
+                ),
+            }
+
     try:
         data = _fetch_weather(
             base_url=base_url,

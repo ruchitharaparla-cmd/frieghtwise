@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Anchor,
@@ -23,6 +23,7 @@ import {
 
 import "./Simulation.css";
 import simulImage from "../../assets/images/simul.png";
+import { runSimulation as runSimulationApi, getVessels, getPorts } from "../../services/api";
 
 const scenarios = [
   {
@@ -75,16 +76,106 @@ function Simulation() {
   const [route, setRoute] = useState("Hay Point → Paradip");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [running, setRunning] = useState(false);
-  const [completed, setCompleted] = useState(true);
+  const [completed, setCompleted] = useState(false);
+  const [simulationResult, setSimulationResult] = useState(null);
+  const [simulationError, setSimulationError] = useState("");
+  const [vessels, setVessels] = useState([]);
+  const [ports, setPorts] = useState([]);
 
-  const runSimulation = () => {
+  useEffect(() => {
+    async function loadOptions() {
+      try {
+        const [vesselResponse, portResponse] = await Promise.all([
+          getVessels(),
+          getPorts(),
+        ]);
+
+        setVessels(vesselResponse?.vessels || vesselResponse || []);
+        setPorts(portResponse?.ports || portResponse || []);
+      } catch {
+        setVessels([]);
+        setPorts([]);
+      }
+    }
+
+    loadOptions();
+  }, []);
+
+  const getVoyageInput = () => {
+    try {
+      const stored = sessionStorage.getItem("freightwise_voyage_input");
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const addDays = (dateString, days) => {
+    const date = new Date(`${dateString}T00:00:00`);
+    date.setDate(date.getDate() + Number(days || 0));
+    return date.toISOString().slice(0, 10);
+  };
+
+  const findPortId = () => {
+    const destination = route.split("→").pop()?.trim().toLowerCase();
+
+    const match = ports.find((port) => {
+      const name = String(port.name || "").toLowerCase();
+      return name.includes(destination) || destination.includes(name);
+    });
+
+    return match?.id ?? null;
+  };
+
+  const findVesselClass = () => {
+    const match = vessels.find(
+      (item) =>
+        String(item.name || "").toLowerCase() ===
+        String(vessel || "").toLowerCase()
+    );
+
+    return match?.vessel_class ?? null;
+  };
+
+  const runSimulation = async () => {
     setRunning(true);
     setCompleted(false);
+    setSimulationError("");
 
-    setTimeout(() => {
-      setRunning(false);
+    try {
+      const voyage = getVoyageInput();
+
+      if (!voyage) {
+        throw new Error(
+          "Voyage input is unavailable. Please create a voyage first."
+        );
+      }
+
+      const baseScenario = {
+        cargo_type: voyage.cargoType,
+        quantity_tonnes: Number(voyage.quantity),
+        origin_country:
+          voyage.loadingPort?.split(",").pop()?.trim() || "",
+        destination_region: "East Coast India",
+        arrival_date: voyage.arrivalDate,
+      };
+
+      const response = await runSimulationApi({
+        base_scenario: baseScenario,
+        changes: {
+          charter_duration_days: Number(waitingPeriod) || undefined,
+        },
+      });
+
+      setSimulationResult(response);
       setCompleted(true);
-    }, 800);
+    } catch (error) {
+      setSimulationResult(null);
+      setSimulationError(error.message || "Simulation failed.");
+      setCompleted(false);
+    } finally {
+      setRunning(false);
+    }
   };
 
   return (
@@ -475,7 +566,87 @@ function Simulation() {
             </div>
 
             <div className="scenario-grid">
-              {scenarios.map((scenario) => (
+              {(simulationResult
+                ? [
+                    {
+                      id: "base",
+                      title: "Base Scenario",
+                      date: getVoyageInput()?.arrivalDate || charteringDate,
+                      rate: "Unavailable",
+                      cost:
+                        simulationResult.base_scenario?.total_landed_cost != null
+                          ? `$ ${Number(
+                              simulationResult.base_scenario.total_landed_cost
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}`
+                          : "Unavailable",
+                      risk:
+                        simulationResult.base_scenario?.risk?.risk_level || "Unavailable",
+                      delay: "Unavailable",
+                      type:
+                        String(
+                          simulationResult.base_scenario?.risk?.risk_level || ""
+                        ).toLowerCase() === "high"
+                          ? "high"
+                          : String(
+                              simulationResult.base_scenario?.risk?.risk_level || ""
+                            ).toLowerCase() === "medium"
+                          ? "moderate"
+                          : "low",
+                      recommended:
+                        simulationResult.base_scenario?.recommendation?.strategy === "BOOK_NOW",
+                      message:
+                        simulationResult.base_scenario?.recommendation?.strategy ||
+                        "Base scenario result unavailable.",
+                    },
+                    {
+                      id: "modified",
+                      title:
+                        Number(waitingPeriod) === 0
+                          ? "Charter Now"
+                          : `Wait ${waitingPeriod} Days`,
+                      date: addDays(
+                        getVoyageInput()?.arrivalDate || charteringDate,
+                        waitingPeriod
+                      ),
+                      rate: "Unavailable",
+                      cost:
+                        simulationResult.modified_scenario
+                          ?.total_landed_cost != null
+                          ? `$ ${Number(
+                              simulationResult.modified_scenario
+                                .total_landed_cost
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}`
+                          : "Unavailable",
+                      risk:
+                        simulationResult.modified_scenario?.risk?.risk_level ||
+                        "Unavailable",
+                      delay: "Unavailable",
+                      type:
+                        String(
+                          simulationResult.modified_scenario?.risk?.risk_level || ""
+                        ).toLowerCase() === "high"
+                          ? "high"
+                          : String(
+                              simulationResult.modified_scenario?.risk?.risk_level || ""
+                            ).toLowerCase() === "medium"
+                          ? "moderate"
+                          : "low",
+                      recommended:
+                        simulationResult.modified_scenario?.recommendation?.strategy ===
+                        "BOOK_NOW",
+                      message:
+                        simulationResult.modified_scenario?.recommendation?.strategy ||
+                        "Modified scenario result unavailable.",
+                    },
+                  ]
+                : scenarios
+              ).map((scenario) => (
                 <ScenarioCard
                   key={scenario.id}
                   scenario={scenario}
@@ -496,10 +667,19 @@ function Simulation() {
               <h3>FreightWise Recommendation</h3>
 
               <p>
-                Based on current freight rates, expected
-                congestion, weather conditions, and voyage risk,
-                chartering now provides the strongest overall
-                cost-risk balance.
+                {simulationError
+                  ? simulationError
+                  : simulationResult
+                  ? `Base strategy: ${
+                      simulationResult.base_scenario?.recommendation?.strategy ||
+                      "Unavailable"
+                    }. Modified strategy: ${
+                      simulationResult.modified_scenario?.recommendation?.strategy ||
+                      "Unavailable"
+                    }. Recommendation changed: ${
+                      simulationResult.recommendation_changed ? "Yes" : "No"
+                    }.`
+                  : "Run the simulation to compare the selected scenario against the base voyage."}
               </p>
             </div>
           </section>

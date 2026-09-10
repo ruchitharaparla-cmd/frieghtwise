@@ -149,6 +149,8 @@ def run_decision_engine(
     )
 
     options = []
+    weather_cache = {}
+    forecast_cache = {}
 
     for vessel in vessels:
         for port in ports:
@@ -195,16 +197,27 @@ def run_decision_engine(
             # FREIGHT FORECAST
             # ---------------------------------------------------------
 
-            forecast = get_freight_forecast(
-                db=db,
-                request=ForecastRequest(
-                    origin_country=origin_country,
-                    destination_region=destination_region,
-                    cargo_type=cargo_type,
-                    vessel_class=vessel.vessel_class,
-                    forecast_date=arrival_date,
-                ),
+            forecast_key = (
+                origin_country,
+                destination_region,
+                cargo_type,
+                vessel.vessel_class,
+                str(arrival_date),
             )
+
+            if forecast_key not in forecast_cache:
+                forecast_cache[forecast_key] = get_freight_forecast(
+                    db=db,
+                    request=ForecastRequest(
+                        origin_country=origin_country,
+                        destination_region=destination_region,
+                        cargo_type=cargo_type,
+                        vessel_class=vessel.vessel_class,
+                        forecast_date=arrival_date,
+                    ),
+                )
+
+            forecast = forecast_cache[forecast_key]
 
             if forecast["forecast_rate"] is None:
                 options.append(
@@ -251,11 +264,20 @@ def run_decision_engine(
             # Uses the selected port's coordinates and arrival date.
             # ---------------------------------------------------------
 
-            weather = get_weather_risk(
-                latitude=port.latitude,
-                longitude=port.longitude,
-                target_date=arrival_date,
+            weather_key = (
+                port.latitude,
+                port.longitude,
+                str(arrival_date),
             )
+
+            if weather_key not in weather_cache:
+                weather_cache[weather_key] = get_weather_risk(
+                    latitude=port.latitude,
+                    longitude=port.longitude,
+                    target_date=arrival_date,
+                )
+
+            weather = weather_cache[weather_key]
 
             weather_score = weather.get(
                 "weather_score"
