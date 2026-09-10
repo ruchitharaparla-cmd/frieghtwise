@@ -54,6 +54,7 @@ def check_cargo_compatibility(
     if vessel.dwt is None:
         feasible = False
         reasons.append("Vessel DWT data is unavailable.")
+
     elif quantity_tonnes > vessel.dwt:
         feasible = False
         reasons.append(
@@ -75,7 +76,9 @@ def check_cargo_compatibility(
             )
     else:
         feasible = False
-        reasons.append("Vessel cargo compatibility data is unavailable.")
+        reasons.append(
+            "Vessel cargo compatibility data is unavailable."
+        )
 
     if feasible:
         reasons.append(
@@ -86,3 +89,36 @@ def check_cargo_compatibility(
         "feasible": feasible,
         "reasons": reasons,
     }
+
+
+def calculate_vessel_suitability_score(
+    vessel: Vessel,
+    quantity_tonnes: float,
+) -> Optional[float]:
+    """
+    Calculate vessel suitability based on cargo-to-DWT utilization.
+
+    Higher score means the requested cargo uses a larger proportion
+    of the vessel's carrying capacity.
+
+    Returns:
+        0-100 suitability score.
+        None if required data is unavailable.
+    """
+
+    if vessel.dwt is None or vessel.dwt <= 0:
+        return None
+
+    if quantity_tonnes <= 0:
+        return None
+
+    # Hard capacity constraint
+    if quantity_tonnes > vessel.dwt:
+        return 0.0
+
+    utilization = quantity_tonnes / vessel.dwt
+
+    return round(
+        max(0.0, min(100.0, utilization * 100.0)),
+        2,
+    )
