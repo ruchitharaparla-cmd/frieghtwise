@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./NewVoyage.css";
 import shipImage from "../../assets/images/ship.png";
 
@@ -6,6 +7,8 @@ import CargoInput from "../../components/voyage/CargoInput";
 import RouteInput from "../../components/voyage/RouteInput";
 import DateRangeInput from "../../components/voyage/DateRangeInput";
 import VoyageForm from "../../components/voyage/VoyageForm";
+
+import { getRecommendation } from "../../services/api";
 
 const Icon = ({ type }) => {
   const icons = {
@@ -28,20 +31,25 @@ const Icon = ({ type }) => {
 };
 
 function NewVoyage() {
+  const navigate = useNavigate();
+
   const [cargoType, setCargoType] = useState("Coal");
   const [quantity, setQuantity] = useState("75000");
 
-  const [loadingPort, setLoadingPort] =
-    useState("Hay Point, Australia");
+  const [loadingPort, setLoadingPort] = useState(
+    "Hay Point, Australia"
+  );
 
-  const [dischargePort, setDischargePort] =
-    useState("Paradip, India");
+  const [dischargePort, setDischargePort] = useState(
+    "Paradip, India"
+  );
 
   const [arrivalDate, setArrivalDate] = useState("");
   const [flexibleDate, setFlexibleDate] = useState(false);
 
-  const [vesselType, setVesselType] =
-    useState("Bulk Carrier");
+  const [vesselType, setVesselType] = useState(
+    "Bulk Carrier"
+  );
 
   const [draft, setDraft] = useState("14.5");
   const [loa, setLoa] = useState("200");
@@ -49,29 +57,89 @@ function NewVoyage() {
 
   const [weather, setWeather] = useState("Normal");
   const [contract, setContract] = useState("Spot");
-  const [priority, setPriority] =
-    useState("Lowest Cost");
+  const [priority, setPriority] = useState("Lowest Cost");
 
-  const [previousVoyage, setPreviousVoyage] =
-    useState(true);
-
-  const [alternativeRoutes, setAlternativeRoutes] =
-    useState(true);
-
+  const [previousVoyage, setPreviousVoyage] = useState(true);
+  const [alternativeRoutes, setAlternativeRoutes] = useState(true);
   const [whatIf, setWhatIf] = useState(false);
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleAnalysis = () => {
-    setMessage(
-      `Analysis started for ${
-        quantity || "0"
-      } MT ${cargoType} from ${loadingPort} to ${dischargePort}.`
-    );
+  const handleAnalysis = async () => {
+    if (!quantity || Number(quantity) <= 0) {
+      setMessage("Please enter a valid cargo quantity.");
+      return;
+    }
 
-    setTimeout(() => {
-      setMessage("");
-    }, 4000);
+    if (!arrivalDate) {
+      setMessage("Please select an arrival date.");
+      return;
+    }
+
+    const destinationRegion = dischargePort
+      .toLowerCase()
+      .includes("india")
+      ? "East Coast India"
+      : dischargePort;
+
+    const recommendationInput = {
+      cargo_type: cargoType,
+      quantity_tonnes: Number(quantity),
+      origin_country: loadingPort
+        .split(",")
+        .pop()
+        .trim(),
+      destination_region: destinationRegion,
+      arrival_date: arrivalDate,
+    };
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await getRecommendation(
+        recommendationInput
+      );
+
+      sessionStorage.setItem(
+        "freightwise_voyage_input",
+        JSON.stringify({
+          cargoType,
+          quantity,
+          loadingPort,
+          dischargePort,
+          arrivalDate,
+          flexibleDate,
+          vesselType,
+          draft,
+          loa,
+          beam,
+          weather,
+          contract,
+          priority,
+          previousVoyage,
+          alternativeRoutes,
+          whatIf,
+        })
+      );
+
+      sessionStorage.setItem(
+        "freightwise_recommendation",
+        JSON.stringify(response)
+      );
+
+      navigate("/analysis");
+    } catch (error) {
+      console.error("FreightWise analysis error:", error);
+
+      setMessage(
+        error.message ||
+          "Unable to run FreightWise analysis."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -133,7 +201,10 @@ function NewVoyage() {
             <span>New Voyage</span>
           </button>
 
-          <button className="nav-item">
+          <button
+            className="nav-item"
+            onClick={() => navigate("/analysis")}
+          >
             <Icon type="analysis" />
             <span>Analysis</span>
           </button>
@@ -345,6 +416,7 @@ function NewVoyage() {
           <button
             className="reset-button"
             onClick={resetForm}
+            disabled={loading}
           >
             ⟳
             <span>Reset Form</span>
@@ -353,9 +425,16 @@ function NewVoyage() {
           <button
             className="analysis-button"
             onClick={handleAnalysis}
+            disabled={loading}
           >
-            ✨
-            <span>Run FreightWise Analysis</span>
+            <span>{loading ? "⏳" : "✨"}</span>
+
+            <span>
+              {loading
+                ? "Running FreightWise Analysis..."
+                : "Run FreightWise Analysis"}
+            </span>
+
             <span>→</span>
           </button>
 
@@ -363,7 +442,7 @@ function NewVoyage() {
 
         {message && (
           <div className="success-message">
-            ✓ {message}
+            {message}
           </div>
         )}
 
