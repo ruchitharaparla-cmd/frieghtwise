@@ -92,6 +92,7 @@ function NewVoyage() {
         .trim(),
       destination_region: destinationRegion,
       arrival_date: arrivalDate,
+      charter_duration_days: 7,
     };
 
     setLoading(true);

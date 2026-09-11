@@ -72,8 +72,8 @@ function Simulation() {
 
   const [charteringDate, setCharteringDate] = useState("2026-09-12");
   const [waitingPeriod, setWaitingPeriod] = useState("7");
-  const [vessel, setVessel] = useState("MV Ocean Star");
-  const [route, setRoute] = useState("Hay Point → Paradip");
+  const [vessel, setVessel] = useState("");
+  const [route, setRoute] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [running, setRunning] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -164,6 +164,8 @@ function Simulation() {
         base_scenario: baseScenario,
         changes: {
           charter_duration_days: Number(waitingPeriod) || undefined,
+          vessel_id: vessel ? Number(vessel) : undefined,
+          port_id: route ? Number(route) : undefined,
         },
       });
 
@@ -444,13 +446,15 @@ function Simulation() {
                     value={vessel}
                     onChange={(e) => setVessel(e.target.value)}
                   >
-                    <option>MV Ocean Star</option>
-
-                    <option>MV Pacific Trader</option>
-
-                    <option>MV Eastern Horizon</option>
-
-                    <option>MV Sea Falcon</option>
+                    {vessels.length > 0 ? (
+                      vessels.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">No vessels available</option>
+                    )}
                   </select>
 
                   <ChevronDown
@@ -471,17 +475,15 @@ function Simulation() {
                     value={route}
                     onChange={(e) => setRoute(e.target.value)}
                   >
-                    <option>Hay Point → Paradip</option>
-
-                    <option>Newcastle → Paradip</option>
-
-                    <option>
-                      Gladstone → Visakhapatnam
-                    </option>
-
-                    <option>
-                      Hay Point → Visakhapatnam
-                    </option>
+                    {ports.length > 0 ? (
+                      ports.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">No ports available</option>
+                    )}
                   </select>
 
                   <ChevronDown

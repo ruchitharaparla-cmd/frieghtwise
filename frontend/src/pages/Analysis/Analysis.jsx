@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./Analysis.css";
 
 import RecommendationCard from "../../components/analysis/RecommendationCard";
@@ -7,24 +7,8 @@ import CostBreakdown from "../../components/analysis/CostBreakdown";
 import RiskScore from "../../components/analysis/RiskScore";
 import DelayPrediction from "../../components/analysis/DelayPrediction";
 import ReasonList from "../../components/analysis/ReasonList";
+
 import { getVessels, getPorts } from "../../services/api";
-
-const storedRecommendation = sessionStorage.getItem(
-  "freightwise_recommendation"
-);
-
-const storedVoyage = sessionStorage.getItem(
-  "freightwise_voyage_input"
-);
-
-const recommendation = storedRecommendation
-  ? JSON.parse(storedRecommendation)
-  : null;
-
-const voyage = storedVoyage
-  ? JSON.parse(storedVoyage)
-  : null;
-
 
 const Icon = ({ children, size = 20 }) => (
   <span
@@ -134,58 +118,94 @@ function Topbar() {
       <div className="topbar-right">
         <div className="notification">
           ♧
-          <span className="notification-count">3</span>
+          <span className="notification-count">
+            3
+          </span>
         </div>
 
         <div className="profile-divider" />
 
         <div className="profile">
-          <div className="profile-avatar">K</div>
+          <div className="profile-avatar">
+            K
+          </div>
+
           <span>User</span>
-          <span className="profile-arrow">⌄</span>
+
+          <span className="profile-arrow">
+            ⌄
+          </span>
         </div>
       </div>
     </header>
   );
 }
 
-function VoyageHeader() {
-  const cargo = voyage?.cargoType || "Cargo unavailable";
+function VoyageHeader({ voyage }) {
+  const cargo =
+    voyage?.cargoType ||
+    "Cargo unavailable";
+
   const quantity = voyage?.quantity
-    ? `${Number(voyage.quantity).toLocaleString()} MT`
+    ? `${Number(
+        voyage.quantity
+      ).toLocaleString()} MT`
     : "Quantity unavailable";
 
-  const origin = voyage?.loadingPort || "Origin unavailable";
-  const destination = voyage?.dischargePort || "Destination unavailable";
-  const arrivalDate = voyage?.arrivalDate || "Arrival date unavailable";
+  const origin =
+    voyage?.loadingPort ||
+    "Origin unavailable";
 
-  const formattedDate = arrivalDate !== "Arrival date unavailable"
-    ? new Date(`${arrivalDate}T00:00:00`).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-    : arrivalDate;
+  const destination =
+    voyage?.dischargePort ||
+    "Destination unavailable";
+
+  const arrivalDate =
+    voyage?.arrivalDate ||
+    "Arrival date unavailable";
+
+  const formattedDate =
+    arrivalDate !==
+    "Arrival date unavailable"
+      ? new Date(
+          `${arrivalDate}T00:00:00`
+        ).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : arrivalDate;
+
   return (
     <section className="voyage-header">
       <div>
-        <h1>Voyage Analysis – {quantity} {cargo}</h1>
+        <h1>
+          Voyage Analysis – {quantity} {cargo}
+        </h1>
 
         <div className="voyage-route">
           <span>
             ⚓ <strong>{origin}</strong>
           </span>
 
-          <span className="route-arrow">→</span>
-
-          <span>
-            <strong>{destination}</strong>
+          <span className="route-arrow">
+            →
           </span>
 
-          <span className="calendar-icon">▣</span>
+          <span>
+            <strong>
+              {destination}
+            </strong>
+          </span>
+
+          <span className="calendar-icon">
+            ▣
+          </span>
 
           <span>
-            <strong>{formattedDate}</strong>
+            <strong>
+              {formattedDate}
+            </strong>
           </span>
         </div>
       </div>
@@ -196,83 +216,213 @@ function VoyageHeader() {
         </div>
 
         <div className="header-ship-image">
-          <div className="ship-shape">🚢</div>
+          <div className="ship-shape">
+            🚢
+          </div>
         </div>
 
         <div className="header-message">
           <strong>Right Vessel.</strong>
           <br />
-          <strong>Right Port. Right Time.</strong>
+          <strong>
+            Right Port. Right Time.
+          </strong>
           <br />
-          <strong>Lower Cost. Lower Risk.</strong>
+          <strong>
+            Lower Cost. Lower Risk.
+          </strong>
         </div>
       </div>
     </section>
   );
 }
 
-function CongestionTrend() {
-  const ports = [
-    ["Kolkata", 12],
-    ["Paradip", 32],
-    ["Vizag", 20],
-    ["Kakinada", 30],
-    ["Chennai", 52],
-    ["Krishnapatnam", 26],
-  ];
+function CongestionTrend({ ports }) {
+  const chartPorts = useMemo(() => {
+    return ports
+      .filter(
+        (port) =>
+          port &&
+          port.name &&
+          typeof port.utilization_percent ===
+            "number"
+      )
+      .sort(
+        (a, b) =>
+          Number(
+            b.utilization_percent
+          ) -
+          Number(
+            a.utilization_percent
+          )
+      )
+      .slice(0, 6);
+  }, [ports]);
 
   return (
     <section className="panel congestion-panel">
       <div className="panel-heading">
         <div className="heading-title">
-          <span className="heading-icon">▥</span>
+          <span className="heading-icon">
+            ▥
+          </span>
+
           Port Congestion Trend
         </div>
       </div>
 
       <div className="bar-chart">
         <div className="bar-grid">
-          <span>60</span>
-          <span>40</span>
-          <span>20</span>
+          <span>100</span>
+          <span>75</span>
+          <span>50</span>
+          <span>25</span>
           <span>0</span>
         </div>
 
-        <div className="bars">
-          {ports.map(([name, value], index) => (
-            <div className="bar-column" key={name}>
-              <div
-                className={`bar bar-${index}`}
-                style={{
-                  height: `${value * 1.45}px`,
-                }}
-              />
+        {chartPorts.length > 0 ? (
+          <div className="bars">
+            {chartPorts.map(
+              (port, index) => {
+                const value = Number(
+                  port.utilization_percent
+                );
 
-              <span>{name}</span>
+                return (
+                  <div
+                    className="bar-column"
+                    key={
+                      port.id ||
+                      port.name
+                    }
+                  >
+                    <div
+                      className={`bar bar-${index}`}
+                      style={{
+                        height: `${Math.max(
+                          4,
+                          value * 1.45
+                        )}px`,
+                      }}
+                      title={`${port.name}: ${value}%`}
+                    />
+
+                    <span>
+                      {port.name
+                        .replace(
+                          " Port",
+                          ""
+                        )}
+                    </span>
+                  </div>
+                );
+              }
+            )}
+          </div>
+        ) : (
+          <div className="bars">
+            <div className="bar-column">
+              <span>
+                Congestion data unavailable
+              </span>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
 export default function Analysis() {
-  const [vessels, setVessels] = useState([]);
-  const [ports, setPorts] = useState([]);
+  const [recommendation, setRecommendation] =
+    useState(null);
+
+  const [voyage, setVoyage] =
+    useState(null);
+
+  const [vessels, setVessels] =
+    useState([]);
+
+  const [ports, setPorts] =
+    useState([]);
+
+  useEffect(() => {
+    try {
+      const storedRecommendation =
+        sessionStorage.getItem(
+          "freightwise_recommendation"
+        );
+
+      const storedVoyage =
+        sessionStorage.getItem(
+          "freightwise_voyage_input"
+        );
+
+      setRecommendation(
+        storedRecommendation
+          ? JSON.parse(
+              storedRecommendation
+            )
+          : null
+      );
+
+      setVoyage(
+        storedVoyage
+          ? JSON.parse(storedVoyage)
+          : null
+      );
+    } catch (error) {
+      console.error(
+        "Failed to read voyage data:",
+        error
+      );
+
+      setRecommendation(null);
+      setVoyage(null);
+    }
+  }, []);
 
   useEffect(() => {
     async function loadReferenceData() {
       try {
-        const [vesselData, portData] = await Promise.all([
+        const [
+          vesselData,
+          portData,
+        ] = await Promise.all([
           getVessels(),
           getPorts(),
         ]);
 
-        setVessels(Array.isArray(vesselData) ? vesselData : []);
-        setPorts(Array.isArray(portData) ? portData : []);
+        const apiVessels =
+          Array.isArray(
+            vesselData?.vessels
+          )
+            ? vesselData.vessels
+            : Array.isArray(
+                vesselData
+              )
+            ? vesselData
+            : [];
+
+        const apiPorts =
+          Array.isArray(
+            portData?.ports
+          )
+            ? portData.ports
+            : Array.isArray(portData)
+            ? portData
+            : [];
+
+        setVessels(apiVessels);
+        setPorts(apiPorts);
       } catch (error) {
-        console.error("Failed to load vessel/port data:", error);
+        console.error(
+          "Failed to load vessel/port data:",
+          error
+        );
+
+        setVessels([]);
+        setPorts([]);
       }
     }
 
@@ -280,20 +430,35 @@ export default function Analysis() {
   }, []);
 
   const vessel = vessels.find(
-    (item) => String(item.id) === String(recommendation?.vessel_id)
+    (item) =>
+      String(item.id) ===
+      String(
+        recommendation?.vessel_id
+      )
   );
 
   const port = ports.find(
-    (item) => String(item.id) === String(recommendation?.port_id)
+    (item) =>
+      String(item.id) ===
+      String(
+        recommendation?.port_id
+      )
   );
 
-  const displayRecommendation = recommendation
-    ? {
-        ...recommendation,
-        vessel_name: vessel?.name || null,
-        port_name: port?.name || null,
-      }
-    : null;
+  const displayRecommendation =
+    recommendation
+      ? {
+          ...recommendation,
+
+          vessel_name:
+            vessel?.name ||
+            null,
+
+          port_name:
+            port?.name ||
+            null,
+        }
+      : null;
 
   return (
     <div className="analysis-page">
@@ -303,20 +468,52 @@ export default function Analysis() {
         <Topbar />
 
         <main className="analysis-main">
-          <VoyageHeader />
+          <VoyageHeader
+            voyage={voyage}
+          />
 
-          <RecommendationCard data={displayRecommendation} voyage={voyage} />
+          <RecommendationCard
+            data={displayRecommendation}
+            voyage={voyage}
+          />
 
           <div className="analysis-row top-row">
-            <ForecastCard data={recommendation?.forecast} />
-            <CostBreakdown data={recommendation?.cost} />
+            <ForecastCard
+              data={
+                recommendation?.forecast
+              }
+            />
+
+            <CostBreakdown
+              data={
+                recommendation?.cost
+              }
+            />
           </div>
 
           <div className="analysis-row bottom-row">
-            <RiskScore data={recommendation?.risk} />
-            <DelayPrediction data={recommendation?.risk} />
-            <CongestionTrend />
-            <ReasonList reasons={recommendation?.reasons || []} />
+            <RiskScore
+              data={
+                recommendation?.risk
+              }
+            />
+
+            <DelayPrediction
+              data={
+                recommendation?.risk
+              }
+            />
+
+            <CongestionTrend
+              ports={ports}
+            />
+
+            <ReasonList
+              reasons={
+                recommendation?.reasons ||
+                []
+              }
+            />
           </div>
 
           <div className="analysis-bottom-space" />

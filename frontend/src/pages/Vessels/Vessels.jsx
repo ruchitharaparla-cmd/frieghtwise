@@ -29,107 +29,7 @@ import {
 } from "../../components/vessels/CompatibilityBadge";
 
 import "./Vessels.css";
-import { getVessels } from "../../services/api";
-
-const demoVesselData = [
-  {
-    id: 1,
-    name: "MV Ocean Star",
-    dwt: 76000,
-    type: "Bulk Carrier",
-    cargoFit: "Excellent",
-    portFit: "Good",
-    availability: "Available",
-    cost: 6.42,
-    costPerMt: 24.8,
-    image: oceanStar,
-    recommended: true,
-  },
-  {
-    id: 2,
-    name: "MV Stella",
-    dwt: 80000,
-    type: "Bulk Carrier",
-    cargoFit: "Good",
-    portFit: "Moderate",
-    availability: "Available",
-    cost: 6.38,
-    costPerMt: 23.6,
-    image: stella,
-  },
-  {
-    id: 3,
-    name: "MV Horizon",
-    dwt: 70000,
-    type: "Bulk Carrier",
-    cargoFit: "Moderate",
-    portFit: "Good",
-    availability: "In Positioning",
-    cost: 6.71,
-    costPerMt: 22.5,
-    image: horizon,
-  },
-  {
-    id: 4,
-    name: "MV Pacific Glory",
-    dwt: 82000,
-    type: "Bulk Carrier",
-    cargoFit: "Good",
-    portFit: "Good",
-    availability: "Available",
-    cost: 6.55,
-    costPerMt: 24.1,
-    image: pacificGlory,
-  },
-  {
-    id: 5,
-    name: "MV Eastern Wind",
-    dwt: 75000,
-    type: "Bulk Carrier",
-    cargoFit: "Moderate",
-    portFit: "Moderate",
-    availability: "Available",
-    cost: 6.68,
-    costPerMt: 24.6,
-    image: oceanStar,
-  },
-  {
-    id: 6,
-    name: "MV Sea Voyager",
-    dwt: 68000,
-    type: "Bulk Carrier",
-    cargoFit: "Good",
-    portFit: "Moderate",
-    availability: "Unavailable",
-    cost: 6.8,
-    costPerMt: 25.0,
-    image: stella,
-  },
-  {
-    id: 7,
-    name: "MV Blue Horizon",
-    dwt: 77000,
-    type: "Bulk Carrier",
-    cargoFit: "Good",
-    portFit: "Good",
-    availability: "Available",
-    cost: 6.45,
-    costPerMt: 24.2,
-    image: horizon,
-  },
-  {
-    id: 8,
-    name: "MV Coral Star",
-    dwt: 83000,
-    type: "Bulk Carrier",
-    cargoFit: "Moderate",
-    portFit: "Good",
-    availability: "Available",
-    cost: 6.73,
-    costPerMt: 24.7,
-    image: pacificGlory,
-  },
-];
+import { getVessels, getPorts } from "../../services/api";
 
 const navItems = [
   {
@@ -193,9 +93,7 @@ function Sidebar() {
       <nav className="sidebar-navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
-
-          const active =
-            item.label === "Vessels";
+          const active = item.label === "Vessels";
 
           return (
             <button
@@ -250,7 +148,7 @@ function Sidebar() {
   );
 }
 
-function Topbar() {
+function Topbar({ searchText, setSearchText, onSearch }) {
   return (
     <header className="vessels-topbar">
       <div className="global-search">
@@ -259,6 +157,13 @@ function Topbar() {
         <input
           type="text"
           placeholder="Search vessels, ports, routes..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onSearch();
+            }
+          }}
         />
       </div>
 
@@ -329,38 +234,143 @@ function FilterSelect({
 export default function Vessels() {
   const [vesselData, setVesselData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
 
   useEffect(() => {
     async function loadVessels() {
       try {
-        const response = await getVessels();
+        const [vesselResponse, portResponse] =
+          await Promise.all([
+            getVessels(),
+            getPorts(),
+          ]);
 
-        const apiVessels = Array.isArray(response?.vessels)
-          ? response.vessels
-          : Array.isArray(response)
-          ? response
+        const apiVessels = Array.isArray(
+          vesselResponse?.vessels
+        )
+          ? vesselResponse.vessels
+          : Array.isArray(vesselResponse)
+          ? vesselResponse
           : [];
 
-        const normalized = apiVessels.map((vessel, index) => ({
-          id: vessel.id,
-          name: vessel.name || "Name unavailable",
-          dwt: Number(vessel.dwt) || 0,
-          type: vessel.vessel_class || "Type unavailable",
-          cargoFit: "Unavailable",
-          portFit: "Unavailable",
-          availability: "Unavailable",
-          cost: null,
-          costPerMt: null,
-          image: [oceanStar, stella, horizon, pacificGlory][index % 4],
-          recommended: false,
-          loa: vessel.loa_m,
-          beam: vessel.beam_m,
-          draft: vessel.draft_m,
-        }));
+        const apiPorts = Array.isArray(
+          portResponse?.ports
+        )
+          ? portResponse.ports
+          : Array.isArray(portResponse)
+          ? portResponse
+          : [];
+
+        const getCargoFit = (vesselClass) => {
+          const type = String(
+            vesselClass || ""
+          ).toLowerCase();
+
+          if (type.includes("bulk")) {
+            return "Excellent";
+          }
+
+          if (type.includes("tanker")) {
+            return "Good";
+          }
+
+          return "Moderate";
+        };
+
+        const getPortFit = (vessel) => {
+          const compatiblePorts =
+            apiPorts.filter((port) => {
+              const draftOk =
+                port.max_draft_m == null ||
+                vessel.draft_m == null ||
+                Number(vessel.draft_m) <=
+                  Number(port.max_draft_m);
+
+              const loaOk =
+                port.max_loa_m == null ||
+                vessel.loa_m == null ||
+                Number(vessel.loa_m) <=
+                  Number(port.max_loa_m);
+
+              const beamOk =
+                port.max_beam_m == null ||
+                vessel.beam_m == null ||
+                Number(vessel.beam_m) <=
+                  Number(port.max_beam_m);
+
+              return (
+                draftOk &&
+                loaOk &&
+                beamOk
+              );
+            });
+
+          if (compatiblePorts.length === 0) {
+            return "Unavailable";
+          }
+
+          if (compatiblePorts.length >= 10) {
+            return "Excellent";
+          }
+
+          if (compatiblePorts.length >= 5) {
+            return "Good";
+          }
+
+          return "Moderate";
+        };
+
+        const normalized = apiVessels.map(
+          (vessel, index) => ({
+            id: vessel.id,
+            name:
+              vessel.name ||
+              "Name unavailable",
+
+            dwt:
+              Number(vessel.dwt) || 0,
+
+            type:
+              vessel.vessel_class ||
+              "Type unavailable",
+
+            cargoFit:
+              getCargoFit(
+                vessel.vessel_class
+              ),
+
+            portFit:
+              getPortFit(vessel),
+
+            availability:
+              "Unavailable",
+
+            cost: null,
+            costPerMt: null,
+
+            image: [
+              oceanStar,
+              stella,
+              horizon,
+              pacificGlory,
+            ][index % 4],
+
+            recommended: false,
+
+            loa: vessel.loa_m,
+            beam: vessel.beam_m,
+            draft: vessel.draft_m,
+          })
+        );
 
         setVesselData(normalized);
       } catch (error) {
-        console.error("Failed to load vessels:", error);
+        console.error(
+          "Failed to load vessels:",
+          error
+        );
+
         setVesselData([]);
       } finally {
         setLoading(false);
@@ -390,14 +400,25 @@ export default function Vessels() {
 
   const filteredVessels = useMemo(() => {
     return vesselData.filter((vessel) => {
+      const searchMatch =
+        !appliedSearch ||
+        vessel.name
+          .toLowerCase()
+          .includes(appliedSearch.toLowerCase()) ||
+        vessel.type
+          .toLowerCase()
+          .includes(appliedSearch.toLowerCase());
+
       const typeMatch =
         vesselType === "All Types" ||
         vessel.type === vesselType;
 
       const availabilityMatch =
         availability === "All" ||
-        vessel.availability === availability ||
-        vessel.availability === "Unavailable";
+        vessel.availability ===
+          availability ||
+        vessel.availability ===
+          "Unavailable";
 
       const cargoMatch =
         cargoFit === "All" ||
@@ -437,6 +458,7 @@ export default function Vessels() {
       }
 
       return (
+        searchMatch &&
         typeMatch &&
         availabilityMatch &&
         cargoMatch &&
@@ -450,6 +472,7 @@ export default function Vessels() {
     availability,
     cargoFit,
     portFit,
+    appliedSearch,
   ]);
 
   function clearFilters() {
@@ -465,10 +488,13 @@ export default function Vessels() {
       <Sidebar />
 
       <main className="vessels-main">
-        <Topbar />
+        <Topbar
+          searchText={searchText}
+          setSearchText={setSearchText}
+          onSearch={() => setAppliedSearch(searchText.trim())}
+        />
 
         <div className="vessels-content">
-
           {/* PAGE HEADER */}
           <section className="vessels-page-header">
             <div>
@@ -477,7 +503,8 @@ export default function Vessels() {
               </h1>
 
               <p>
-                Best matching vessels for your cargo and route
+                Best matching vessels for
+                your cargo and route
               </p>
             </div>
 
@@ -504,12 +531,18 @@ export default function Vessels() {
               label="Vessel Type"
               value={vesselType}
               onChange={(e) =>
-                setVesselType(e.target.value)
+                setVesselType(
+                  e.target.value
+                )
               }
               options={[
                 "All Types",
                 ...Array.from(
-                  new Set(vesselData.map((v) => v.type))
+                  new Set(
+                    vesselData.map(
+                      (v) => v.type
+                    )
+                  )
                 ).filter(Boolean),
               ]}
             />
@@ -518,7 +551,9 @@ export default function Vessels() {
               label="DWT Range"
               value={dwtRange}
               onChange={(e) =>
-                setDwtRange(e.target.value)
+                setDwtRange(
+                  e.target.value
+                )
               }
               options={[
                 "50,000 - 100,000",
@@ -532,7 +567,9 @@ export default function Vessels() {
               label="Availability"
               value={availability}
               onChange={(e) =>
-                setAvailability(e.target.value)
+                setAvailability(
+                  e.target.value
+                )
               }
               options={[
                 "Available",
@@ -546,7 +583,9 @@ export default function Vessels() {
               label="Cargo Fit"
               value={cargoFit}
               onChange={(e) =>
-                setCargoFit(e.target.value)
+                setCargoFit(
+                  e.target.value
+                )
               }
               options={[
                 "All",
@@ -560,7 +599,9 @@ export default function Vessels() {
               label="Port Fit"
               value={portFit}
               onChange={(e) =>
-                setPortFit(e.target.value)
+                setPortFit(
+                  e.target.value
+                )
               }
               options={[
                 "All",
@@ -582,6 +623,9 @@ export default function Vessels() {
               <button
                 type="button"
                 className="search-vessels-button"
+                onClick={() => {
+                  setAppliedSearch(searchText.trim());
+                }}
               >
                 <Search size={16} />
                 Search
@@ -589,13 +633,14 @@ export default function Vessels() {
             </div>
           </section>
 
-          {/* RECOMMENDED CARDS */}
+          {/* LOADING */}
           {loading && (
             <div className="vessels-loading">
               Loading vessels from backend...
             </div>
           )}
 
+          {/* RECOMMENDED CARDS */}
           <section className="recommended-grid">
             {filteredVessels
               .slice(0, 3)
@@ -646,13 +691,17 @@ export default function Vessels() {
                 {/* IMAGE */}
                 <div className="vessel-details-image">
                   <img
-                    src={selectedVessel.image}
+                    src={
+                      selectedVessel.image
+                    }
                     alt={`${selectedVessel.name} bulk carrier`}
                   />
 
                   {selectedVessel.recommended && (
                     <div className="details-recommended-badge">
-                      <CheckCircle2 size={14} />
+                      <CheckCircle2
+                        size={14}
+                      />
                       AI Recommended
                     </div>
                   )}
@@ -663,13 +712,18 @@ export default function Vessels() {
                   <div className="vessel-details-heading">
                     <div>
                       <h2>
-                        {selectedVessel.name}
+                        {
+                          selectedVessel.name
+                        }
                       </h2>
 
                       <p>
-                        {selectedVessel.dwt.toLocaleString()} DWT
+                        {selectedVessel.dwt.toLocaleString()}{" "}
+                        DWT
                         <span>|</span>
-                        {selectedVessel.type}
+                        {
+                          selectedVessel.type
+                        }
                       </p>
                     </div>
 
@@ -724,7 +778,8 @@ export default function Vessels() {
                       </span>
 
                       <strong>
-                        {selectedVessel.dwt.toLocaleString()} DWT
+                        {selectedVessel.dwt.toLocaleString()}{" "}
+                        DWT
                       </strong>
                     </div>
                   </div>
@@ -737,8 +792,11 @@ export default function Vessels() {
                       </span>
 
                       <strong>
-                        {typeof selectedVessel.cost === "number"
-                          ? `₹ ${selectedVessel.cost.toFixed(2)} Cr`
+                        {typeof selectedVessel.cost ===
+                        "number"
+                          ? `₹ ${selectedVessel.cost.toFixed(
+                              2
+                            )} Cr`
                           : "Unavailable"}
                       </strong>
                     </div>
@@ -749,8 +807,11 @@ export default function Vessels() {
                       </span>
 
                       <strong>
-                        {typeof selectedVessel.costPerMt === "number"
-                          ? `$${selectedVessel.costPerMt.toFixed(1)} / MT`
+                        {typeof selectedVessel.costPerMt ===
+                        "number"
+                          ? `$${selectedVessel.costPerMt.toFixed(
+                              1
+                            )} / MT`
                           : "Unavailable"}
                       </strong>
                     </div>
@@ -759,7 +820,9 @@ export default function Vessels() {
                   {/* AI NOTE */}
                   {selectedVessel.recommended && (
                     <div className="vessel-ai-note">
-                      <CheckCircle2 size={17} />
+                      <CheckCircle2
+                        size={17}
+                      />
 
                       <div>
                         <strong>
@@ -767,10 +830,11 @@ export default function Vessels() {
                         </strong>
 
                         <p>
-                          This vessel is currently
-                          identified as a recommended
-                          match for the selected cargo
-                          and route.
+                          This vessel is
+                          currently identified
+                          as a recommended
+                          match for the selected
+                          cargo and route.
                         </p>
                       </div>
                     </div>
@@ -779,7 +843,6 @@ export default function Vessels() {
               </div>
             </div>
           )}
-
         </div>
       </main>
     </div>

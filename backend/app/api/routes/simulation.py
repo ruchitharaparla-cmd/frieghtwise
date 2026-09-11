@@ -47,6 +47,8 @@ def run_simulation(
         destination_region=base["destination_region"],
         arrival_date=base["arrival_date"],
         charter_duration_days=base.get("charter_duration_days"),
+        vessel_id=base.get("vessel_id"),
+        port_id=base.get("port_id"),
     )
 
     modified_result = run_decision_engine(
@@ -57,6 +59,8 @@ def run_simulation(
         destination_region=modified["destination_region"],
         arrival_date=modified["arrival_date"],
         charter_duration_days=modified.get("charter_duration_days"),
+        vessel_id=modified.get("vessel_id"),
+        port_id=modified.get("port_id"),
     )
 
     base_cost = (

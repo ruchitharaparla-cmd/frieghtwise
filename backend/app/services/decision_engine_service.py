@@ -135,6 +135,8 @@ def run_decision_engine(
     destination_region: str,
     arrival_date,
     charter_duration_days=None,
+    vessel_id=None,
+    port_id=None,
 ):
     vessels = get_vessels(
         db=db,
@@ -147,6 +149,12 @@ def run_decision_engine(
         region=destination_region,
         cargo_type=cargo_type,
     )
+
+    if vessel_id is not None:
+        vessels = [v for v in vessels if v.id == vessel_id]
+
+    if port_id is not None:
+        ports = [p for p in ports if p.id == port_id]
 
     options = []
     weather_cache = {}

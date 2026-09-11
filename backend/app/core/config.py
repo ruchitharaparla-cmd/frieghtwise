@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str | None = None
 
-    AISSTREAM_API_KEY: str
+    AISSTREAM_API_KEY: str = ""
 
     class Config:
         env_file = ".env"
