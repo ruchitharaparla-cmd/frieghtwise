@@ -12,7 +12,8 @@ from app.api.routes import (
     recommendations,
     costs,
     risk,
-    simulation
+    simulation,
+    market,
 )
 
 
@@ -53,6 +54,7 @@ app.include_router(risk.router)
 
 app.include_router(simulation.router)
 
+app.include_router(market.router)
 
 @app.get("/")
 def root():
