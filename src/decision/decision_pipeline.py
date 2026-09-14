@@ -24,6 +24,11 @@ from src.decision.vessel_port_feasibility import (
     evaluate_vessel,
 )
 
+from src.decision.vessel_type_optimizer import (
+    VesselCandidate,
+    optimize_vessel_type,
+)
+
 
 OUTPUT_FILE = Path(
     "data/processed/freightwise_decision_output.csv"
@@ -34,6 +39,7 @@ def run_decision_pipeline(
     vessel: VesselInput,
     port_name: str,
     commercial_input: ContractInput | None = None,
+    vessel_candidates: list[VesselCandidate] | None = None,
 ):
     """
     Run the complete FreightWise decision pipeline.
@@ -44,11 +50,20 @@ def run_decision_pipeline(
         ↓
     Market Entry
         ↓
+    Vessel Type Optimization
+        ↓
     Vessel + Port Feasibility
         ↓
     Contract Optimization
         ↓
     Final Recommendation
+
+    vessel:
+        Existing single-vessel input. Kept for backward compatibility.
+
+    vessel_candidates:
+        Optional list of vessel candidates. When supplied, FreightWise
+        compares them and selects the best feasible vessel type.
     """
 
     # =========================================================
@@ -82,8 +97,8 @@ def run_decision_pipeline(
     )
 
     # ---------------------------------------------------------
-    # Select the latest market row that has both a valid
-    # 3-month and 6-month forecast horizon.
+    # Select the latest market row having both 3M and 6M
+    # forecast horizons.
     # ---------------------------------------------------------
 
     market_candidates = market_data[
@@ -107,14 +122,6 @@ def run_decision_pipeline(
     # 3. MATCH RISK DATA TO DECISION DATE
     # =========================================================
 
-    # Do not use old risk observations for a newer forecast.
-    #
-    # Example:
-    # 2026 forecast + 2024 risk = INVALID.
-    #
-    # If matching risk data is unavailable, keep risk fields
-    # unavailable.
-
     matching_risk = risk_data[
         risk_data["date"] == decision_date
     ]
@@ -128,8 +135,7 @@ def run_decision_pipeline(
         """
         Safely return a risk field.
 
-        Returns None when risk data is unavailable for the
-        selected decision date.
+        Returns None when matching risk data is unavailable.
         """
 
         if latest_risk is None:
@@ -141,7 +147,78 @@ def run_decision_pipeline(
         )
 
     # =========================================================
-    # 4. VESSEL + PORT FEASIBILITY
+    # 4. VESSEL TYPE OPTIMIZATION
+    # =========================================================
+
+    vessel_optimization = None
+
+    if vessel_candidates is not None:
+
+        if not vessel_candidates:
+            raise ValueError(
+                "vessel_candidates cannot be empty."
+            )
+
+        # Cargo quantity is taken from the commercial input
+        # only when it is available through the pipeline.
+        #
+        # Since ContractInput does not contain cargo quantity,
+        # use the vessel DWT as a backward-compatible fallback
+        # only for this direct test interface.
+        #
+        # The backend can later pass an explicit cargo quantity.
+        cargo_tons = float(vessel.dwt_tons)
+
+        vessel_optimization = optimize_vessel_type(
+            cargo_tons=cargo_tons,
+            port_name=port_name,
+            candidates=vessel_candidates,
+        )
+
+        recommended_vessel = (
+            vessel_optimization["recommended_vessel"]
+        )
+
+        if recommended_vessel is not None:
+
+            vessel = VesselInput(
+                vessel_name=recommended_vessel[
+                    "vessel_name"
+                ],
+                vessel_type=recommended_vessel[
+                    "vessel_type"
+                ],
+                dwt_tons=recommended_vessel[
+                    "dwt_tons"
+                ],
+                loa_m=next(
+                    candidate.loa_m
+                    for candidate in vessel_candidates
+                    if candidate.vessel_name
+                    == recommended_vessel[
+                        "vessel_name"
+                    ]
+                ),
+                beam_m=next(
+                    candidate.beam_m
+                    for candidate in vessel_candidates
+                    if candidate.vessel_name
+                    == recommended_vessel[
+                        "vessel_name"
+                    ]
+                ),
+                draft_m=next(
+                    candidate.draft_m
+                    for candidate in vessel_candidates
+                    if candidate.vessel_name
+                    == recommended_vessel[
+                        "vessel_name"
+                    ]
+                ),
+            )
+
+    # =========================================================
+    # 5. VESSEL + PORT FEASIBILITY
     # =========================================================
 
     feasibility = evaluate_vessel(
@@ -161,7 +238,7 @@ def run_decision_pipeline(
     )
 
     # =========================================================
-    # 5. CONTRACT OPTIMIZATION
+    # 6. CONTRACT OPTIMIZATION
     # =========================================================
 
     contract_result = None
@@ -171,15 +248,12 @@ def run_decision_pipeline(
         # -----------------------------------------------------
         # The ML forecast becomes the expected future spot rate.
         #
-        # The following remain commercial/backend inputs:
-        #
+        # Commercial/backend inputs remain:
         # - current spot rate
         # - contract rate
         # - voyages
         # - voyage duration
         # - contract duration
-        #
-        # We never fabricate a negotiated contract rate.
         # -----------------------------------------------------
 
         future_forecast_rate = float(
@@ -189,13 +263,13 @@ def run_decision_pipeline(
         )
 
         # Use matching-date risk when available.
-        #
-        # If it is unavailable, preserve the explicitly supplied
-        # commercial_input risk score rather than pretending old
-        # risk data is current.
-        if latest_risk is not None and pd.notna(
-            latest_risk.get(
-                "overall_risk_score"
+        # Otherwise preserve the explicitly supplied risk.
+        if (
+            latest_risk is not None
+            and pd.notna(
+                latest_risk.get(
+                    "overall_risk_score"
+                )
             )
         ):
 
@@ -250,7 +324,7 @@ def run_decision_pipeline(
         )
 
     # =========================================================
-    # 6. FINAL MARKET RECOMMENDATION
+    # 7. FINAL MARKET RECOMMENDATION
     # =========================================================
 
     market_signal = latest_market[
@@ -258,10 +332,9 @@ def run_decision_pipeline(
     ]
 
     # ---------------------------------------------------------
-    # Vessel/port feasibility has priority.
+    # Feasibility has priority.
     #
-    # If vessel cannot operate at the selected port,
-    # FreightWise must never recommend chartering it.
+    # An infeasible vessel can never be recommended.
     # ---------------------------------------------------------
 
     if not port_feasible:
@@ -283,23 +356,23 @@ def run_decision_pipeline(
         if latest_risk is None:
 
             final_reason = (
-                "Vessel is feasible at the selected "
-                "port. Market forecast is available, "
-                "but risk data is unavailable for the "
-                "forecast decision date."
+                "Selected vessel is feasible at the "
+                "selected port. Market forecast is "
+                "available, but risk data is unavailable "
+                "for the forecast decision date."
             )
 
         else:
 
             final_reason = (
-                "Vessel is feasible at the selected "
-                "port and matching risk data is "
-                "available. Market conditions determine "
+                "Selected vessel is feasible at the "
+                "selected port and matching risk data "
+                "is available. Market conditions determine "
                 "the entry recommendation."
             )
 
     # =========================================================
-    # 7. BUILD FINAL RESULT
+    # 8. BUILD FINAL RESULT
     # =========================================================
 
     result = {
@@ -484,6 +557,50 @@ def run_decision_pipeline(
             ],
 
         # -----------------------------------------------------
+        # Vessel optimization
+        # -----------------------------------------------------
+
+        "vessel_optimization_used":
+            vessel_optimization is not None,
+
+        "recommended_vessel_type":
+            (
+                vessel_optimization[
+                    "recommendation"
+                ]
+                if vessel_optimization is not None
+                else None
+            ),
+
+        "recommended_vessel_name":
+            (
+                vessel_optimization[
+                    "recommended_vessel"
+                ]["vessel_name"]
+                if (
+                    vessel_optimization is not None
+                    and vessel_optimization[
+                        "recommended_vessel"
+                    ] is not None
+                )
+                else None
+            ),
+
+        "recommended_vessel_suitability_score":
+            (
+                vessel_optimization[
+                    "recommended_vessel"
+                ]["suitability_score"]
+                if (
+                    vessel_optimization is not None
+                    and vessel_optimization[
+                        "recommended_vessel"
+                    ] is not None
+                )
+                else None
+            ),
+
+        # -----------------------------------------------------
         # Vessel + port
         # -----------------------------------------------------
 
@@ -524,7 +641,47 @@ def run_decision_pipeline(
     }
 
     # =========================================================
-    # 8. ADD CONTRACT RESULTS
+    # 9. ADD VESSEL CANDIDATE COMPARISON
+    # =========================================================
+
+    if vessel_optimization is not None:
+
+        result[
+            "vessel_candidate_count"
+        ] = len(
+            vessel_optimization[
+                "candidates"
+            ]
+        )
+
+        result[
+            "feasible_vessel_count"
+        ] = sum(
+            candidate[
+                "feasibility_status"
+            ] == "FEASIBLE"
+            for candidate
+            in vessel_optimization[
+                "candidates"
+            ]
+        )
+
+    else:
+
+        result[
+            "vessel_candidate_count"
+        ] = 1
+
+        result[
+            "feasible_vessel_count"
+        ] = (
+            1
+            if port_feasible
+            else 0
+        )
+
+    # =========================================================
+    # 10. ADD CONTRACT RESULTS
     # =========================================================
 
     if contract_result is not None:
@@ -609,7 +766,7 @@ def run_decision_pipeline(
         )
 
     # =========================================================
-    # 9. FINAL FEASIBILITY OVERRIDE
+    # 11. FINAL FEASIBILITY OVERRIDE
     # =========================================================
 
     # An infeasible vessel can never be chartered,
@@ -653,15 +810,59 @@ def main():
     )
 
     # =========================================================
-    # TEST VESSEL
+    # TEST VESSEL CANDIDATES
     # =========================================================
     #
-    # This is a TEST FIXTURE ONLY.
+    # These are SYNTHETIC TEST FIXTURES.
+    # They are NOT verified commercial vessel data.
     #
-    # These values are not verified commercial vessel data.
-    # The backend can later replace them with actual vessel
-    # information.
+    # Replace them with actual vessel data when available.
     # =========================================================
+
+    vessel_candidates = [
+
+        VesselCandidate(
+            vessel_name="Handysize Candidate",
+            vessel_type="Handysize",
+            dwt_tons=40000,
+            loa_m=180,
+            beam_m=30,
+            draft_m=11,
+        ),
+
+        VesselCandidate(
+            vessel_name="Supramax Candidate",
+            vessel_type="Supramax",
+            dwt_tons=60000,
+            loa_m=200,
+            beam_m=32,
+            draft_m=12,
+        ),
+
+        VesselCandidate(
+            vessel_name="Panamax Candidate",
+            vessel_type="Panamax",
+            dwt_tons=75000,
+            loa_m=225,
+            beam_m=32,
+            draft_m=13,
+        ),
+
+        VesselCandidate(
+            vessel_name="Capesize Candidate",
+            vessel_type="Capesize",
+            dwt_tons=180000,
+            loa_m=290,
+            beam_m=45,
+            draft_m=17,
+        ),
+    ]
+
+    # ---------------------------------------------------------
+    # Backward-compatible default vessel.
+    #
+    # The optimizer will select the best feasible candidate.
+    # ---------------------------------------------------------
 
     vessel = VesselInput(
         vessel_name="Example Vessel",
@@ -672,12 +873,9 @@ def main():
         draft_m=13,
     )
 
-    # ---------------------------------------------------------
-    # Synthetic commercial inputs for testing only.
-    #
-    # The future spot value below is intentionally ignored by
-    # the pipeline and replaced with the actual XGBoost forecast.
-    # ---------------------------------------------------------
+    # =========================================================
+    # SYNTHETIC COMMERCIAL INPUTS FOR TESTING ONLY
+    # =========================================================
 
     commercial_input = ContractInput(
         current_spot_rate_usd_day=10000,
@@ -689,10 +887,15 @@ def main():
         risk_score=40,
     )
 
+    # =========================================================
+    # RUN PIPELINE
+    # =========================================================
+
     result = run_decision_pipeline(
         vessel=vessel,
-        port_name="Paradip",
+        port_name="Paradip Port",
         commercial_input=commercial_input,
+        vessel_candidates=vessel_candidates,
     )
 
     output = pd.DataFrame(
@@ -709,6 +912,10 @@ def main():
         index=False,
     )
 
+    # =========================================================
+    # PRINT RESULTS
+    # =========================================================
+
     print(
         "\nPipeline completed."
     )
@@ -724,6 +931,36 @@ def main():
     print(
         result[
             "decision_date"
+        ]
+    )
+
+    print(
+        "\nRecommended Vessel Type:"
+    )
+
+    print(
+        result[
+            "recommended_vessel_type"
+        ]
+    )
+
+    print(
+        "\nRecommended Vessel:"
+    )
+
+    print(
+        result[
+            "recommended_vessel_name"
+        ]
+    )
+
+    print(
+        "\nVessel Suitability Score:"
+    )
+
+    print(
+        result[
+            "recommended_vessel_suitability_score"
         ]
     )
 
