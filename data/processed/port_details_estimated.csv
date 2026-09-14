@@ -1,0 +1,12 @@
+name,code,state,country,latitude,longitude,max_draft_m,max_loa_m,max_beam_m,annual_capacity_tonnes,utilization_percent,average_waiting_hours,cargo_types,data_status,source
+Paradip Port,INPPR,Odisha,India,20.2606,86.6669,16.0,300.0,48.0,289000000,51.5,24.5,"Iron Ore, Coal, Crude Oil, Break Bulk",Estimated Operational Baseline,"Ministry of Ports, Shipping and Waterways India"
+Visakhapatnam Port,INVTZ,Andhra Pradesh,India,17.6868,83.2185,18.1,320.0,50.0,135000000,58.2,28.0,"Containers, Petroleum, Iron Ore, Fertilizer",Estimated Operational Baseline,Visakhapatnam Port Authority
+Chennai Port,INMAA,Tamil Nadu,India,13.0844,80.2899,15.5,290.0,45.0,85000000,63.4,32.1,"Containers, Automobiles, Liquid Bulk, General Cargo",Estimated Operational Baseline,Chennai Port Authority
+Kolkata & Haldia Port (Syama Prasad Mookerjee Port),INCCU,West Bengal,India,22.5448,88.3183,8.5,230.0,32.2,90000000,72.8,42.0,"Coal, Containers, Chemicals, Vegetable Oil",Estimated Operational Baseline,SMP Port Trust
+V.O. Chidambaranar Port (Tuticorin),INTUT,Tamil Nadu,India,8.749,78.1948,14.2,270.0,40.0,111000000,38.9,19.5,"Coal, Containers, Fertilizer, Copper Concentrate",Estimated Operational Baseline,VOC Port Authority
+Kamajarar Port (Ennore),INENR,Tamil Nadu,India,13.2514,80.3344,16.0,280.0,45.0,92000000,47.3,21.0,"Thermal Coal, LNG, Automobiles, Iron Ore",Estimated Operational Baseline,Kamarajar Port Limited
+Kakinada Deep Water Port,INKAK,Andhra Pradesh,India,16.9808,82.2858,14.5,250.0,40.0,50000000,55.0,18.0,"Agricultural Products, Coal, Fertilizer, Liquid Bulk",Estimated Operational Baseline,Kakinada Seaports Ltd
+Krishnapatnam Port,INKRI,Andhra Pradesh,India,14.2505,80.1264,18.5,350.0,52.0,75000000,64.0,22.0,"Coal, Iron Ore, Containers, Edible Oils",Estimated Operational Baseline,Adani Ports & SEZ
+Gopalpur Port,INGPR,Odisha,India,19.3005,84.965,14.5,230.0,38.0,25000000,48.0,15.0,"Ilmenite, Coal, Iron Ore, Fertilizer",Estimated Operational Baseline,Gopalpur Ports Ltd / Adani
+Dhamra Port,INDHA,Odisha,India,20.8264,86.9535,18.0,350.0,52.0,50000000,61.2,26.0,"Coal, Iron Ore, Limestone, LNG",Estimated Operational Baseline,Adani Ports & SEZ
+Gangavaram Port,INGVG,Andhra Pradesh,India,17.6322,83.2384,21.0,350.0,55.0,64000000,58.0,20.5,"Coal, Iron Ore, Bauxite, Steel Pellets",Estimated Operational Baseline,Adani Ports & SEZ
