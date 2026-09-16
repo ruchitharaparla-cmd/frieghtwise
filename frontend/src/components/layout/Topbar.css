@@ -1,0 +1,155 @@
+.fw-header {
+  min-height: 96px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 34px;
+  background: #ffffff;
+  border-bottom: 1px solid #dce3e9;
+}
+
+.fw-header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.fw-header-section {
+  color: #71879c;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+.fw-header-slash {
+  color: #b6c2cd;
+  font-size: 21px;
+}
+
+.fw-header-workspace {
+  color: #17324d;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fw-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fw-header-icon-button {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #dce3e9;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #17324d;
+  cursor: pointer;
+}
+
+.fw-header-icon-button:hover {
+  background: #f4f7f9;
+}
+
+.fw-notification-button {
+  position: relative;
+}
+
+.fw-notification-dot {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  background: #ed6c6c;
+}
+
+.fw-header-divider {
+  width: 1px;
+  height: 38px;
+  background: #dce3e9;
+}
+
+.fw-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #17324d;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.fw-profile-avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #17324d;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.fw-profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fw-profile-content strong {
+  color: #17324d;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.fw-profile-content small {
+  color: #8a9aaa;
+  font-size: 12px;
+}
+
+@media (max-width: 800px) {
+  .fw-header {
+    padding: 18px 22px;
+  }
+
+  .fw-header-section {
+    font-size: 11px;
+  }
+
+  .fw-profile-content {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .fw-header {
+    flex-wrap: wrap;
+  }
+
+  .fw-header-left {
+    width: 100%;
+  }
+
+  .fw-header-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

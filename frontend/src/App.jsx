@@ -1,31 +1,32 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard/Dashboard";
-import NewVoyage from "./pages/NewVoyage/NewVoyage";
-import Analysis from "./pages/Analysis/Analysis";
-import Vessels from "./pages/Vessels/Vessels";
-import Ports from "./pages/Ports/Ports";
-import Simulation from "./pages/Simulation/Simulation";
+import FreightWiseWidget from "./freightwise-widget/FreightWiseWidget";
+
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
 import Settings from "./pages/Settings/Settings";
-import Profile from "./pages/Profile/Profile";
-import Notifications from "./pages/Notifications/Notifications";
 import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/new-voyage" element={<NewVoyage />} />
-        <Route path="/analysis" element={<Analysis />} />
-        <Route path="/vessels" element={<Vessels />} />
-        <Route path="/ports" element={<Ports />} />
-        <Route path="/simulation" element={<Simulation />} />
+        {/* Existing pages */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/notifications" element={<Notifications />} />
 
+        {/* FreightWise application */}
+        <Route path="/" element={<FreightWiseWidget />} />
+        <Route path="/dashboard" element={<FreightWiseWidget />} />
+        <Route path="/new-voyage" element={<FreightWiseWidget />} />
+        <Route path="/analysis" element={<FreightWiseWidget />} />
+        <Route path="/simulation" element={<FreightWiseWidget />} />
+        <Route path="/vessels" element={<FreightWiseWidget />} />
+        <Route path="/ports" element={<FreightWiseWidget />} />
+
+        {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

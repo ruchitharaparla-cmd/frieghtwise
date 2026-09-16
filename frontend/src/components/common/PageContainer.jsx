@@ -8,18 +8,13 @@ export default function PageContainer({
 }) {
   return (
     <main className={`fw-main ${className}`}>
-      <div className="fw-page-heading">
+      <div className="fw-page-title">
         <div>
           <h1>{title}</h1>
-
-          {subtitle && (
-            <p>{subtitle}</p>
-          )}
+          <p>{subtitle}</p>
         </div>
 
-        <span className="fw-page-heading-label">
-          MARITIME INTELLIGENCE
-        </span>
+        <span>MARITIME INTELLIGENCE</span>
       </div>
 
       {children}

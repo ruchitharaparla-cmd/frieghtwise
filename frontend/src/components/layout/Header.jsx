@@ -5,7 +5,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-export default function Topbar() {
+export default function Header() {
   return (
     <header className="fw-header">
       <div className="fw-header-left">
@@ -26,7 +26,7 @@ export default function Topbar() {
           className="fw-header-icon-button"
           aria-label="Search"
         >
-          <Search size={22} />
+          <Search size={22} strokeWidth={2} />
         </button>
 
         <button
@@ -34,7 +34,7 @@ export default function Topbar() {
           className="fw-header-icon-button fw-notification-button"
           aria-label="Notifications"
         >
-          <Bell size={22} />
+          <Bell size={22} strokeWidth={2} />
           <span className="fw-notification-dot" />
         </button>
 
@@ -43,7 +43,7 @@ export default function Topbar() {
         <button
           type="button"
           className="fw-profile-button"
-          aria-label="Profile menu"
+          aria-label="Open profile menu"
         >
           <span className="fw-profile-avatar">R</span>
 
@@ -52,7 +52,10 @@ export default function Topbar() {
             <small>Voyage Planner</small>
           </span>
 
-          <ChevronDown size={18} />
+          <ChevronDown
+            size={18}
+            strokeWidth={2}
+          />
         </button>
       </div>
     </header>
