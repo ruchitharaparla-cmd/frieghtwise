@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   PlusCircle,
@@ -7,100 +8,70 @@ import {
   Anchor,
   FlaskConical,
   Settings,
+  LogOut,
 } from "lucide-react";
 
-const navigationItems = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    id: "new-voyage",
-    label: "New Voyage",
-    icon: PlusCircle,
-  },
-  {
-    id: "analysis",
-    label: "Analysis",
-    icon: BarChart3,
-  },
-  {
-    id: "vessels",
-    label: "Vessels",
-    icon: Ship,
-  },
-  {
-    id: "ports",
-    label: "Ports",
-    icon: Anchor,
-  },
-  {
-    id: "simulation",
-    label: "Simulation",
-    icon: FlaskConical,
-  },
+const items = [
+  ["dashboard", "Dashboard", LayoutDashboard],
+  ["new-voyage", "New Voyage", PlusCircle],
+  ["analysis", "Analysis", BarChart3],
+  ["simulation", "Simulation", FlaskConical],
+  ["vessels", "Vessels", Ship],
+  ["ports", "Ports", Anchor],
 ];
 
-export default function Sidebar({
-  page,
-  setPage,
-  onSettings,
-}) {
+export default function Sidebar({ page, setPage }) {
+  const navigate = useNavigate();
+
   return (
     <aside className="fw-sidebar">
-      <div className="fw-sidebar-brand">
-        <div className="fw-sidebar-brand-icon">
-          <Anchor size={25} strokeWidth={2} />
-        </div>
-
-        <div className="fw-sidebar-brand-text">
+      <div className="fw-brand">
+        <img src="/assets/freightwise-logo.png" alt="FreightWise logo" />
+        <div>
           <strong>FreightWise</strong>
-          <span>AI MARITIME INTELLIGENCE</span>
+          <small>Maritime Intelligence</small>
         </div>
       </div>
 
       <nav className="fw-sidebar-nav">
-        {navigationItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = page === item.id;
-
-          return (
-            <button
-              key={item.id}
-              type="button"
-              className={`fw-sidebar-link ${
-                isActive ? "active" : ""
-              }`}
-              onClick={() => setPage(item.id)}
-            >
-              <Icon size={21} strokeWidth={2} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+        {items.map(([id, label, Icon]) => (
+          <button
+            key={id}
+            type="button"
+            className={page === id ? "active" : ""}
+            onClick={() => setPage(id)}
+          >
+            <Icon size={17} />
+            {label}
+          </button>
+        ))}
 
         <button
           type="button"
-          className={`fw-sidebar-link fw-settings-link ${
-            page === "settings" ? "active" : ""
-          }`}
-          onClick={() => {
-            if (onSettings) {
-              onSettings();
-            } else {
-              setPage("settings");
-            }
-          }}
+          className="fw-settings-button"
+          onClick={() => navigate("/settings")}
         >
-          <Settings size={21} strokeWidth={2} />
-          <span>Settings</span>
+          <Settings size={17} />
+          Settings
         </button>
       </nav>
 
-      <div className="fw-sidebar-footer">
-        FreightWise Platform v1.0.0
+      <div className="fw-sidebar-foot">
+        Right Vessel.
+        <br />
+        Right Port.
+        <br />
+        Right Time.
       </div>
+
+      <button
+        type="button"
+        className="fw-logout-button"
+        onClick={() => navigate("/login")}
+      >
+        <LogOut size={17} />
+        Logout
+      </button>
     </aside>
   );
 }

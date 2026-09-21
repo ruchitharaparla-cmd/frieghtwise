@@ -1,171 +1,74 @@
-import React, { useState } from "react";
-import { Search, Anchor, ArrowUpRight } from "lucide-react";
-
+import React from "react";
+import { Search } from "lucide-react";
 import Card from "../../components/common/Card";
 import Badge from "../../components/common/Badge";
-import PageContainer from "../../components/common/PageContainer";
+import Page from "../../components/layout/Page";
 
-const ports = [
-  {
-    name: "Visakhapatnam",
-    code: "INVTZ",
-    state: "Andhra Pradesh",
-    draft: "18.5 m",
-    loa: "300 m",
-    utilization: "78%",
-    waiting: "16 hrs",
-    status: "Operational",
-  },
-  {
-    name: "Gangavaram",
-    code: "INGGV",
-    state: "Andhra Pradesh",
-    draft: "20.0 m",
-    loa: "320 m",
-    utilization: "72%",
-    waiting: "12 hrs",
-    status: "Operational",
-  },
-  {
-    name: "Kakinada",
-    code: "INKAK",
-    state: "Andhra Pradesh",
-    draft: "14.5 m",
-    loa: "250 m",
-    utilization: "64%",
-    waiting: "20 hrs",
-    status: "Operational",
-  },
-  {
-    name: "Paradip",
-    code: "INPRT",
-    state: "Odisha",
-    draft: "18.7 m",
-    loa: "310 m",
-    utilization: "81%",
-    waiting: "22 hrs",
-    status: "Busy",
-  },
-  {
-    name: "Kamarajar",
-    code: "INENN",
-    state: "Tamil Nadu",
-    draft: "16.5 m",
-    loa: "280 m",
-    utilization: "69%",
-    waiting: "14 hrs",
-    status: "Operational",
-  },
+const rows = [
+  ["Paradip Port", "INPRP", "Odisha", "16.0", "28", "Operational"],
+  ["Vizag Port", "INVTZ", "Andhra Pradesh", "16.5", "36", "Operational"],
+  ["Gangavaram Port", "INGWV", "Andhra Pradesh", "18.0", "42", "Congested"],
+  ["Kakinada Port", "INKAK", "Andhra Pradesh", "16.0", "30", "Operational"],
+  ["Chennai Port", "INMAA", "Tamil Nadu", "14.5", "26", "Operational"],
 ];
 
 export default function Ports({ go }) {
-  const [search, setSearch] = useState("");
-
-  const filteredPorts = ports.filter((port) => {
-    const query = search.toLowerCase();
-
-    return (
-      port.name.toLowerCase().includes(query) ||
-      port.code.toLowerCase().includes(query) ||
-      port.state.toLowerCase().includes(query)
-    );
-  });
-
   return (
-    <PageContainer
-      title="Ports"
-      subtitle="Review port restrictions, capacity, utilization, and waiting times."
-    >
+    <Page title="Ports" subtitle="Explore port capabilities and operational status.">
       <Card>
-        <div className="fw-toolbar">
-          <div>
-            <h3>East Coast ports</h3>
-            <p>Port infrastructure and operational conditions</p>
+        <div className="fw-directory-head">
+          <div className="fw-search inline">
+            <Search size={15} />
+            Search port name, code...
           </div>
+          <select defaultValue="all">
+            <option value="all">All Countries</option>
+          </select>
+        </div>
 
-          <div className="fw-search">
-            <Search size={17} />
-            <input
-              type="text"
-              placeholder="Search ports..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </div>
+        <div className="fw-port-image">
+          <img src="/assets/port-terminal.png" alt="Port terminal" />
         </div>
 
         <div className="fw-table-wrapper">
-          <table className="fw-table">
+          <table>
             <thead>
               <tr>
-                <th>Port</th>
+                <th>#</th>
+                <th>Port Name</th>
                 <th>Code</th>
                 <th>State</th>
-                <th>Max draft</th>
-                <th>Max LOA</th>
-                <th>Utilization</th>
-                <th>Waiting time</th>
+                <th>Max Draft</th>
+                <th>Avg Waiting</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
-
             <tbody>
-              {filteredPorts.map((port) => (
-                <tr key={port.code}>
+              {rows.map((row, index) => (
+                <tr key={row[0]}>
+                  <td>{index + 1}</td>
+                  <td><b>{row[0]}</b></td>
+                  <td>{row[1]}</td>
+                  <td>{row[2]}</td>
+                  <td>{row[3]} m</td>
+                  <td>{row[4]} h</td>
                   <td>
-                    <div className="fw-table-vessel">
-                      <div className="fw-table-icon">
-                        <Anchor size={18} />
-                      </div>
-
-                      <strong>{port.name}</strong>
-                    </div>
-                  </td>
-
-                  <td>{port.code}</td>
-                  <td>{port.state}</td>
-                  <td>{port.draft}</td>
-                  <td>{port.loa}</td>
-                  <td>{port.utilization}</td>
-                  <td>{port.waiting}</td>
-
-                  <td>
-                    <Badge tone={port.status === "Busy" ? "orange" : "teal"}>
-                      {port.status}
+                    <Badge tone={row[5] === "Operational" ? "teal" : "sand"}>
+                      {row[5]}
                     </Badge>
+                  </td>
+                  <td>
+                    <button type="button" className="fw-link" onClick={() => go("new-voyage")}>
+                      Use as Destination
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        {filteredPorts.length === 0 && (
-          <div className="fw-empty-state">
-            No ports found for your search.
-          </div>
-        )}
       </Card>
-
-      <Card>
-        <div className="fw-section-title">
-          <h3>Plan your next voyage</h3>
-
-          <button
-            type="button"
-            className="fw-text-btn"
-            onClick={() => go("new-voyage")}
-          >
-            Start planning
-            <ArrowUpRight size={15} />
-          </button>
-        </div>
-
-        <p className="fw-muted">
-          Select suitable loading and discharge ports based on vessel
-          restrictions, cargo type, and expected waiting time.
-        </p>
-      </Card>
-    </PageContainer>
+    </Page>
   );
 }
