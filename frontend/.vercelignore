@@ -6,3 +6,4 @@ vercel-debug.txt
 .git
 .gitignore
 *.log
+# Deployment configuration
