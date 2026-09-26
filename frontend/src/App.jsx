@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FreightWiseWidget from "./freightwise-widget/FreightWiseWidget";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Settings from "./pages/Settings/Settings";

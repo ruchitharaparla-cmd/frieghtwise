@@ -19,21 +19,32 @@ function pageFromPath(pathname) {
 export default function FreightWiseWidget() {
   const location = useLocation();
   const [page, setPage] = useState(() => pageFromPath(window.location.pathname));
+  const [recommendation, setRecommendation] = useState(null);
 
   useEffect(() => {
     const requested = pageFromPath(location.pathname);
     setPage(requested);
+
   }, [location.pathname]);
 
   const renderPage = () => {
     switch (page) {
       case "new-voyage":
-        return <NewVoyage go={setPage} />;
+  return (
+    <NewVoyage
+      go={setPage}
+      setRecommendation={setRecommendation}
+    />
+  );
       case "analysis":
-        return <Analysis go={setPage} />;
+  return (
+    <Analysis
+      go={setPage}
+      recommendation={recommendation}
+    />
+  );
       case "vessels":
-        return <Vessels go={setPage} />;
-      case "ports":
+        return <Vessels go={setPage} />;      case "ports":
         return <Ports go={setPage} />;
       case "simulation":
         return <Simulation go={setPage} />;

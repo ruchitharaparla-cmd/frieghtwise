@@ -1,33 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import Card from "../../components/common/Card";
 import Badge from "../../components/common/Badge";
 import Page from "../../components/layout/Page";
-
-const rows = [
-  ["Paradip Port", "INPRP", "Odisha", "16.0", "28", "Operational"],
-  ["Vizag Port", "INVTZ", "Andhra Pradesh", "16.5", "36", "Operational"],
-  ["Gangavaram Port", "INGWV", "Andhra Pradesh", "18.0", "42", "Congested"],
-  ["Kakinada Port", "INKAK", "Andhra Pradesh", "16.0", "30", "Operational"],
-  ["Chennai Port", "INMAA", "Tamil Nadu", "14.5", "26", "Operational"],
-];
+import { getPorts } from "../../services/api";
 
 export default function Ports({ go }) {
+  const [ports, setPorts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [country, setCountry] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPorts()
+      .then((data) => {
+        setPorts(data.ports || []);
+      })
+      .catch((error) => {
+        console.error("Failed to load ports:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const filteredPorts = ports.filter((port) => {
+    const searchMatch =
+      port.name.toLowerCase().includes(search.toLowerCase()) ||
+      port.code.toLowerCase().includes(search.toLowerCase());
+
+    const countryMatch =
+      country === "all" || port.country === country;
+
+    return searchMatch && countryMatch;
+  });
+
   return (
-    <Page title="Ports" subtitle="Explore port capabilities and operational status.">
+    <Page
+      title="Ports"
+      subtitle="Explore port capabilities and operational status."
+    >
       <Card>
         <div className="fw-directory-head">
           <div className="fw-search inline">
             <Search size={15} />
-            Search port name, code...
+            <input
+              type="text"
+              placeholder="Search port name, code..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
-          <select defaultValue="all">
+
+          <select
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          >
             <option value="all">All Countries</option>
+
+            {[...new Set(ports.map((port) => port.country))].map(
+              (item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              )
+            )}
           </select>
         </div>
 
         <div className="fw-port-image">
-          <img src="/assets/port-terminal.png" alt="Port terminal" />
+          <img
+            src="/assets/port-terminal.png"
+            alt="Port terminal"
+          />
         </div>
 
         <div className="fw-table-wrapper">
@@ -44,27 +89,73 @@ export default function Ports({ go }) {
                 <th></th>
               </tr>
             </thead>
+
             <tbody>
-              {rows.map((row, index) => (
-                <tr key={row[0]}>
-                  <td>{index + 1}</td>
-                  <td><b>{row[0]}</b></td>
-                  <td>{row[1]}</td>
-                  <td>{row[2]}</td>
-                  <td>{row[3]} m</td>
-                  <td>{row[4]} h</td>
-                  <td>
-                    <Badge tone={row[5] === "Operational" ? "teal" : "sand"}>
-                      {row[5]}
-                    </Badge>
-                  </td>
-                  <td>
-                    <button type="button" className="fw-link" onClick={() => go("new-voyage")}>
-                      Use as Destination
-                    </button>
-                  </td>
+              {loading ? (
+                <tr>
+                  <td colSpan="8">Loading ports...</td>
                 </tr>
-              ))}
+              ) : filteredPorts.length === 0 ? (
+                <tr>
+                  <td colSpan="8">No ports found.</td>
+                </tr>
+              ) : (
+                filteredPorts.map((port, index) => {
+                  const status =
+                    port.average_waiting_hours != null &&
+                    port.average_waiting_hours > 20
+                      ? "Congested"
+                      : "Operational";
+
+                  return (
+                    <tr key={port.id}>
+                      <td>{index + 1}</td>
+
+                      <td>
+                        <b>{port.name}</b>
+                      </td>
+
+                      <td>{port.code}</td>
+
+                      <td>{port.state}</td>
+
+                      <td>
+                        {port.max_draft_m != null
+                          ? `${port.max_draft_m} m`
+                          : "N/A"}
+                      </td>
+
+                      <td>
+                        {port.average_waiting_hours != null
+                          ? `${port.average_waiting_hours} h`
+                          : "N/A"}
+                      </td>
+
+                      <td>
+                        <Badge
+                          tone={
+                            status === "Operational"
+                              ? "teal"
+                              : "sand"
+                          }
+                        >
+                          {status}
+                        </Badge>
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          className="fw-link"
+                          onClick={() => go("new-voyage")}
+                        >
+                          Use as Destination
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
